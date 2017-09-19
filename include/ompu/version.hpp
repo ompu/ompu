@@ -1,7 +1,11 @@
 #pragma once
 
+#include <boost/format.hpp>
+
+#include <iosfwd>
 #include <tuple>
 #include <string>
+
 
 namespace ompu {
 
@@ -34,7 +38,10 @@ public:
     friend bool operator>=(Version const& lhs, Version const& rhs) noexcept;
     friend bool operator==(Version const& lhs, Version const& rhs) noexcept;
 
+    friend std::ostream& operator<<(std::ostream& os, Version const& v);
+
 private:
+    boost::format format() const;
     internal_type internal_;
 };
 
