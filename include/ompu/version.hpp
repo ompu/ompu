@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/format.hpp>
+// #include <boost/format/format_fwd.hpp>
 
 #include <iosfwd>
 #include <tuple>
@@ -38,10 +39,12 @@ public:
     friend bool operator>=(Version const& lhs, Version const& rhs) noexcept;
     friend bool operator==(Version const& lhs, Version const& rhs) noexcept;
 
-    friend std::ostream& operator<<(std::ostream& os, Version const& v);
+
+    // TODO: make this private...
+    // friend std::ostream& operator<<(std::ostream& os, Version const& v);
+    boost::format format() const;
 
 private:
-    boost::format format() const;
     internal_type internal_;
 };
 

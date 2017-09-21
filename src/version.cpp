@@ -1,5 +1,7 @@
 #include "ompu/version.hpp"
 
+#include <boost/format.hpp>
+
 
 namespace ompu {
 
@@ -25,11 +27,6 @@ void Version::upgrade(Version rhs)
     if (rhs >= *this) {
         (*this) = std::move(rhs);
     }
-}
-
-std::ostream& operator<<(std::ostream& os, Version const& v)
-{
-    return os << v.format();
 }
 
 bool operator<(Version const& lhs, Version const& rhs) noexcept
