@@ -7,12 +7,14 @@
 #include <boost/preprocessor/seq/enum.hpp>
 #include <boost/preprocessor/tuple/elem.hpp>
 
+#include <memory>
+
 
 namespace ompu { namespace midi {
 
 #include "ompu/def_helper.hpp"
 
-class Message
+class Message : public std::enable_shared_from_this<Message>
 {
 public:
     explicit Message(

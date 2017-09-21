@@ -15,7 +15,7 @@ namespace ompu { namespace game {
 namespace scenes {
 
 #define OMPU_GAME_SCENES_DEF \
-    (Noop)(Single)
+    (Noop)(Title)(Single)
     // (Session)
 
 #define OMPU_DEF(r, data, elem) \

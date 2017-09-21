@@ -1,12 +1,14 @@
 #pragma once
 
 #include "ompu/game/game_fwd.hpp"
+#include "ompu/game/scene.hpp"
 #include "ompu/midi/midi_fwd.hpp"
 
 #include "saya/logger/logger_env.hpp"
 
 #include <boost/lockfree/queue.hpp>
 
+#include <chrono>
 #include <memory>
 #include <mutex>
 #include <unordered_map>
@@ -20,11 +22,16 @@ public:
     template<OMPU_GAME_TEMPLATE_PARAMS>
     friend class Game;
 
+    //friend class GameDataSnapshot;
+
+    friend class EventHandler;
+
     friend class GC;
 
     // ---
 
-    std::unique_ptr<GameData> async_clone();
+    std::unique_ptr<GameDataSnapshot>
+    async_snapshot();
 
     // ---
 
@@ -40,18 +47,26 @@ public:
 
 private:
     saya::logger_env_set envs_;
+    scenes::all_type scene_;
 
 public:
     saya::logger_env_set envs() const { return envs_; }
+    scenes::all_type scene() const { return scene_; }
+    double fps() const;
+
+    //std::chrono::steady_clock::time_point last_snapshot_at() const { return last_snapshot_at_; }
 
     // ------------------------------------------
+
+private:
+    void update_fps();
 
     std::mutex store_mtx_;
 
     boost::lockfree::queue<midi::Message const*>
     in_midi_, in_midi_gc_;
 
-    std::unordered_map<midi::Message const*, std::unique_ptr<midi::Message>>
+    std::unordered_map<midi::Message const*, std::shared_ptr<midi::Message const>>
     in_midi_store_, in_midi_store_sub_;
 
 #if 0
@@ -63,6 +78,11 @@ public:
 #endif
 
     // ------------------------------------------
+
+private:
+    std::chrono::steady_clock::time_point last_snapshot_at_, last_fps_at_;
+    unsigned fps_count_{0};
+    double last_fps_{0};
 };
 
 }} // ompu

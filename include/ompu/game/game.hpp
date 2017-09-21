@@ -34,14 +34,13 @@ class Game
 public:
     explicit Game(saya::logger_env_set envs)
         : is_running_(false)
-        , data_(std::make_unique<GameData>(std::move(envs)))
-        , l_(data_->envs(), "Game")
-        , eh_(data_.get())
-        , scene_(scenes::Noop{})
-        , gc_(data_.get())
+        , gd_(std::make_unique<GameData>(std::move(envs)))
+        , l_(gd_->envs(), "Game")
+        , eh_(gd_.get())
+        , gc_(gd_.get())
     {
-        l_.note() << "using update visitor: " << SceneUpdateVisitor::name() << std::endl;
-        l_.note() << "using draw visitor: " << SceneDrawVisitor::name() << std::endl;
+        l_.note() << "using update visitor from '" << SceneUpdateVisitor::name() << "'" << std::endl;
+        l_.note() << "using draw visitor from '" << SceneDrawVisitor::name() << "'" << std::endl;
         l_.info() << "initialized." << std::endl;
 
         gc_thread_ = std::thread([this] {
@@ -63,10 +62,11 @@ public:
         l_.info() << "bye" << std::endl;
     }
 
+#if 0
     void run()
     {
         while (is_running_) {
-            this->frame();
+            this->synced_frame();
 
             std::this_thread::yield();
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -74,9 +74,40 @@ public:
 
         gc_.stop();
     }
+#endif
 
-    void stop() { is_running_ = false; }
+    void start() { /* gc_.start(); */ is_running_ = true; }
+    void stop() { is_running_ = false; gc_.stop(); }
 
+    void synced_frame(context_type ctx)
+    {
+        if (!is_running_) return;
+
+        auto gd_ss = gd_->async_snapshot();
+
+        // mark for GC at first
+        for (auto& msg : gd_ss->midi_msgs) {
+            while (!gd_->in_midi_gc_.push(msg.get())) {}
+        }
+
+        // (1) update
+        auto const next_scene = this->update(ctx, gd_ss.get());
+
+        // (1.1) hook scene change
+        BOOST_SCOPE_EXIT_ALL(this, next_scene)
+        {
+            if (gd_->scene_.which() != next_scene.which()) {
+                l_.note() << "prev:  '" << boost::apply_visitor(SceneNameVisitor{}, gd_->scene_) << "'" << std::endl;
+                l_.note() << "after: '" << boost::apply_visitor(SceneNameVisitor{}, next_scene) << "'" << std::endl;
+                l_.info() << "scene changed" << std::endl;
+            }
+
+            gd_->scene_ = next_scene;
+        };
+
+        // (2) draw
+        this->draw(ctx, std::move(gd_ss));
+    }
 
     Game(Game const&) = delete;
     Game(Game&&) = delete;
@@ -87,48 +118,33 @@ public:
     EventHandler* const eh() noexcept { return &eh_; }
 
 private:
-    void frame()
+    update_visitor_return_type
+    update(context_type ctx, update_visitor_game_data_type gd)
     {
-        auto data_copy = this->data_->async_clone();
-        this->update(data_copy.get());
-        this->draw(data_copy.get());
-
-        data_copy->in_midi_.consume_all([this] (auto const& p) {
-            while (!data_->in_midi_gc_.push(p)) {}
-        });
-    }
-
-    void update(GameData* const gd)
-    {
-        scenes::all_type next_scene{scenes::Noop{}};
-
-        BOOST_SCOPE_EXIT_ALL(this, &next_scene)
-        {
-            auto const scene_before = scene_;
-
-            scene_ = std::move(next_scene);
-
-            if (scene_.which() != scene_before.which()) {
-                l_.note() << "before: '" << boost::apply_visitor(SceneNameVisitor{}, scene_before) << "'" << std::endl;
-                l_.note() << "after: '" << boost::apply_visitor(SceneNameVisitor{}, scene_) << "'" << std::endl;
-                l_.info() << "scene changed" << std::endl;
-            }
-        };
+        auto const current_scene = gd->scene;
 
         try {
-            SceneUpdateVisitor suv{gd};
-            next_scene = boost::apply_visitor(suv, scene_);
+            SceneUpdateVisitor suv{std::move(gd)};
+            suv.context(ctx);
+
+            return boost::apply_visitor(suv, current_scene);
 
         } catch (game_error const& e) {
             l_.error() << e.what() << std::endl;
         }
+
+        return current_scene;
     }
 
-    void draw(GameData const* const gd) const
+    draw_visitor_return_type
+    draw(context_type ctx, draw_visitor_game_data_type gd)
     {
         try {
-            SceneDrawVisitor const sdv{gd};
-            boost::apply_visitor(sdv, scene_);
+            auto const current_scene = gd->scene;
+            SceneDrawVisitor sdv{std::move(gd)};
+            sdv.context(ctx);
+
+            return boost::apply_visitor(sdv, current_scene);
 
         } catch (game_error const& e) {
             l_.error() << e.what() << std::endl;
@@ -137,13 +153,11 @@ private:
 
 
     std::atomic<bool> is_running_;
-    std::unique_ptr<GameData> data_;
+    std::unique_ptr<GameData> gd_;
 
     saya::logger l_;
 
     EventHandler eh_;
-
-    scenes::all_type scene_;
 
     GC gc_;
     std::thread gc_thread_;
