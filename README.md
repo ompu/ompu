@@ -12,7 +12,7 @@ If you have any questions, please send an email to: support@ompu.io
 ## Requirements
 
 - [saya](https://github.com/saya-io/saya) ~> __latest__
-- [Boost C++ Libraries](http://www.boost.org/) ~> __1.65.1_
+- [Boost C++ Libraries](http://www.boost.org/) ~> __1.65.1__
 - Decent C++ compiler >= __C++14__
   - Windows: Visual Studio ~> __2017__
   - Mac: Not tested; future support for clang
