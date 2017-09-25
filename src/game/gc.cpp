@@ -97,19 +97,20 @@ bool GC::need_run()
 void GC::run()
 {
     auto const curr_run_start = clock_type::now();
+    auto const curr_run_at = std::chrono::system_clock::now();
     std::size_t cleaned_obj_count = 0;
 
-    BOOST_SCOPE_EXIT_ALL(this, curr_run_start) {
+    BOOST_SCOPE_EXIT_ALL(this, curr_run_at, curr_run_start) {
+        this->prof_->last_run_at = curr_run_at;
         this->prof_->last_run_at_steady = curr_run_start;
     };
 
     {
-        auto const now = std::chrono::system_clock::now();
-        l_.note() << "this run: " << ompu::util::time_print{now} << std::endl;
+        l_.note() << "this run: " << ompu::util::time_print{curr_run_at} << std::endl;
 
         if (prof_) {
             l_.note() << "last run: " << ompu::util::time_print{prof_->last_run_at} << std::endl;
-            l_.note() << "last run was " << std::chrono::duration_cast<std::chrono::seconds>(now - prof_->last_run_at).count() << " sec ago" << std::endl;
+            l_.note() << "last run was " << std::chrono::duration_cast<std::chrono::seconds>(curr_run_at - prof_->last_run_at).count() << " sec ago" << std::endl;
 
             prof_ = std::make_unique<Profile>(*prof_);
 

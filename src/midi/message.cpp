@@ -5,16 +5,16 @@
 #include <boost/preprocessor/tuple/elem.hpp>
 #include <boost/preprocessor/punctuation/paren.hpp>
 
+#include <iostream>
+
 
 namespace ompu { namespace midi {
 
 #include "ompu/def_helper.hpp"
 
-Message::Message(
-    OMPU_DEF_HELPER_EXTRACT_PARAMS(OMPU_MIDI_MESSAGE_DEF)
+OMPU_DEF_HELPER_EXTRACT_ENUM_CLASS_IMPL(
+    MessageType, OMPU_MIDI_MESSAGE_TYPE_DEF
 )
-    OMPU_DEF_HELPER_EXTRACT_INITIALIZER_LIST(OMPU_MIDI_MESSAGE_DEF)
-{}
 
 #include "ompu/def_helper_undef.hpp"
 

@@ -81,11 +81,14 @@ public:
     void start() { /* gc_.start(); */ is_running_ = true; }
     void stop() { is_running_ = false; gc_.stop(); }
 
-    void synced_frame()
+    std::unique_ptr<GameDataSnapshot>
+    synced_update()
     {
+#if 0
         if (!is_running_) {
-            throw std::logic_error("Game::synced_frame() called without running game instance");
+            throw std::logic_error("Game::synced_update() called with stopped game instance");
         }
+#endif
 
         auto gd_ss = gd_->async_snapshot();
 
@@ -109,8 +112,13 @@ public:
             gd_->scene_ = next_scene;
         };
 
-        // (2) draw
-        this->draw(std::move(gd_ss));
+        return gd_ss;
+    }
+
+    draw_visitor_return_type
+    synced_draw(std::unique_ptr<GameDataSnapshot> gd_ss)
+    {
+        return this->draw(std::move(gd_ss));
     }
 
     Game(Game const&) = delete;
