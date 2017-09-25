@@ -32,12 +32,14 @@ template<
 class Game
 {
 public:
-    explicit Game(saya::logger_env_set envs)
+    explicit Game(saya::logger_env_set envs, SceneUpdateVisitor* const suv, SceneDrawVisitor* const sdv)
         : is_running_(false)
         , gd_(std::make_unique<GameData>(std::move(envs)))
         , l_(gd_->envs(), "Game")
         , eh_(gd_.get())
         , gc_(gd_.get())
+        , suv_(suv)
+        , sdv_(sdv)
     {
         l_.note() << "using update visitor from '" << SceneUpdateVisitor::name() << "'" << std::endl;
         l_.note() << "using draw visitor from '" << SceneDrawVisitor::name() << "'" << std::endl;
@@ -50,16 +52,16 @@ public:
 
     ~Game()
     {
-        l_.info() << "game over" << std::endl;
+        //l_.info() << "game over" << std::endl;
 
-        l_.info() << "stopping GC..." << std::endl;
+        //l_.info() << "stopping GC..." << std::endl;
         gc_.stop();
 
         if (gc_thread_.joinable()) {
             gc_thread_.join();
         }
 
-        l_.info() << "bye" << std::endl;
+        //l_.info() << "bye" << std::endl;
     }
 
 #if 0
@@ -79,9 +81,11 @@ public:
     void start() { /* gc_.start(); */ is_running_ = true; }
     void stop() { is_running_ = false; gc_.stop(); }
 
-    void synced_frame(context_type ctx)
+    void synced_frame()
     {
-        if (!is_running_) return;
+        if (!is_running_) {
+            throw std::logic_error("Game::synced_frame() called without running game instance");
+        }
 
         auto gd_ss = gd_->async_snapshot();
 
@@ -91,7 +95,7 @@ public:
         }
 
         // (1) update
-        auto const next_scene = this->update(ctx, gd_ss.get());
+        auto const next_scene = this->update(gd_ss.get());
 
         // (1.1) hook scene change
         BOOST_SCOPE_EXIT_ALL(this, next_scene)
@@ -106,7 +110,7 @@ public:
         };
 
         // (2) draw
-        this->draw(ctx, std::move(gd_ss));
+        this->draw(std::move(gd_ss));
     }
 
     Game(Game const&) = delete;
@@ -119,15 +123,13 @@ public:
 
 private:
     update_visitor_return_type
-    update(context_type ctx, update_visitor_game_data_type gd)
+    update(update_visitor_game_data_type gd)
     {
         auto const current_scene = gd->scene;
 
         try {
-            SceneUpdateVisitor suv{std::move(gd)};
-            suv.context(ctx);
-
-            return boost::apply_visitor(suv, current_scene);
+            suv_->game_data(std::move(gd));
+            return boost::apply_visitor(*suv_, current_scene);
 
         } catch (game_error const& e) {
             l_.error() << e.what() << std::endl;
@@ -137,14 +139,12 @@ private:
     }
 
     draw_visitor_return_type
-    draw(context_type ctx, draw_visitor_game_data_type gd)
+    draw(draw_visitor_game_data_type gd)
     {
         try {
             auto const current_scene = gd->scene;
-            SceneDrawVisitor sdv{std::move(gd)};
-            sdv.context(ctx);
-
-            return boost::apply_visitor(sdv, current_scene);
+            sdv_->game_data(std::move(gd));
+            return boost::apply_visitor(*sdv_, current_scene);
 
         } catch (game_error const& e) {
             l_.error() << e.what() << std::endl;
@@ -154,6 +154,9 @@ private:
 
     std::atomic<bool> is_running_;
     std::unique_ptr<GameData> gd_;
+
+    SceneUpdateVisitor* const suv_;
+    SceneDrawVisitor* const sdv_;
 
     saya::logger l_;
 

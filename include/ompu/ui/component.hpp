@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ompu/geo.hpp"
+#include "ompu/ui_fwd.hpp"
 
 #include <boost/functional/hash.hpp>
 
@@ -24,6 +25,8 @@ public:
     using base_type = Component<Derived, Model>;
     using self_type = Derived;
     using model_type = Model;
+
+    Component() noexcept = default;
 
     explicit Component(model_type model) noexcept
         : model_type(std::move(model))
@@ -53,12 +56,5 @@ inline std::size_t hash_value(C const& v)
 {
     return std::hash<void*>{}(v.id());
 }
-
-
-template<class Visitor>
-class Drawable {};
-
-template<class Visitor>
-class Updatable {};
 
 }} // ompu

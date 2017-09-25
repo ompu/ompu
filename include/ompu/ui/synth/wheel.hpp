@@ -5,27 +5,12 @@
 
 namespace ompu { namespace ui {
 
-namespace tags {
-
-struct synth_wheel_base {};
-
-struct pitch_wheel {};
-struct mod_wheel {};
-
-} // tags
-
 template<class Tag, class T, T Min, T Max>
 class SynthWheel
-    : public Component<SynthWheel, geo::models::Box>
+    : public Component<SynthWheel<Tag, T, Min, Max>, geo::models::Box>
     , tags::synth_wheel_base
 {
 public:
-    template<class Visitor>
-    friend class Updatable<Visitor>;
-
-    template<class T>
-    friend class Drawable<Visitor>;
-
     static constexpr double Step = double(Max - Min) / 100.;
 
     static_assert(Min <= Max, "Min <= Max");
@@ -44,11 +29,8 @@ public:
         return (val_ - Min) * Step;
     }
 
-private:
+// private:
     T val_;
 };
-
-using PitchWheel = SynthWheel<tags::pitch_wheel, int, -8192, 8191>;
-using ModWheel = SynthWheel<tags::mod_wheel, unsigned, 0, 127>;
 
 }} // ompu

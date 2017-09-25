@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ompu/ui_fwd.hpp"
 #include "ompu/ui/keyboard.hpp"
 
 #include <boost/variant/variant.hpp>

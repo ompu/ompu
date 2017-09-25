@@ -16,7 +16,6 @@ using update_visitor_return_type = scenes::all_type;
 using draw_visitor_game_data_type = std::unique_ptr<GameDataSnapshot>;
 using draw_visitor_return_type = void;
 
-using context_type = void*;
 
 //
 // All visitor classes should be in the signature below.
@@ -32,18 +31,13 @@ class MySceneVisitor
     : boost::static_visitor<ompu::game::(update|draw)_visitor_return_type>
 {
 public:
-    explicit MyVisitor(
-        ompu::game::(update|draw)_visitor_game_data_type gd
-    )
-        : gd_(std::move(gd)) // this is the snapshot for 'current' iteration,
-                             // can be referenced (or modified) in thread-safe manner
-    {}
-
     constexpr static char const* name() noexcept { return "Your friendly name"; }
 
-    void context(ompu::game::context_type ctx)
+    // this is the snapshot for 'current' iteration,
+    // can be referenced (or modified) in thread-safe manner
+    void game_data(ompu::game::(update|draw)_visitor_game_data_type gd)
     {
-        this->ctx_ = ctx;
+        this->gd_ = std::move(gd);
     }
 
     ompu::game::(update|draw)_visitor_return_type
@@ -74,7 +68,6 @@ public:
     // scene dispatcher continues....
 
 private:
-    ompu::game::context_type ctx_;
     ompu::game::(update|draw)_visitor_game_data_type gd_;
 };
 // end visitor example -----------------------

@@ -18,12 +18,12 @@ void Box::cache_ident()
 
 double Box::x() const noexcept
 {
-    return bg::get<0>(cache_);
+    return bg::get<0>(cache_.min_corner());
 }
 
 double Box::y() const noexcept
 {
-    return bg::get<1>(cache_);
+    return bg::get<1>(cache_.min_corner());
 }
 
 

@@ -74,7 +74,7 @@ void GC::start()
 
 void GC::stop()
 {
-    l_.info() << "stopping..." << std::endl;
+    //l_.info() << "stopping..." << std::endl;
     is_running_ = false;
 }
 

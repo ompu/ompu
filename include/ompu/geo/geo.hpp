@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma warning(push)
+#pragma warning(disable: 4819)
 #include <boost/geometry/core/access.hpp>
 
 #include <boost/geometry/geometries/point_xy.hpp>
@@ -10,6 +12,7 @@
 #include <boost/geometry/geometries/multi_polygon.hpp>
 
 #include <boost/geometry/strategies/strategies.hpp>
+#pragma warning(pop)
 
 
 namespace ompu { namespace geo {
