@@ -14,11 +14,27 @@
 
 namespace ompu { namespace game {
 
+GC::Profile::Profile()
+    : last_run_at(std::chrono::system_clock::now())
+{
+}
+
 GC::GC(GameData* const gd)
     : gd_(gd)
     , l_(gd->envs(), "GC")
     , is_running_{false}
 {}
+
+GC::~GC()
+{
+    l_.note()
+        << "remaining objects: "
+        << gd_->in_midi_store_.size() + gd_->in_midi_store_sub_.size()
+        << std::endl
+    ;
+    l_.note() << "(remaining objects will be destructed by the runtime)" << std::endl;
+    l_.info() << "terminating..." << std::endl;
+}
 
 void GC::start()
 {
@@ -35,6 +51,7 @@ void GC::start()
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
 
+#if 0
         //
         // ensure everything is cleaned
         //
@@ -42,6 +59,7 @@ void GC::start()
         // if (this->need_run()) {
             this->run();
         // }
+#endif
 
     } catch (std::exception const& e) {
         l_.note() << e.what() << std::endl;

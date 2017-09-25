@@ -15,7 +15,7 @@ class GC
 {
 public:
     explicit GC(GameData* gd);
-    ~GC() = default;
+    ~GC();
 
     void start();
     void stop();
@@ -45,6 +45,8 @@ private:
 
         std::chrono::steady_clock::time_point
         last_run_at_steady;
+
+        Profile();
     };
 
     std::unique_ptr<Profile> prof_;
