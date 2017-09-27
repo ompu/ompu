@@ -1,6 +1,6 @@
 # ompu
 
-<img src="https://github.com/ompu/ompu-org-assets/raw/master/img/ompu-org/ompu-logo-2x-trans.png" alt="ompu" height="256" style="max-height: 256px; width: auto; height: auto">
+![ompu](https://github.com/ompu/ompu-org-assets/raw/master/img/ompu-org/ompu-logo-2x-trans.png)
 
 Music Game for Musicians - https://ompu.io/
 
