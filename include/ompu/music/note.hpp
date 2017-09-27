@@ -17,7 +17,7 @@
 
 namespace ompu { namespace music {
 
-template<class Traits_>
+template<class Traits_ = Traits<>>
 class Note
 {
 public:

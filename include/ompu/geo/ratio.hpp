@@ -53,13 +53,7 @@ template<class T, class R>
 inline constexpr T
 static_ratio(T v) noexcept
 {
-    auto const fac_a = T(R::num);
-    auto const fac_b = R::den;
-    auto const fac = fac_a / fac_b;
-
-    return v * (fac);
-
-    //return v * (T(step_ratio_type::num) / step_ratio_type::den);
+    return v * (T(R::num) / R::den);
 }
 
 template<

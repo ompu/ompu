@@ -16,7 +16,7 @@
 
 namespace ompu { namespace ui {
 
-namespace concepts {
+namespace keyboards {
 
 template<std::size_t MIDIOfs, std::size_t I>
 static constexpr auto
@@ -67,7 +67,7 @@ template<std::size_t MIDIOfs, std::size_t I>
 static constexpr auto
 key_white_keys_before_v =
     (key_nth_octave_v<MIDIOfs, I> * 7) +
-    key_octave_index_v<key_last_white_before<MIDIOfs, I>()>
+    key_octave_index_v<MIDIOfs, key_last_white_before<MIDIOfs, I>()>
 ;
 
 namespace detail {
@@ -85,7 +85,89 @@ template<std::size_t I>
 constexpr auto key_is_white_v = detail::key_is_white_impl<key_octave_index_v<I>>::value;
 
 
-} // concepts
+template<class Kb, std::size_t I>
+using white_key_x_ratio_t = std::ratio_add<
+    std::ratio_multiply<
+        typename Kb::white_key_ratio::w_ratio,
+        std::ratio<I, 1>
+    >,
+    std::ratio_multiply<
+        typename Kb::clearance_ratio::w_ratio,
+        std::ratio<I, 1>
+    >
+>;
+
+
+template<class Kb, std::size_t ZeroI, std::size_t RealI, class Enable = void>
+struct black_key_x_ratio;
+
+template<class Kb, std::size_t ZeroI, std::size_t RealI>
+struct black_key_x_ratio<Kb, ZeroI, RealI, std::enable_if_t<ZeroI % 5 == 0 || ZeroI % 5 == 2>>
+{
+    using type = std::ratio_subtract<
+        white_key_x_ratio_t<Kb, key_white_keys_before_v<Kb::OffsetFromCneg1ToLowestKey, RealI>>,
+        std::ratio_multiply<
+            typename Kb::white_key_ratio::w_ratio,
+            std::ratio<50, 100>
+        >
+    >;
+};
+
+template<class Kb, std::size_t ZeroI, std::size_t RealI>
+struct black_key_x_ratio<Kb, ZeroI, RealI, std::enable_if_t<ZeroI % 5 == 1 || ZeroI % 5 == 4>>
+{
+    using type = std::ratio_subtract<
+        white_key_x_ratio_t<Kb, key_white_keys_before_v<Kb::OffsetFromCneg1ToLowestKey, RealI>>,
+        std::ratio_multiply<
+            typename Kb::white_key_ratio::w_ratio,
+            std::ratio<15, 100>
+        >
+    >;
+};
+
+template<class Kb, std::size_t ZeroI, std::size_t RealI>
+struct black_key_x_ratio<Kb, ZeroI, RealI, std::enable_if_t<ZeroI % 5 == 3>>
+{
+    using type = std::ratio_subtract<
+        white_key_x_ratio_t<Kb, key_white_keys_before_v<Kb::OffsetFromCneg1ToLowestKey, RealI>>,
+        std::ratio_multiply<
+            typename Kb::black_key_ratio::w_ratio,
+            std::ratio<1, 2>
+        >
+    >;
+};
+
+template<class Kb, std::size_t ZeroI, std::size_t RealI>
+using black_key_x_ratio_t = typename black_key_x_ratio<Kb, ZeroI, RealI>::type;
+
+
+template<class Kb, std::size_t I>
+using clearance_x_ratio_t = std::ratio_add<
+    std::ratio_multiply<
+        typename Kb::white_key_ratio::w_ratio,
+        std::ratio<I + 1, 1>
+    >,
+    std::ratio_multiply<
+        typename Kb::clearance_ratio::w_ratio,
+        std::ratio<I, 1>
+    >
+>;
+
+
+namespace detail {
+
+template<class Kb, std::size_t OctaveI>
+struct note_name_impl;
+
+template<class Kb>
+struct note_name_impl<Kb, 0>
+{
+
+};
+
+} // detail
+
+} // keyboards
 
 template<std::size_t Octaves>
 using make_octave_sequence = std::make_index_sequence<Octaves>;
@@ -103,38 +185,33 @@ using octave_white_key_sequence = std::index_sequence<
     0, 2, 4, 5, 7, 9, 11
 >;
 
+using octave_black_key_sequence = std::index_sequence<
+    1, 3, 6, 8, 10
+>;
+
 namespace detail {
 
-template<class LSeq, class S1, class S2, class S3, class S4, class S5, class S6, class S7, class HSeq>
+template<class...>
 struct concat_impl;
 
-template<
-    std::size_t... IsL,
-    std::size_t... Is1, std::size_t... Is2, std::size_t... Is3, std::size_t... Is4,
-    std::size_t... Is5, std::size_t... Is6, std::size_t... Is7,
-    std::size_t... IsH
->
-struct concat_impl<
-    std::index_sequence<IsL...>,
-    std::index_sequence<Is1...>, std::index_sequence<Is2...>,
-    std::index_sequence<Is3...>, std::index_sequence<Is4...>,
-    std::index_sequence<Is5...>, std::index_sequence<Is6...>,
-    std::index_sequence<Is7...>,
-    std::index_sequence<IsH...>
->
+template<std::size_t... I1, std::size_t... I2, class... Rest>
+struct concat_impl<std::index_sequence<I1...>, std::index_sequence<I2...>, Rest...>
 {
-    using type = std::index_sequence<
-        IsL...,
-        Is1..., Is2..., Is3..., Is4...,
-        Is5..., Is6..., Is7...,
-        IsH...
-    >;
+    using type = typename concat_impl<
+        std::index_sequence<I1..., I2...>, Rest...
+    >::type;
+};
+
+template<std::size_t... I1>
+struct concat_impl<std::index_sequence<I1...>>
+{
+    using type = std::index_sequence<I1...>;
 };
 
 template<class... Seqs>
-inline constexpr auto make_white_key_sequence_impl_s(Seqs...)
+inline constexpr auto make_concat(Seqs...)
 {
-    return typename detail::concat_impl<Seqs...>::type{};
+    return typename concat_impl<Seqs...>::type{};
 }
 
 template<std::size_t... LWs, std::size_t... LBs, std::size_t... HWs, std::size_t... Octave>
@@ -144,17 +221,31 @@ inline constexpr auto make_white_key_sequence_impl(
     std::index_sequence<Octave...>,
     std::index_sequence<HWs...>
 ) {
-    return make_white_key_sequence_impl_s(
+    return make_concat(
         std::index_sequence<LWs...>{},
         detail::add_offset<Octave * 12 + sizeof...(LWs) + sizeof...(LBs)>(octave_white_key_sequence{})...,
         std::index_sequence<HWs...>{}
     );
 }
 
+template<std::size_t... LWs, std::size_t... LBs, std::size_t... HWs, std::size_t... Octave>
+inline constexpr auto make_black_key_sequence_impl(
+    std::index_sequence<LWs...>,
+    std::index_sequence<LBs...>,
+    std::index_sequence<Octave...>,
+    std::index_sequence<HWs...>
+)
+{
+    return make_concat(
+        std::index_sequence<LBs...>{},
+        detail::add_offset<Octave * 12 + sizeof...(LWs) + sizeof...(LBs)>(octave_black_key_sequence{})...
+    );
+}
+
 } // detail
 
 template<class Kb>
-constexpr auto make_white_key_sequence()
+inline constexpr auto make_white_key_sequence()
 {
     return detail::make_white_key_sequence_impl(
         Kb::lower_white_key_config_v,
@@ -163,6 +254,23 @@ constexpr auto make_white_key_sequence()
         Kb::higher_white_key_config_v
     );
 }
+
+template<class Kb>
+inline constexpr auto make_black_key_sequence()
+{
+    return detail::make_black_key_sequence_impl(
+        Kb::lower_white_key_config_v,
+        Kb::lower_black_key_config_v,
+        make_octave_sequence<Kb::Octaves>{},
+        Kb::higher_white_key_config_v
+    );
+}
+
+template<class Kb>
+using make_clearance_sequence = std::make_index_sequence<Kb::ClearanceCount>;
+
+
+// -------------------------------------------------
 
 
 template<
@@ -255,7 +363,7 @@ public:
     // in case of A, index to C == 3
     //
     static constexpr std::size_t OffsetFromLowestKeyToC =
-        (12 - concepts::key_octave_index_v<OffsetFromCneg1ToLowestKey, OffsetFromCneg1ToLowestKey>) % 12;
+        (12 - keyboards::key_octave_index_v<OffsetFromCneg1ToLowestKey, OffsetFromCneg1ToLowestKey>) % 12;
 
     static_assert(OffsetFromLowestKeyToC <= 11, "[BUG] auto-detection for OffsetFromLowestKeyToC failed");
 
@@ -264,66 +372,15 @@ public:
     static constexpr std::size_t const
     ClearanceCount = ClearanceCount;
 
-    using clearance_sequence = std::make_index_sequence<ClearanceCount>;
-
     using keyboard_ratio = KeyboardRatio;
-
-    using octave_ratio = OctaveRatio;
-    using octave_sequence = std::make_index_sequence<Octaves>;
-
-    using white_key_ratio = WhiteKeyRatio;
-
-    template<std::size_t I>
-    using white_key_x_ratio = std::ratio_add<
-        std::ratio_multiply<
-            typename white_key_ratio::w_ratio,
-            std::ratio<I, 1>
-        >,
-        std::ratio_multiply<
-            typename clearance_ratio::w_ratio,
-            std::ratio<I, 1>
-        >
-    >;
-
-    using black_key_ratio = BlackKeyRatio;
-
+        using octave_ratio = OctaveRatio;
 
     // ------------------------------
-    template<std::size_t I>
-    using clearance_x_ratio = std::ratio_add<
-        std::ratio_multiply<
-            typename white_key_ratio::w_ratio,
-            std::ratio<I + 1, 1>
-        >,
-        std::ratio_multiply<
-            typename clearance_ratio::w_ratio,
-            std::ratio<I, 1>
-        >
-    >;
 
-    // C#, F#
-    using black_key_lefted_x_ratio = std::ratio_multiply<
-        typename white_key_ratio::w_ratio,
-        std::ratio<50, 100>
-    >;
+    using white_key_ratio = WhiteKeyRatio;
+    using black_key_ratio = BlackKeyRatio;
 
-    // G#
-    using black_key_centered_x_ratio = std::ratio_subtract<
-        typename white_key_ratio::w_ratio,
-        std::ratio_multiply<
-            typename black_key_ratio::w_ratio,
-            std::ratio<1, 2>
-        >
-    >;
-
-    // D#, A#
-    using black_key_righted_x_ratio = std::ratio_subtract<
-        std::ratio_multiply<
-            typename white_key_ratio::w_ratio,
-            std::ratio<2, 1>
-        >,
-        typename black_key_ratio::w_ratio
-    >;
+    // ------------------------------
 
     //
     // Sanity check...
