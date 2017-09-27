@@ -7,7 +7,7 @@ namespace ompu { namespace ui {
 
 template<class Tag, class T, T Min, T Max>
 class SynthWheel
-    : public Component<SynthWheel<Tag, T, Min, Max>, geo::models::Box>
+    : public Component<geo::models::Box>
     , tags::synth_wheel_base
 {
 public:
@@ -22,14 +22,21 @@ public:
     using base_type::base_type;
 
     value_type const& val() const noexcept { return val_; }
-    void set_val(value_type v) noexcept { val_ = std::move(v); }
+
+    void set_val(value_type v)
+    {
+        if (!(Min <= v && v <= Max)) {
+            throw std::out_of_range("invalid value given to SynthWheel::set_val()");
+        }
+        val_ = std::move(v);
+    }
 
     double pct() const noexcept
     {
         return (val_ - Min) * Step;
     }
 
-// private:
+private:
     T val_;
 };
 

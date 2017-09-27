@@ -32,7 +32,7 @@ template<
 class Game
 {
 public:
-    explicit Game(saya::logger_env_set envs, SceneUpdateVisitor* const suv, SceneDrawVisitor* const sdv)
+    explicit Game(saya::logger_env_set envs, Updater* const suv, Drawer* const sdv)
         : is_running_(false)
         , gd_(std::make_unique<GameData>(std::move(envs)))
         , l_(gd_->envs(), "Game")
@@ -41,8 +41,8 @@ public:
         , suv_(suv)
         , sdv_(sdv)
     {
-        l_.note() << "using update visitor from '" << SceneUpdateVisitor::name() << "'" << std::endl;
-        l_.note() << "using draw visitor from '" << SceneDrawVisitor::name() << "'" << std::endl;
+        l_.note() << "using update visitor from '" << Updater::name() << "'" << std::endl;
+        l_.note() << "using draw visitor from '" << Drawer::name() << "'" << std::endl;
         l_.info() << "initialized." << std::endl;
 
         gc_thread_ = std::thread([this] {
@@ -115,7 +115,7 @@ public:
         return gd_ss;
     }
 
-    draw_visitor_return_type
+    drawer_return_type
     synced_draw(std::unique_ptr<GameDataSnapshot> gd_ss)
     {
         return this->draw(std::move(gd_ss));
@@ -130,8 +130,8 @@ public:
     EventHandler* const eh() noexcept { return &eh_; }
 
 private:
-    update_visitor_return_type
-    update(update_visitor_game_data_type gd)
+    updater_return_type
+    update(updater_game_data_type gd)
     {
         auto const current_scene = gd->scene;
 
@@ -146,8 +146,8 @@ private:
         return current_scene;
     }
 
-    draw_visitor_return_type
-    draw(draw_visitor_game_data_type gd)
+    drawer_return_type
+    draw(drawer_game_data_type gd)
     {
         try {
             auto const current_scene = gd->scene;
@@ -163,8 +163,8 @@ private:
     std::atomic<bool> is_running_;
     std::unique_ptr<GameData> gd_;
 
-    SceneUpdateVisitor* const suv_;
-    SceneDrawVisitor* const sdv_;
+    Updater* const suv_;
+    Drawer* const sdv_;
 
     saya::logger l_;
 

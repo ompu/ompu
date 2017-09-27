@@ -10,11 +10,11 @@
 
 namespace ompu { namespace game {
 
-using update_visitor_game_data_type = GameDataSnapshot*;
-using update_visitor_return_type = scenes::all_type;
+using updater_game_data_type = GameDataSnapshot*;
+using updater_return_type = scenes::all_type;
 
-using draw_visitor_game_data_type = std::unique_ptr<GameDataSnapshot>;
-using draw_visitor_return_type = void;
+using drawer_game_data_type = std::unique_ptr<GameDataSnapshot>;
+using drawer_return_type = void;
 
 
 //
@@ -28,19 +28,19 @@ using draw_visitor_return_type = void;
 #if 0
 // begin visitor example -----------------------
 class MySceneVisitor
-    : boost::static_visitor<ompu::game::(update|draw)_visitor_return_type>
+    : boost::static_visitor<ompu::game::(updater|drawer)_return_type>
 {
 public:
     constexpr static char const* name() noexcept { return "Your friendly name"; }
 
     // this is the snapshot for 'current' iteration,
     // can be referenced (or modified) in thread-safe manner
-    void game_data(ompu::game::(update|draw)_visitor_game_data_type gd)
+    void game_data(ompu::game::(updater|drawer)_game_data_type gd)
     {
         this->gd_ = std::move(gd);
     }
 
-    ompu::game::(update|draw)_visitor_return_type
+    ompu::game::(updater|drawer)_return_type
     operator()(/* tagged by `ompu::game::scenes::*` */ const& /* discarded */) const
     {
         // your code...
@@ -68,7 +68,7 @@ public:
     // scene dispatcher continues....
 
 private:
-    ompu::game::(update|draw)_visitor_game_data_type gd_;
+    ompu::game::(updater|drawer)_game_data_type gd_;
 };
 // end visitor example -----------------------
 #endif

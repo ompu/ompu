@@ -8,8 +8,8 @@ class GameData;
 class GameDataSnapshot;
 
 #define OMPU_GAME_TEMPLATE_PARAMS \
-      class SceneUpdateVisitor \
-    , class SceneDrawVisitor
+      class Updater \
+    , class Drawer
 
 // class Game;
 
