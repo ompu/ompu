@@ -66,7 +66,26 @@ struct Bb : make_basic_tone_ident<10, mods::Flat> {};
 
 } // idents
 
+
 namespace detail {
+
+template<class Ident> struct canonical_ident;
+template<class Mod> struct canonical_ident<basic_tone_ident<0, Mod>> { using type = idents::C; };
+template<class Mod> struct canonical_ident<basic_tone_ident<1, Mod>> { using type = idents::Cs; };
+template<class Mod> struct canonical_ident<basic_tone_ident<2, Mod>> { using type = idents::D; };
+template<class Mod> struct canonical_ident<basic_tone_ident<3, Mod>> { using type = idents::Ds; };
+template<class Mod> struct canonical_ident<basic_tone_ident<4, Mod>> { using type = idents::E; };
+template<class Mod> struct canonical_ident<basic_tone_ident<5, Mod>> { using type = idents::F; };
+template<class Mod> struct canonical_ident<basic_tone_ident<6, Mod>> { using type = idents::Fs; };
+template<class Mod> struct canonical_ident<basic_tone_ident<7, Mod>> { using type = idents::G; };
+template<class Mod> struct canonical_ident<basic_tone_ident<8, Mod>> { using type = idents::Gs; };
+template<class Mod> struct canonical_ident<basic_tone_ident<9, Mod>> { using type = idents::A; };
+template<class Mod> struct canonical_ident<basic_tone_ident<10, Mod>> { using type = idents::As; };
+template<class Mod> struct canonical_ident<basic_tone_ident<11, Mod>> { using type = idents::B; };
+
+template<class Ident>
+using canonical_ident_t = typename canonical_ident<Ident>::type;
+
 
 template<class Ident> struct sharp_counter : std::integral_constant<unsigned, 0> {};
 template<unsigned Root> struct sharp_counter<make_basic_tone_ident<Root, mods::Sharp>> : std::integral_constant<unsigned, 1> {};
