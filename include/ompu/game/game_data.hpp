@@ -30,7 +30,7 @@ public:
 
     // ---
 
-    std::unique_ptr<GameDataSnapshot>
+    std::shared_ptr<GameDataSnapshot>
     async_snapshot();
 
     // ---

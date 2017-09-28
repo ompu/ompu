@@ -47,10 +47,10 @@ double GameData::fps() const
     return last_fps_;
 }
 
-std::unique_ptr<GameDataSnapshot>
+std::shared_ptr<GameDataSnapshot>
 GameData::async_snapshot()
 {
-    auto ss = std::make_unique<GameDataSnapshot>(this);
+    auto ss = std::make_shared<GameDataSnapshot>(this);
 
     in_midi_.consume_all([&ss] (auto& v) {
         ss->midi_msgs.emplace_back(v->shared_from_this());

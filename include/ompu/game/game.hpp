@@ -81,7 +81,13 @@ public:
     void start() { /* gc_.start(); */ is_running_ = true; }
     void stop() { is_running_ = false; gc_.stop(); }
 
-    std::unique_ptr<GameDataSnapshot>
+    std::shared_ptr<GameDataSnapshot>
+    async_snapshot() const
+    {
+        return gd_->async_snapshot();
+    }
+
+    std::shared_ptr<GameDataSnapshot>
     synced_update()
     {
 #if 0
@@ -100,23 +106,19 @@ public:
         // (1) update
         auto const next_scene = this->update(gd_ss.get());
 
-        // (1.1) hook scene change
-        BOOST_SCOPE_EXIT_ALL(this, next_scene)
-        {
-            if (gd_->scene_.which() != next_scene.which()) {
-                l_.note() << "prev:  '" << boost::apply_visitor(SceneNameVisitor{}, gd_->scene_) << "'" << std::endl;
-                l_.note() << "after: '" << boost::apply_visitor(SceneNameVisitor{}, next_scene) << "'" << std::endl;
-                l_.info() << "scene changed" << std::endl;
-            }
+        if (gd_->scene_.which() != next_scene.which()) {
+            l_.note() << "prev:  '" << boost::apply_visitor(SceneNameVisitor{}, gd_->scene_) << "'" << std::endl;
+            l_.note() << "after: '" << boost::apply_visitor(SceneNameVisitor{}, next_scene) << "'" << std::endl;
+            l_.info() << "scene changed" << std::endl;
+        }
 
-            gd_->scene_ = next_scene;
-        };
+        gd_->scene_ = next_scene;
 
         return gd_ss;
     }
 
     drawer_return_type
-    synced_draw(std::unique_ptr<GameDataSnapshot> gd_ss)
+    synced_draw(std::shared_ptr<GameDataSnapshot> gd_ss)
     {
         return this->draw(std::move(gd_ss));
     }

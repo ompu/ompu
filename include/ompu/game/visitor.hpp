@@ -13,7 +13,7 @@ namespace ompu { namespace game {
 using updater_game_data_type = GameDataSnapshot*;
 using updater_return_type = scenes::all_type;
 
-using drawer_game_data_type = std::unique_ptr<GameDataSnapshot>;
+using drawer_game_data_type = std::shared_ptr<GameDataSnapshot>;
 using drawer_return_type = void;
 
 
