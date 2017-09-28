@@ -9,6 +9,19 @@ Music Game for Musicians - https://ompu.io/
 Currently under **closed alpha**.  
 If you have any questions, please send an email to: support@ompu.io
 
+## Roadmap
+
+- [ ] The game
+- [ ] BPM detection
+- [ ] Key detection
+- [ ] Chord detection
+- [ ] Scale suggestion
+- [ ] Auto generation for musical scores
+- [ ] Network session (live mode)
+- [ ] Network session (session mode)
+- [ ] OSC protocol support
+- [ ] ompu hardware
+
 ## Requirements
 
 - [saya](https://github.com/saya-io/saya) ~> __latest__
@@ -34,19 +47,6 @@ Note: while ompu is fully independent from [The JUCE library](https://www.juce.c
 |---|---|
 |`NOMINMAX`|(no value)|
 |`_HAS_AUTO_PTR_ETC`|`1`|
-
-## Roadmap
-
-- [ ] The game
-- [ ] BPM detection
-- [ ] Key detection
-- [ ] Chord detection
-- [ ] Scale suggestion
-- [ ] Auto generation for musical scores
-- [ ] Network session (live mode)
-- [ ] Network session (session mode)
-- [ ] OSC protocol support
-- [ ] ompu hardware
 
 ## About
 
