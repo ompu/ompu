@@ -32,7 +32,7 @@ Note: while ompu is fully independent from [The JUCE library](https://www.juce.c
 
 |name|value|
 |---|---|
-|NOMINMAX|(no value)|
+|`NOMINMAX`|(no value)|
 |`_HAS_AUTO_PTR_ETC`|`1`|
 
 ## Roadmap
