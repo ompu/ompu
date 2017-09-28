@@ -1,7 +1,6 @@
-#include "ompu/music/blob.hpp"
+#pragma once
 
 namespace ompu { namespace music {
-
 
 
 }} // ompu

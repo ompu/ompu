@@ -6,6 +6,8 @@
 
 #include "ompu/geo/ratio.hpp"
 
+#include "saya/zed/fold.hpp"
+
 #include <boost/range/adaptor/indexed.hpp>
 #include <boost/assert.hpp>
 
@@ -153,33 +155,10 @@ using clearance_x_ratio_t = std::ratio_add<
     >
 >;
 
-
-namespace detail {
-
-template<class Kb, std::size_t OctaveI>
-struct note_name_impl;
-
-template<class Kb>
-struct note_name_impl<Kb, 0>
-{
-
-};
-
-} // detail
-
 } // keyboards
 
 template<std::size_t Octaves>
 using make_octave_sequence = std::make_index_sequence<Octaves>;
-
-
-namespace detail {
-
-template<int Ofs, std::size_t... Is>
-constexpr inline std::index_sequence<(Ofs + Is)...>
-add_offset(std::index_sequence<Is...>) { return {}; }
-
-} // detail
 
 using octave_white_key_sequence = std::index_sequence<
     0, 2, 4, 5, 7, 9, 11
@@ -191,29 +170,6 @@ using octave_black_key_sequence = std::index_sequence<
 
 namespace detail {
 
-template<class...>
-struct concat_impl;
-
-template<std::size_t... I1, std::size_t... I2, class... Rest>
-struct concat_impl<std::index_sequence<I1...>, std::index_sequence<I2...>, Rest...>
-{
-    using type = typename concat_impl<
-        std::index_sequence<I1..., I2...>, Rest...
-    >::type;
-};
-
-template<std::size_t... I1>
-struct concat_impl<std::index_sequence<I1...>>
-{
-    using type = std::index_sequence<I1...>;
-};
-
-template<class... Seqs>
-inline constexpr auto make_concat(Seqs...)
-{
-    return typename concat_impl<Seqs...>::type{};
-}
-
 template<std::size_t... LWs, std::size_t... LBs, std::size_t... HWs, std::size_t... Octave>
 inline constexpr auto make_white_key_sequence_impl(
     std::index_sequence<LWs...>,
@@ -221,9 +177,9 @@ inline constexpr auto make_white_key_sequence_impl(
     std::index_sequence<Octave...>,
     std::index_sequence<HWs...>
 ) {
-    return make_concat(
+    return saya::zed::make_seq_concat(
         std::index_sequence<LWs...>{},
-        detail::add_offset<Octave * 12 + sizeof...(LWs) + sizeof...(LBs)>(octave_white_key_sequence{})...,
+        saya::zed::make_seq_offset<Octave * 12 + sizeof...(LWs) + sizeof...(LBs)>(octave_white_key_sequence{})...,
         std::index_sequence<HWs...>{}
     );
 }
@@ -236,9 +192,9 @@ inline constexpr auto make_black_key_sequence_impl(
     std::index_sequence<HWs...>
 )
 {
-    return make_concat(
+    return saya::zed::make_seq_concat(
         std::index_sequence<LBs...>{},
-        detail::add_offset<Octave * 12 + sizeof...(LWs) + sizeof...(LBs)>(octave_black_key_sequence{})...
+        saya::zed::make_seq_offset<Octave * 12 + sizeof...(LWs) + sizeof...(LBs)>(octave_black_key_sequence{})...
     );
 }
 
