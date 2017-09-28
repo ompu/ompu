@@ -69,7 +69,7 @@ struct make_scale_impl<RootIdent, basic_scale_def<basic_tone_ident<Heights, Mods
     using root_type = RootIdent;
     using type = basic_scale<
         basic_tone<
-        basic_tone_ident<(RootIdent::value + Heights) % 12, Mods>
+            basic_tone_ident<(RootIdent::value + Heights) % 12, Mods>
         >...
     >;
 };

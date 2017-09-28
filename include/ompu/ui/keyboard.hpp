@@ -4,6 +4,8 @@
 #include "ompu/ui/key_status.hpp"
 #include "ompu/ui/synth/wheel.hpp"
 
+#include "ompu/midi/spec.hpp"
+
 #include "ompu/geo/ratio.hpp"
 
 #include "saya/zed/fold.hpp"
@@ -20,118 +22,66 @@ namespace ompu { namespace ui {
 
 namespace keyboards {
 
-template<std::size_t MIDIOfs, std::size_t I>
-static constexpr auto
-to_midi_index_v = MIDIOfs + I;
+template<class Kb, std::size_t I>
+constexpr auto
+to_midi_index_v = Kb::OffsetFromCneg1ToLowestKey + I;
 
-template<std::size_t MIDIOfs, std::size_t I>
-static constexpr auto
-key_nth_octave_v = to_midi_index_v<MIDIOfs, I> / 12;
-
-template<std::size_t MIDIOfs, std::size_t I>
-static constexpr auto
-key_octave_index_v = to_midi_index_v<MIDIOfs, I> - key_nth_octave_v<MIDIOfs, I> * 12;
-
-
-#if 0
-    key_idx = 15
-    note = D#
-    is_white = false
-    nth_octave = 1
-    octave_index = 3
-    last_white_before = 14
-    white_keys_before = 8
-
-    key_idx = 33
-    note = A
-    is_white = true
-    nth_octave = 2
-    octave_index = 9
-    last_white_before = 33
-    white_keys_before = 18
-#endif
-
-
-template<std::size_t MIDIOfs, std::size_t I>
-static constexpr auto
-key_last_white_before()
-{
-    switch (key_octave_index_v<MIDIOfs, I>) {
-    case 1: case 3: case 6: case 8: case 10:
-        return I - 1;
-
-    default:
-        return I;
-    }
-}
-
-template<std::size_t MIDIOfs, std::size_t I>
-static constexpr auto
-key_white_keys_before_v =
-    (key_nth_octave_v<MIDIOfs, I> * 7) +
-    key_octave_index_v<MIDIOfs, key_last_white_before<MIDIOfs, I>()>
-;
-
-namespace detail {
-
-template<std::size_t I> struct key_is_white_impl : std::true_type {};
-template<> struct key_is_white_impl<1> : std::false_type {};
-template<> struct key_is_white_impl<3> : std::false_type {};
-template<> struct key_is_white_impl<6> : std::false_type {};
-template<> struct key_is_white_impl<8> : std::false_type {};
-template<> struct key_is_white_impl<10> : std::false_type {};
-
-} // detail
-
-template<std::size_t I>
-constexpr auto key_is_white_v = detail::key_is_white_impl<key_octave_index_v<I>>::value;
-
+template<class Kb, std::size_t I>
+constexpr auto
+key_white_keys_before_v = midi::key_white_keys_before_v<to_midi_index_v<Kb, I>> - Kb::IgnoredWhiteKeysBeforeLowest;
 
 template<class Kb, std::size_t I>
 using white_key_x_ratio_t = std::ratio_add<
     std::ratio_multiply<
         typename Kb::white_key_ratio::w_ratio,
-        std::ratio<I, 1>
+        std::ratio<key_white_keys_before_v<Kb, I>, 1>
     >,
     std::ratio_multiply<
         typename Kb::clearance_ratio::w_ratio,
-        std::ratio<I, 1>
+        std::ratio<key_white_keys_before_v<Kb, I>, 1>
     >
 >;
 
+namespace detail {
 
-template<class Kb, std::size_t ZeroI, std::size_t RealI, class Enable = void>
-struct black_key_x_ratio;
+template<class Kb, std::size_t I, std::size_t OctaveI, class Enable = void>
+struct black_key_x_ratio_impl;
 
-template<class Kb, std::size_t ZeroI, std::size_t RealI>
-struct black_key_x_ratio<Kb, ZeroI, RealI, std::enable_if_t<ZeroI % 5 == 0 || ZeroI % 5 == 2>>
+template<class Kb, std::size_t I, std::size_t OctaveI>
+struct black_key_x_ratio_impl<Kb, I, OctaveI, std::enable_if_t<OctaveI == 1 || OctaveI == 6>>
 {
     using type = std::ratio_subtract<
-        white_key_x_ratio_t<Kb, key_white_keys_before_v<Kb::OffsetFromCneg1ToLowestKey, RealI>>,
+        white_key_x_ratio_t<Kb, I>,
         std::ratio_multiply<
             typename Kb::white_key_ratio::w_ratio,
-            std::ratio<50, 100>
+            std::ratio<40, 100>
         >
     >;
 };
 
-template<class Kb, std::size_t ZeroI, std::size_t RealI>
-struct black_key_x_ratio<Kb, ZeroI, RealI, std::enable_if_t<ZeroI % 5 == 1 || ZeroI % 5 == 4>>
+template<class Kb, std::size_t I, std::size_t OctaveI>
+struct black_key_x_ratio_impl<Kb, I, OctaveI, std::enable_if_t<OctaveI == 3 || OctaveI == 10>>
 {
     using type = std::ratio_subtract<
-        white_key_x_ratio_t<Kb, key_white_keys_before_v<Kb::OffsetFromCneg1ToLowestKey, RealI>>,
-        std::ratio_multiply<
-            typename Kb::white_key_ratio::w_ratio,
-            std::ratio<15, 100>
-        >
+        std::ratio_subtract<
+            std::ratio_add<
+                white_key_x_ratio_t<Kb, I>,
+                std::ratio_multiply<
+                    typename Kb::white_key_ratio::w_ratio,
+                    std::ratio<40, 100>
+                >
+            >,
+            typename Kb::black_key_ratio::w_ratio
+        >,
+        typename Kb::clearance_ratio::w_ratio
     >;
 };
 
-template<class Kb, std::size_t ZeroI, std::size_t RealI>
-struct black_key_x_ratio<Kb, ZeroI, RealI, std::enable_if_t<ZeroI % 5 == 3>>
+template<class Kb, std::size_t I, std::size_t OctaveI>
+struct black_key_x_ratio_impl<Kb, I, OctaveI, std::enable_if_t<OctaveI == 8>>
 {
     using type = std::ratio_subtract<
-        white_key_x_ratio_t<Kb, key_white_keys_before_v<Kb::OffsetFromCneg1ToLowestKey, RealI>>,
+        white_key_x_ratio_t<Kb, I>,
         std::ratio_multiply<
             typename Kb::black_key_ratio::w_ratio,
             std::ratio<1, 2>
@@ -139,8 +89,10 @@ struct black_key_x_ratio<Kb, ZeroI, RealI, std::enable_if_t<ZeroI % 5 == 3>>
     >;
 };
 
-template<class Kb, std::size_t ZeroI, std::size_t RealI>
-using black_key_x_ratio_t = typename black_key_x_ratio<Kb, ZeroI, RealI>::type;
+} // detail
+
+template<class Kb, std::size_t I>
+using black_key_x_ratio_t = typename detail::black_key_x_ratio_impl<Kb, I, midi::key_octave_index_v<to_midi_index_v<Kb, I>>>::type;
 
 
 template<class Kb, std::size_t I>
@@ -155,18 +107,6 @@ using clearance_x_ratio_t = std::ratio_add<
     >
 >;
 
-} // keyboards
-
-template<std::size_t Octaves>
-using make_octave_sequence = std::make_index_sequence<Octaves>;
-
-using octave_white_key_sequence = std::index_sequence<
-    0, 2, 4, 5, 7, 9, 11
->;
-
-using octave_black_key_sequence = std::index_sequence<
-    1, 3, 6, 8, 10
->;
 
 namespace detail {
 
@@ -176,10 +116,11 @@ inline constexpr auto make_white_key_sequence_impl(
     std::index_sequence<LBs...>,
     std::index_sequence<Octave...>,
     std::index_sequence<HWs...>
-) {
+)
+{
     return saya::zed::make_seq_concat(
         std::index_sequence<LWs...>{},
-        saya::zed::make_seq_offset<Octave * 12 + sizeof...(LWs) + sizeof...(LBs)>(octave_white_key_sequence{})...,
+        saya::zed::make_seq_offset<std::size_t, Octave * 12 + sizeof...(LWs)+sizeof...(LBs)>(midi::octave_white_key_sequence{})...,
         std::index_sequence<HWs...>{}
     );
 }
@@ -194,7 +135,7 @@ inline constexpr auto make_black_key_sequence_impl(
 {
     return saya::zed::make_seq_concat(
         std::index_sequence<LBs...>{},
-        saya::zed::make_seq_offset<Octave * 12 + sizeof...(LWs) + sizeof...(LBs)>(octave_black_key_sequence{})...
+        saya::zed::make_seq_offset<std::size_t, Octave * 12 + sizeof...(LWs)+sizeof...(LBs)>(midi::octave_black_key_sequence{})...
     );
 }
 
@@ -206,7 +147,7 @@ inline constexpr auto make_white_key_sequence()
     return detail::make_white_key_sequence_impl(
         Kb::lower_white_key_config_v,
         Kb::lower_black_key_config_v,
-        make_octave_sequence<Kb::Octaves>{},
+        midi::make_octave_sequence<Kb::Octaves>{},
         Kb::higher_white_key_config_v
     );
 }
@@ -217,7 +158,7 @@ inline constexpr auto make_black_key_sequence()
     return detail::make_black_key_sequence_impl(
         Kb::lower_white_key_config_v,
         Kb::lower_black_key_config_v,
-        make_octave_sequence<Kb::Octaves>{},
+        midi::make_octave_sequence<Kb::Octaves>{},
         Kb::higher_white_key_config_v
     );
 }
@@ -225,6 +166,7 @@ inline constexpr auto make_black_key_sequence()
 template<class Kb>
 using make_clearance_sequence = std::make_index_sequence<Kb::ClearanceCount>;
 
+} // keyboards
 
 // -------------------------------------------------
 
@@ -293,6 +235,12 @@ template<
 class BasicKeyboard : public Component<geo::models::Box>
 {
 public:
+    using keyboard_type = BasicKeyboard<
+        Octaves, LowerWhiteKeyConfig, LowerBlackKeyConfig, HigherWhiteKeyConfig, Keys, WhiteKeys, BlackKeys, ClearanceCount, OffsetFromCneg1ToLowestKey, KeyboardRatio, ClearanceRatio, WhiteKeyRatio, BlackKeyRatio, OctaveRatio
+    >;
+
+    using midi_spec = midi::Spec;
+
     static constexpr char const* const component_name() { return "Keyboard"; }
 
     //
@@ -311,15 +259,30 @@ public:
     static_assert(Keys >= Octaves * 12, "Keyboard must contain at least (Octaves * 12) keys");
 
     static constexpr std::size_t const OffsetFromCneg1ToLowestKey = OffsetFromCneg1ToLowestKey;
-    static_assert(OffsetFromCneg1ToLowestKey <= 127, "OffsetFromCneg1ToLowestKey <= 127; You have configured a keyboard larger than MIDI constraints!!");
+    static_assert(OffsetFromCneg1ToLowestKey <= midi_spec::NoteMax, "OffsetFromCneg1ToLowestKey <= midi_spec::NoteMax; You have configured a keyboard larger than MIDI constraints!!");
 
+    static constexpr std::size_t const LowestKeyInMIDI = OffsetFromCneg1ToLowestKey;
+    static constexpr std::size_t const HighestKeyInMIDI = LowestKeyInMIDI + Keys;
+
+    static_assert(LowestKeyInMIDI < HighestKeyInMIDI, "lowest key < highest key");
+
+    static_assert(LowestKeyInMIDI <= midi_spec::NoteMax, "lowest key should be less than midi_spec::NoteMax");
+    static_assert(HighestKeyInMIDI <= midi_spec::NoteMax, "highest key should be less than midi_spec::NoteMax");
+
+    static constexpr std::size_t const IgnoredKeysBeforeLowest = LowestKeyInMIDI;
+    static constexpr std::size_t const IgnoredWhiteKeysBeforeLowest = midi::key_white_keys_before_v<LowestKeyInMIDI>;
+    static constexpr std::size_t const IgnoredBlackKeysBeforeLowest = IgnoredKeysBeforeLowest - IgnoredWhiteKeysBeforeLowest;
+
+    static constexpr std::size_t const IgnoredKeysAfterHighest = midi_spec::NoteMax - HighestKeyInMIDI;
+    static constexpr std::size_t const IgnoredWhiteKeysAfterHighest = midi_spec::WhiteKeys - midi::key_white_keys_before_v<HighestKeyInMIDI + 1>;
+    static constexpr std::size_t const IgnoredBlackKeysAfterHighest = IgnoredKeysAfterHighest - IgnoredWhiteKeysAfterHighest;
 
     //
     // distance from the lowest key on this config to the possible lowest `C`
     // in case of A, index to C == 3
     //
     static constexpr std::size_t OffsetFromLowestKeyToC =
-        (12 - keyboards::key_octave_index_v<OffsetFromCneg1ToLowestKey, OffsetFromCneg1ToLowestKey>) % 12;
+        (12 - midi::key_octave_index_v<OffsetFromCneg1ToLowestKey>) % 12;
 
     static_assert(OffsetFromLowestKeyToC <= 11, "[BUG] auto-detection for OffsetFromLowestKeyToC failed");
 
