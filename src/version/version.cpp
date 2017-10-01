@@ -22,7 +22,16 @@
 #pragma warning(disable: 4456)
 #endif
 
-#include <boost/spirit/include/karma.hpp>
+// #include <boost/spirit/include/karma.hpp>
+#include <boost/spirit/include/karma_rule.hpp>
+#include <boost/spirit/include/karma_char.hpp>
+#include <boost/spirit/include/karma_string.hpp>
+#include <boost/spirit/include/karma_uint.hpp>
+#include <boost/spirit/include/karma_char_class.hpp>
+// #include <boost/spirit/include/karma_char.hpp>
+#include <boost/spirit/include/karma_optional.hpp>
+#include <boost/spirit/include/karma_operator.hpp>
+#include <boost/spirit/include/karma_generate.hpp>
 #pragma warning(pop)
 
 #pragma warning(pop)
