@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ompu/ompu_fwd.hpp"
-#include "ompu/midi/io.hpp"
 
 #include <iosfwd>
 
