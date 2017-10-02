@@ -3,6 +3,7 @@
 #include "ompu/music/traits.hpp"
 #include "ompu/music/key.hpp"
 #include "ompu/music/chord.hpp"
+#include "ompu/music/symbol.hpp"
 
 
 namespace ompu { namespace music {

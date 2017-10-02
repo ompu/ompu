@@ -1,56 +1,22 @@
 #pragma once
 
 #include "ompu/music/scale.hpp"
+#include "ompu/music/key_traits.hpp"
 
 #include "saya/zed/seq.hpp"
-
-#include <boost/variant/variant.hpp>
-
-#include <tuple>
 
 
 namespace ompu { namespace music {
 
-namespace key_feels {
 
-struct Major {};
-struct Minor {};
-
-} // key_feels
-
-
-template<class Ident, class KeyFeel>
-struct basic_key_traits;
-
-template<class Ident>
-struct basic_key_traits<Ident, key_feels::Major>
-{
-    using ident_type = Ident;
-    using key_feel = key_feels::Major;
-    using key_scale_type = scales::ionian<Ident>;
-
-    static constexpr bool is_major_key = true;
-    static constexpr bool is_minor_key = false;
-};
-
-template<class Ident>
-struct basic_key_traits<Ident, key_feels::Minor>
-{
-    using ident_type = Ident;
-    using key_feel = key_feels::Minor;
-    using key_scale_type = scales::aeolian<Ident>;
-
-    static constexpr bool is_major_key = false;
-    static constexpr bool is_minor_key = true;
-};
-
-template<class Ident, class KeyFeel, class Traits = basic_key_traits<Ident, KeyFeel>>
+template<class Ident, class KeyFeel, class Traits = key_traits<Ident, KeyFeel>>
 struct basic_key
 {
     using traits_type = Traits;
     using traits_type::ident_type;
     using traits_type::key_feel;
     using traits_type::key_scale_type;
+    using traits_type::key_sign_type;
 };
 
 
@@ -225,7 +191,7 @@ struct enharmonic_key<
 >
 {
     using type = basic_key<
-        make_tone_ident<
+        tone_ident_t<
             Ident::root,
             std::conditional_t<
                 Ident::sharped, mods::Flat, mods::Sharp

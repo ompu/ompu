@@ -4,23 +4,60 @@
 
 Music Game for Musicians - https://ompu.io/
 
+Repository for [ompu/ompu](https://github.com/ompu/ompu), a.k.a. __**ompu-core**__.
+
+
 ## Status
 
-Currently under **closed alpha**.  
-If you have any questions, please send an email to: support@ompu.io
+Currently under **open alpha**.  
+If you have any questions, [file an issue](https://github.com/ompu/ompu/issues) or please send an email to: support@ompu.io
 
-## Roadmap
+
+## Concepts
+
+1. Free, [open-source licensed (MIT)](LICENSE)
+2. Everything is a __**Tag object**__, which basically means:
+  1. All components (i.e. classes) are designed to be lightweight enough to instantiate for heavy runtime data structures
+3. Everything can be __**static**__,  based on compile-time type-traits
+  1. Abstract components are defined as `std::tuple<Ts...>` and/or `std::integer_sequence<T, T...>` sequences
+  2. Concrete components are defined as `boost::variant<Ts...>` sequences
+4. Everything can be __**statically dynamic**, based on compile-time __**Tag Dispatch**__
+  1. This can be achieved with __concrete components__ and `boost::static_visitor<your_return_type>`
+
+The fundamental components are:
+
+i. [Modern Music Theory & Church Mode components](https://github.com/ompu/ompu/wiki/Component-(Music)) (`ompu::music::*`)
+
+All concepts apply to every classes in this library, with some exceptions:
+
+i. Components to deal specifically with runtime I/O and graphics:
+  1. I/O related (e.g. `ompu::net::*`)
+  2. Game related (e.g. `ompu::game::*`, `ompu::geo::*`)
+ii. Components to deal with runtime data:
+  1. MIDI related (`ompu::midi::*`)
+iii. Perpetuation interfaces
+
+Also see the [ompu Wiki](https://github.com/ompu/ompu/wiki).
+
+---
+
+## Roadmap (v1)
 
 - [ ] The game
+- [ ] Basic music theory support
 - [ ] BPM detection
 - [ ] Key detection
 - [ ] Chord detection
 - [ ] Scale suggestion
+
+## Roadmap (v-future)
+
 - [ ] Auto generation for musical scores
 - [ ] Network session (live mode)
 - [ ] Network session (session mode)
 - [ ] OSC protocol support
 - [ ] ompu hardware
+
 
 ## Requirements
 
@@ -31,7 +68,17 @@ If you have any questions, please send an email to: support@ompu.io
   - Mac: Not tested; future support for clang
   - Linux: Not tested; future support for clang
 
-Note: while ompu is fully independent from [The JUCE library](https://www.juce.com/) (~> __v5.1.2__), the API is designed to play nicely with JUCE.
+
+## Compatibility information
+
+Tested with 3rd party libraries listed below:
+
+> Note: This section aims to provide some real-world usage compatibility;
+> ompu has *zero dependencies* to these libraries.
+> Please do not file ompu-related tickets to any other 3rd libraries!
+
+- [JUCE library](https://www.juce.com/) (~> __v5.1.2__)
+
 
 ## Requirements (definitions)
 
@@ -48,9 +95,16 @@ Note: while ompu is fully independent from [The JUCE library](https://www.juce.c
 |`NOMINMAX`|(no value)|
 |`_HAS_AUTO_PTR_ETC`|`1`|
 
+---
+
+## Links
+
+- ompu project home: https://ompu.io/
+- Official source code repo: https://github.com/ompu/ompu
+- ompu forum: (coming soon)
+
 ## About
 
-- Website: https://ompu.io/
+- Project page: https://ompu.io/
 - Original source: https://github.com/ompu/ompu
 - License: [MIT](LICENSE)
-
