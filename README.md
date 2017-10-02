@@ -4,7 +4,7 @@
 
 Music Game for Musicians - https://ompu.io/
 
-Repository for [ompu/ompu](https://github.com/ompu/ompu), a.k.a. __**ompu-core**__.
+Repository for [ompu/ompu](https://github.com/ompu/ompu), a.k.a. __*ompu-core*__.
 
 
 ## Status
@@ -16,26 +16,26 @@ If you have any questions, [file an issue](https://github.com/ompu/ompu/issues) 
 ## Concepts
 
 1. Free, [open-source licensed (MIT)](LICENSE)
-2. Everything is a __**Tag object**__, which basically means:
-  1. All components (i.e. classes) are designed to be lightweight enough to instantiate for heavy runtime data structures
-3. Everything can be __**static**__,  based on compile-time type-traits
-  1. Abstract components are defined as `std::tuple<Ts...>` and/or `std::integer_sequence<T, T...>` sequences
-  2. Concrete components are defined as `boost::variant<Ts...>` sequences
-4. Everything can be __**statically dynamic**, based on compile-time __**Tag Dispatch**__
-  1. This can be achieved with __concrete components__ and `boost::static_visitor<your_return_type>`
+2. Everything is a __*Tag object*__, which basically means:
+   1. All components (i.e. classes) are designed to be lightweight enough to instantiate for heavy runtime data structures
+3. Everything can be __*static*__,  based on compile-time type-traits
+   1. __*Abstract components*__ are defined as `std::tuple<Ts...>` and/or `std::integer_sequence<T, T...>` sequences
+   2. __*Concrete components*__ are defined as `boost::variant<Ts...>` sequences
+4. Everything can be __*statically dynamic*__, based on compile-time __*Tag Dispatch*__
+   1. This can be achieved with __*concrete components*__ and `boost::static_visitor<your_return_type>`
 
 The fundamental components are:
 
-i. [Modern Music Theory & Church Mode components](https://github.com/ompu/ompu/wiki/Component-(Music)) (`ompu::music::*`)
+1. [Modern Music Theory & Church Mode components](https://github.com/ompu/ompu/wiki/Component-(Music)) (`ompu::music::*`)
 
 All concepts apply to every classes in this library, with some exceptions:
 
-i. Components to deal specifically with runtime I/O and graphics:
-  1. I/O related (e.g. `ompu::net::*`)
-  2. Game related (e.g. `ompu::game::*`, `ompu::geo::*`)
-ii. Components to deal with runtime data:
-  1. MIDI related (`ompu::midi::*`)
-iii. Perpetuation interfaces
+1. Components to deal specifically with runtime I/O and graphics:
+   1. I/O related (e.g. `ompu::net::*`)
+   2. Game related (e.g. `ompu::game::*`, `ompu::geo::*`)
+2. Components to deal with runtime data:
+   1. MIDI related (`ompu::midi::*`)
+3. Perpetuation interfaces
 
 Also see the [ompu Wiki](https://github.com/ompu/ompu/wiki).
 
