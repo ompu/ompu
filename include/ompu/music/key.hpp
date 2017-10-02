@@ -2,113 +2,295 @@
 
 #include "ompu/music/scale.hpp"
 
+#include "saya/zed/seq.hpp"
+
+#include <boost/variant/variant.hpp>
+
+#include <tuple>
+
 
 namespace ompu { namespace music {
 
-namespace keys {
+namespace key_feels {
 
 struct Major {};
 struct Minor {};
 
-} // keys
+} // key_feels
 
 
-template<class RootIdent, class KeyFeel>
+template<class Ident, class KeyFeel>
 struct basic_key_traits;
 
-template<class RootIdent>
-struct basic_key_traits<RootIdent, keys::Major>
+template<class Ident>
+struct basic_key_traits<Ident, key_feels::Major>
 {
-    using root_ident_type = RootIdent;
-    using key_feel = keys::Major;
-    using key_scale_type = scales::ionian<RootIdent>;
+    using ident_type = Ident;
+    using key_feel = key_feels::Major;
+    using key_scale_type = scales::ionian<Ident>;
 
     static constexpr bool is_major_key = true;
     static constexpr bool is_minor_key = false;
 };
 
-template<class RootIdent>
-struct basic_key_traits<RootIdent, keys::Minor>
+template<class Ident>
+struct basic_key_traits<Ident, key_feels::Minor>
 {
-    using root_ident_type = RootIdent;
-    using key_feel = keys::Minor;
-    using key_scale_type = scales::aeolian<RootIdent>;
+    using ident_type = Ident;
+    using key_feel = key_feels::Minor;
+    using key_scale_type = scales::aeolian<Ident>;
 
     static constexpr bool is_major_key = false;
     static constexpr bool is_minor_key = true;
 };
 
-template<class RootIdent, class KeyFeel, class Traits = basic_key_traits<RootIdent, KeyFeel>>
+template<class Ident, class KeyFeel, class Traits = basic_key_traits<Ident, KeyFeel>>
 struct basic_key
 {
     using traits_type = Traits;
+    using traits_type::ident_type;
+    using traits_type::key_feel;
+    using traits_type::key_scale_type;
 };
+
 
 namespace keys {
 
 template<class KeyType> using C = basic_key<idents::C, KeyType>;
-using CMaj = C<keys::Major>; using Cmin = C<keys::Minor>;
+using CMaj = C<key_feels::Major>; using Cmin = C<key_feels::Minor>;
 
 template<class KeyType> using Cs = basic_key<idents::Cs, KeyType>;
-using CsMaj = Cs<keys::Major>; using Csmin = Cs<keys::Minor>;
+using CsMaj = Cs<key_feels::Major>; using Csmin = Cs<key_feels::Minor>;
 
 template<class KeyType> using Cb = basic_key<idents::Cb, KeyType>;
-using CbMaj = Cb<keys::Major>; /* using Cbmin = Cb<keys::Minor>; */
+using CbMaj = Cb<key_feels::Major>; /* using Cbmin = Cb<key_feels::Minor>; */
 
 template<class KeyType> using D = basic_key<idents::D, KeyType>;
-using DMaj = D<keys::Major>; using Dmin = D<keys::Minor>;
+using DMaj = D<key_feels::Major>; using Dmin = D<key_feels::Minor>;
 
 template<class KeyType> using Ds = basic_key<idents::Ds, KeyType>;
-/* using DsMaj = D<keys::Major>; */ using Dsmin = Ds<keys::Minor>;
+/* using DsMaj = D<key_feels::Major>; */ using Dsmin = Ds<key_feels::Minor>;
 
 template<class KeyType> using Db = basic_key<idents::Db, KeyType>;
-using DbMaj = Db<keys::Major>; /* using Dbmin = Db<keys::Minor>; */
+using DbMaj = Db<key_feels::Major>; /* using Dbmin = Db<key_feels::Minor>; */
 
 template<class KeyType> using E = basic_key<idents::E, KeyType>;
-using EMaj = E<keys::Major>; using Emin = E<keys::Minor>;
+using EMaj = E<key_feels::Major>; using Emin = E<key_feels::Minor>;
 
 //template<class KeyType> using Es = basic_key<idents::Es, KeyType>;
-//using EsMaj = E<keys::Major>; using Esmin = Es<keys::Minor>;
+//using EsMaj = E<key_feels::Major>; using Esmin = Es<key_feels::Minor>;
 
 template<class KeyType> using Eb = basic_key<idents::Eb, KeyType>;
-using EbMaj = Eb<keys::Major>; using Ebmin = Eb<keys::Minor>;
+using EbMaj = Eb<key_feels::Major>; using Ebmin = Eb<key_feels::Minor>;
 
 template<class KeyType> using F = basic_key<idents::F, KeyType>;
-using FMaj = F<keys::Major>; using Fmin = F<keys::Minor>;
+using FMaj = F<key_feels::Major>; using Fmin = F<key_feels::Minor>;
 
 template<class KeyType> using Fs = basic_key<idents::Fs, KeyType>;
-using FsMaj = Fs<keys::Major>; using Fsmin = Fs<keys::Minor>;
+using FsMaj = Fs<key_feels::Major>; using Fsmin = Fs<key_feels::Minor>;
 
 //template<class KeyType> using Fb = basic_key<idents::Fb, KeyType>;
-//using FbMaj = Fb<keys::Major>; using Fbmin = Fb<keys::Minor>;
+//using FbMaj = Fb<key_feels::Major>; using Fbmin = Fb<key_feels::Minor>;
 
 template<class KeyType> using G = basic_key<idents::G, KeyType>;
-using GMaj = G<keys::Major>; using Gmin = G<keys::Minor>;
+using GMaj = G<key_feels::Major>; using Gmin = G<key_feels::Minor>;
 
 template<class KeyType> using Gs = basic_key<idents::Gs, KeyType>;
-/* using GsMaj = G<keys::Major>; */ using Gsmin = Gs<keys::Minor>;
+/* using GsMaj = G<key_feels::Major>; */ using Gsmin = Gs<key_feels::Minor>;
 
 template<class KeyType> using Gb = basic_key<idents::Gb, KeyType>;
-using GbMaj = Gb<keys::Major>; /* using Gbmin = Gb<keys::Minor>; */
+using GbMaj = Gb<key_feels::Major>; /* using Gbmin = Gb<key_feels::Minor>; */
 
 template<class KeyType> using A = basic_key<idents::A, KeyType>;
-using AMaj = A<keys::Major>; using Amin = A<keys::Minor>;
+using AMaj = A<key_feels::Major>; using Amin = A<key_feels::Minor>;
 
 template<class KeyType> using As = basic_key<idents::As, KeyType>;
-/* using AsMaj = A<keys::Major>; */ using Asmin = As<keys::Minor>;
+/* using AsMaj = A<key_feels::Major>; */ using Asmin = As<key_feels::Minor>;
 
 template<class KeyType> using Ab = basic_key<idents::Ab, KeyType>;
-using AbMaj = Ab<keys::Major>; using Abmin = Ab<keys::Minor>;
+using AbMaj = Ab<key_feels::Major>; using Abmin = Ab<key_feels::Minor>;
 
 template<class KeyType> using B = basic_key<idents::B, KeyType>;
-using BMaj = B<keys::Major>; using Bmin = B<keys::Minor>;
+using BMaj = B<key_feels::Major>; using Bmin = B<key_feels::Minor>;
 
 //template<class KeyType> using Bs = basic_key<idents::Bs, KeyType>;
-//using BsMaj = Bs<keys::Major>; using Bsmin = Bs<keys::Minor>;
+//using BsMaj = Bs<key_feels::Major>; using Bsmin = Bs<key_feels::Minor>;
 
 template<class KeyType> using Bb = basic_key<idents::Bb, KeyType>;
-using BbMaj = Bb<keys::Major>; using Bbmin = Bb<keys::Minor>;
+using BbMaj = Bb<key_feels::Major>; using Bbmin = Bb<key_feels::Minor>;
 
 } // keys
+
+
+namespace detail {
+
+template<class KeyFeel>
+struct basic_canonical_key_mods_impl;
+
+template<>
+struct basic_canonical_key_mods_impl<key_feels::Major>
+{
+    using type = std::tuple<
+        mods::None, // C
+        mods::Flat, // Db
+        mods::None, // D
+        mods::Flat, // Eb
+        mods::None, // E
+        mods::None, // F
+        mods::Sharp, // F#
+        mods::None, // G
+        mods::Flat, // Ab
+        mods::None, // A
+        mods::Flat, // Bb
+        mods::None // B
+    >;
+};
+
+template<>
+struct basic_canonical_key_mods_impl<key_feels::Minor>
+{
+    using type = std::tuple<
+        mods::None, // Cm
+        mods::Sharp, // C#m
+        mods::None, // Dm
+        mods::Flat, // Eb
+        mods::None, // Em
+        mods::None, // Fm
+        mods::Sharp, // F#
+        mods::None, // Gm
+        mods::Sharp, // G#m
+        mods::None, // Am
+        mods::Flat, // Bb
+        mods::None // Bm
+    >;
+};
+
+template<class KeyFeel>
+using basic_canonical_key_mods_impl_t = typename basic_canonical_key_mods_impl<KeyFeel>::type;
+
+} // detail
+
+
+namespace detail {
+
+template<class Key>
+struct force_enharmonic_key;
+
+template<class Ident, class KeyFeel>
+struct force_enharmonic_key<basic_key<Ident, KeyFeel>>
+{
+    using type = basic_key<canonical_ident_t<Ident>, KeyFeel>;
+};
+
+template<class Key>
+using force_enharmonic_key_t = typename force_enharmonic_key<Key>::type;
+
+
+template<class Key>
+struct has_enharmonic_key_impl : std::false_type {};
+
+template<> struct has_enharmonic_key_impl<keys::BMaj> : std::true_type {};
+template<> struct has_enharmonic_key_impl<keys::FsMaj> : std::true_type {};
+template<> struct has_enharmonic_key_impl<keys::CsMaj> : std::true_type {};
+
+template<> struct has_enharmonic_key_impl<keys::Gsmin> : std::true_type {};
+template<> struct has_enharmonic_key_impl<keys::Dsmin> : std::true_type {};
+template<> struct has_enharmonic_key_impl<keys::Asmin> : std::true_type {};
+
+} // detail
+
+template<class Key>
+struct has_enharmonic_key
+    : std::conditional_t<
+        detail::has_enharmonic_key_impl<Key>::value ||
+        detail::has_enharmonic_key_impl<detail::force_enharmonic_key_t<Key>>::value,
+        std::true_type,
+        std::false_type
+    >
+{};
+
+template<class Key>
+constexpr bool has_enharmonic_key_v = has_enharmonic_key<Key>::value;
+
+
+template<class Key, class Enabled = void>
+struct enharmonic_key { using type = void; };
+
+template<class Ident, class KeyFeel>
+struct enharmonic_key<
+    basic_key<Ident, KeyFeel>,
+    std::enable_if_t<
+        has_enharmonic_key_v<basic_key<Ident, KeyFeel>>
+    >
+>
+{
+    using type = basic_key<
+        make_tone_ident<
+            Ident::root,
+            std::conditional_t<
+                Ident::sharped, mods::Flat, mods::Sharp
+            >
+        >,
+        KeyFeel
+    >;
+};
+
+template<class Key>
+using enharmonic_key_t = typename enharmonic_key<Key>::type;
+
+
+template<class Key, class Enabled = void>
+struct enharmonic_key_pair;
+
+template<class Key>
+struct enharmonic_key_pair<Key, std::enable_if_t<has_enharmonic_key_v<Key>>>
+{
+    using type = std::tuple<Key, enharmonic_key_t<Key>>;
+};
+
+template<class Key>
+struct enharmonic_key_pair<Key, std::enable_if_t<!has_enharmonic_key_v<Key>>>
+{
+    using type = std::tuple<Key>;
+};
+
+template<class Key>
+using enharmonic_key_pair_t = typename enharmonic_key_pair<Key>::type;
+
+
+namespace detail {
+
+template<class...>
+struct any_key_impl;
+
+template<class KeyFeel, unsigned... Roots, class... Mods>
+struct any_key_impl<KeyFeel, std::integer_sequence<unsigned, Roots...>, std::tuple<Mods...>>
+{
+    using type = boost::variant<
+        saya::zed::t_seq_concat_t<
+            enharmonic_key_pair_t<basic_key<basic_tone_ident<Roots, Mods>, KeyFeel>>...
+        >
+    >;
+};
+
+} // detail
+
+template<class... KeyFeels>
+struct any_keys_seq
+{
+    using type = saya::zed::t_seq_concat_t<
+        detail::any_key_impl<
+            KeyFeels,
+            all_heights_seq,
+            detail::basic_canonical_key_mods_impl_t<KeyFeels>
+        >...
+    >;
+};
+
+template<class... KeyFeels>
+using any_keys_seq_t = typename any_keys_seq<KeyFeels...>::type;
+
+template<class... KeyFeels>
+using any_keys_variant_t = saya::zed::t_seq_variant_t<any_keys_seq_t<KeyFeels...>>;
 
 }} // ompu

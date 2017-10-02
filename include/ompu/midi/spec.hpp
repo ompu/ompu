@@ -1,6 +1,7 @@
 #pragma once
 
 #include "saya/zed/fold.hpp"
+#include "saya/zed/seq.hpp"
 
 #include <type_traits>
 #include <utility>
@@ -96,12 +97,12 @@ template<class...>
 struct white_key_sequence_impl;
 
 template<std::size_t Octave, class Seq>
-using white_key_sequence_impl_msvc_workaround = typename saya::zed::seq_offset<std::size_t, Octave * 12, Seq>::type;
+using white_key_sequence_impl_msvc_workaround = typename saya::zed::i_seq_offset<std::size_t, Octave * 12, Seq>::type;
 
 template<std::size_t... Octaves, class WhiteKeySeq>
 struct white_key_sequence_impl<std::index_sequence<Octaves...>, WhiteKeySeq>
 {
-    using type = saya::zed::seq_concat_t<
+    using type = saya::zed::i_seq_concat_t<
         white_key_sequence_impl_msvc_workaround<Octaves, WhiteKeySeq>...
     >;
 };
@@ -137,7 +138,7 @@ public:
     static_assert(WhiteKeys == 7 * Octaves + 5, "WhiteKeys must be 75");
     static_assert(BlackKeys == 5 * Octaves + 3, "BlackKeys must be 53");
 
-    using white_key_sequence = saya::zed::seq_concat_t<
+    using white_key_sequence = saya::zed::i_seq_concat_t<
         make_white_key_sequence<Octaves>, std::index_sequence<120, 122, 124, 125, 127>
     >;
     static_assert(

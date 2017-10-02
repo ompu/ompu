@@ -13,7 +13,7 @@ template<class... Idents>
 struct basic_scale_def {};
 
 template<unsigned... Heights, class... Mods>
-using make_basic_scale_def = basic_scale_def<make_basic_tone_ident<Heights, Mods>...>;
+using make_basic_scale_def = basic_scale_def<make_tone_ident<Heights, Mods>...>;
 
 
 using ionian_scale_def = make_basic_scale_def<

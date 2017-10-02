@@ -22,9 +22,9 @@ struct make_tone_impl
 };
 
 template<unsigned Root, class Mod>
-struct make_tone_impl<make_basic_tone_ident<Root, Mod>>
+struct make_tone_impl<make_tone_ident<Root, Mod>>
 {
-    using type = basic_tone<canonical_ident_t<make_basic_tone_ident<Root, Mod>>>;
+    using type = basic_tone<canonical_ident_t<make_tone_ident<Root, Mod>>>;
 };
 
 } // detail

@@ -8,6 +8,7 @@
 
 #include "ompu/geo/ratio.hpp"
 
+#include "saya/zed/seq.hpp"
 #include "saya/zed/fold.hpp"
 
 #include <boost/range/adaptor/indexed.hpp>
@@ -118,9 +119,9 @@ inline constexpr auto make_white_key_sequence_impl(
     std::index_sequence<HWs...>
 )
 {
-    return saya::zed::make_seq_concat(
+    return saya::zed::make_i_seq_concat(
         std::index_sequence<LWs...>{},
-        saya::zed::make_seq_offset<std::size_t, Octave * 12 + sizeof...(LWs)+sizeof...(LBs)>(midi::octave_white_key_sequence{})...,
+        saya::zed::make_i_seq_offset<std::size_t, Octave * 12 + sizeof...(LWs)+sizeof...(LBs)>(midi::octave_white_key_sequence{})...,
         std::index_sequence<HWs...>{}
     );
 }
@@ -133,9 +134,9 @@ inline constexpr auto make_black_key_sequence_impl(
     std::index_sequence<HWs...>
 )
 {
-    return saya::zed::make_seq_concat(
+    return saya::zed::make_i_seq_concat(
         std::index_sequence<LBs...>{},
-        saya::zed::make_seq_offset<std::size_t, Octave * 12 + sizeof...(LWs)+sizeof...(LBs)>(midi::octave_black_key_sequence{})...
+        saya::zed::make_i_seq_offset<std::size_t, Octave * 12 + sizeof...(LWs)+sizeof...(LBs)>(midi::octave_black_key_sequence{})...
     );
 }
 

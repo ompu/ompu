@@ -6,6 +6,8 @@
 #include "ompu/game/game_data.hpp"
 #include "ompu/game/visitor.hpp"
 #include "ompu/game/event_handler.hpp"
+#include "ompu/game/session.hpp"
+#include "ompu/game/database.hpp"
 #include "ompu/game/gc.hpp"
 
 #include "saya/logger.hpp"
