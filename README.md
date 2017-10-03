@@ -64,6 +64,7 @@ Also see the [ompu Wiki](https://github.com/ompu/ompu/wiki).
 
 - [saya](https://github.com/saya-io/saya) ~> __latest__
 - [Boost C++ Libraries](http://www.boost.org/) ~> __1.65.1__
+- [Sprout](https://github.com/bolero-MURAKAMI/Sprout) ~> __latest__
 - Decent C++ compiler >= __C++17__
   - Windows: Visual Studio ~> __2017__
   - Mac: Not tested; future support for clang
