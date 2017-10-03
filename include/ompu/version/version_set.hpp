@@ -2,7 +2,7 @@
 
 #include "ompu/version/version.hpp"
 
-#include "saya/blackhole.hpp"
+#include "saya/zed/blackhole.hpp"
 
 #include <boost/variant/variant.hpp>
 #include <boost/functional/hash.hpp>
@@ -73,7 +73,7 @@ public:
     template<class Policy>
     void upgrade_from(VersionSet const& real, Policy)
     {
-        saya::blackhole(detail::version_set_upgrade_impl(
+        saya::zed::blackhole(detail::version_set_upgrade_impl(
             Policy{},
             real,
             *this,

@@ -35,7 +35,8 @@ All concepts apply to every classes in this library, with some exceptions:
    2. Game related (e.g. `ompu::game::*`, `ompu::geo::*`)
 2. Components to deal with runtime data:
    1. MIDI related (`ompu::midi::*`)
-3. Perpetuation interfaces
+3. Concrete components (e.g. `ompu::music::concretes::*`)
+4. Perpetuation interfaces
 
 Also see the [ompu Wiki](https://github.com/ompu/ompu/wiki).
 

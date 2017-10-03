@@ -1,11 +1,11 @@
 #pragma once
 
-#include "ompu/music_fwd.hpp"
+#include "ompu/music/music_fwd.hpp"
 
 
 namespace ompu { namespace music {
 
-class Song
+class basic_part
 {
 public:
 

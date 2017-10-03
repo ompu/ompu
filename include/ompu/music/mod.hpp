@@ -1,48 +1,32 @@
 #pragma once
 
-#include "ompu/music_fwd.hpp"
+#include "ompu/music/type_traits.hpp"
 
 
 namespace ompu { namespace music {
 
 namespace mods {
 
-struct None : std::integral_constant<int, 0> {};
-struct Sharp : std::integral_constant<int, 1> {};
-struct Flat : std::integral_constant<int, -1> {};
+struct none : std::integral_constant<int, 0> {};
+struct sharp : std::integral_constant<int, 1> {};
+struct flat : std::integral_constant<int, -1> {};
 
-struct DblSharp : std::integral_constant<int, 2> {};
-struct DblFlat : std::integral_constant<int, -2> {};
+struct dbl_sharp : std::integral_constant<int, 2> {};
+struct dbl_flat : std::integral_constant<int, -2> {};
 
-struct Natural : std::integral_constant<int, 0> {};
+struct natural : std::integral_constant<int, 0> {};
 
 } // mods
 
 namespace detail {
 
-template<unsigned Height, class Mod>
-struct canonical_mod_shift;
-
-template<unsigned Height>
-struct canonical_mod_shift<Height, mods::Sharp>
-    : std::conditional_t<
-        Height == 11,
-        std::integral_constant<unsigned, 0>,
-        std::integral_constant<unsigned, Height + 1>
-    >
-{};
-
-template<unsigned Height>
-struct canonical_mod_shift<Height, mods::Flat>
-    : std::conditional_t<
-        Height == 0,
-        std::integral_constant<unsigned, 11>,
-        std::integral_constant<unsigned, Height - 1>
-    >
-{};
-
-template<unsigned Height, class Mod>
-using canonical_mod_shift_t = typename canonical_mod_shift<Height, Mod>::type;
+template<class Mod> struct mod_names;
+template<> struct mod_names<mods::none> { static constexpr auto value = sprout::to_string(""); };
+template<> struct mod_names<mods::sharp> { static constexpr auto value = sprout::to_string(u8"\u266f"); };
+template<> struct mod_names<mods::flat> { static constexpr auto value = sprout::to_string(u8"\u266d"); };
+template<> struct mod_names<mods::dbl_sharp> { static constexpr auto value = mod_names<mods::sharp>::value + mod_names<mods::sharp>::value; };
+template<> struct mod_names<mods::dbl_flat> { static constexpr auto value = mod_names<mods::flat>::value + mod_names<mods::flat>::value; };
+template<> struct mod_names<mods::natural> { static constexpr auto value = sprout::to_string(u8"\u266e"); };
 
 } // detail
 

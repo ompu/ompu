@@ -1,115 +1,171 @@
 #pragma once
 
+#include "ompu/music/type_traits.hpp"
+#include "ompu/music/mod.hpp"
 #include "ompu/music/tone.hpp"
-#include "ompu/music/key_feels.hpp"
-
-#include "saya/zed/fold.hpp"
+#include "ompu/music/key_feel.hpp"
 
 
 namespace ompu { namespace music {
 
-namespace detail {
+namespace scales {
 
-template<class... Idents>
-struct basic_scale_def {};
+struct wild { static constexpr auto name = sprout::to_string("(Wild scale)"); };
 
-template<unsigned... Heights, class... Mods>
-using make_basic_scale_def = basic_scale_def<tone_ident_t<Heights, Mods>...>;
+struct canonical { static constexpr auto name = sprout::to_string("(Canonical scale on C)"); };
+
+struct ionian { static constexpr auto name = sprout::to_string("Ionian"); };
+struct dorian { static constexpr auto name = sprout::to_string("Dorian"); };
+struct phrigian { static constexpr auto name = sprout::to_string("Phrigian"); };
+struct lydian { static constexpr auto name = sprout::to_string("Lydian"); };
+struct mixolydian { static constexpr auto name = sprout::to_string("Mixolydian"); };
+struct aeolian { static constexpr auto name = sprout::to_string("Aeolian"); };
+struct locrian { static constexpr auto name = sprout::to_string("Locrian"); };
 
 
-using ionian_scale_def = make_basic_scale_def<
-    0, 2, 4, 5, 7, 9, 11,
-    mods::None, mods::None, mods::None, mods::None, mods::None, mods::None, mods::None
->;
-using dorian_scale_def = make_basic_scale_def<
-    0, 2, 3, 5, 7, 9, 10,
-    mods::None, mods::None, mods::Flat, mods::None, mods::None, mods::None, mods::Flat
->;
-using phrigian_scale_def = make_basic_scale_def<
-    0, 1, 3, 5, 7, 8, 10,
-    mods::None, mods::Flat, mods::Flat, mods::None, mods::None, mods::Flat, mods::Flat
->;
-using lydian_scale_def = make_basic_scale_def<
-    0, 2, 4, 6, 7, 9, 11,
-    mods::None, mods::None, mods::None, mods::Sharp, mods::None, mods::None, mods::None
->;
-using mixolydian_scale_def = make_basic_scale_def<
-    0, 2, 4, 5, 7, 9, 10,
-    mods::None, mods::None, mods::None, mods::None, mods::None, mods::None, mods::Flat
->;
-using aeolian_scale_def = make_basic_scale_def<
-    0, 2, 3, 5, 7, 8, 10,
-    mods::None, mods::None, mods::Flat, mods::None, mods::None, mods::Flat, mods::Flat
->;
-using locrian_scale_def = make_basic_scale_def<
-    0, 1, 3, 5, 6, 8, 10,
-    mods::None, mods::Flat, mods::Flat, mods::None, mods::Flat, mods::Flat, mods::Flat
->;
+template<class KeyFeel>
+struct natural
+{
+    using key_feel = KeyFeel;
+    static constexpr auto name = sprout::to_string("Natural ") + KeyFeel::name;
+};
+
+template<class KeyFeel>
+struct harmonic
+{
+    using key_feel = KeyFeel;
+    static constexpr auto name = sprout::to_string("Harmonic ") + KeyFeel::name;
+};
+
+template<class KeyFeel>
+struct melodic
+{
+    using key_feel = KeyFeel;
+    static constexpr auto name = sprout::to_string("Melodic ") + KeyFeel::name;
+};
 
 } // scales
 
 
-template<class... Tones>
-struct basic_scale;
-
-template<class... Idents>
-struct basic_scale<basic_tone<Idents>...>
-{
-    static constexpr unsigned tones_count = sizeof...(Idents);
-    static constexpr auto assoc_sharps = saya::zed::fold_add_v<unsigned, detail::sharp_counter<Idents>::value...>;
-    static constexpr auto assoc_flats = saya::zed::fold_add_v<unsigned, detail::flat_counter<Idents>::value...>;
-};
-
-
 namespace detail {
 
-template<class Scale, class Mod>
-struct modded_scale_in_C;
+template<class ScaledAs, class... Idents>
+struct basic_scale_def {};
 
-template<class Mod, class... Tones>
-struct modded_scale_in_C<basic_scale<Tones...>, Mod>
+template<class ScaledAs, unsigned... Heights, class... Mods>
+using pack_to_scale_def = basic_scale_def<ScaledAs, basic_ident<Heights, Mods>...>;
+
+
+template<class ScaledAs>
+struct scale_def;
+
+template<> struct scale_def<scales::ionian>
 {
-    static_assert(
-        std::is_same_v<Mod, mods::Sharp> ||
-        std::is_same_v<Mod, mods::Flat>,
-        "Mod must be either Sharp or Flat here"
-    );
-
-    using type = basic_scale<
-        resolve_tone_in_context_t<
-            Tones,
-            tone_ident_t<
-                canonical_mod_shift_t<Tones::height, Mod>::value,
-                mods::None
-            >
-        >...
+    using type = pack_to_scale_def<
+        scales::ionian,
+        0, 2, 4, 5, 7, 9, 11,
+        mods::none, mods::none, mods::none, mods::none, mods::none, mods::none, mods::none
     >;
 };
-
-template<class Scale, class Mod>
-using modded_scale_in_C_t = typename modded_scale_in_C<Scale, Mod>::type;
+template<> struct scale_def<scales::dorian>
+{
+    using type = pack_to_scale_def<
+        scales::dorian,
+        0, 2, 3, 5, 7, 9, 10,
+        mods::none, mods::none, mods::flat, mods::none, mods::none, mods::none, mods::flat
+    >;
+};
+template<> struct scale_def<scales::phrigian>
+{
+    using type = pack_to_scale_def<
+        scales::phrigian,
+        0, 1, 3, 5, 7, 8, 10,
+        mods::none, mods::flat, mods::flat, mods::none, mods::none, mods::flat, mods::flat
+    >;
+};
+template<> struct scale_def<scales::lydian>
+{
+    using type = pack_to_scale_def<
+        scales::lydian,
+        0, 2, 4, 6, 7, 9, 11,
+        mods::none, mods::none, mods::none, mods::sharp, mods::none, mods::none, mods::none
+    >;
+};
+template<> struct scale_def<scales::mixolydian>
+{
+    using type = pack_to_scale_def<
+        scales::mixolydian,
+        0, 2, 4, 5, 7, 9, 10,
+        mods::none, mods::none, mods::none, mods::none, mods::none, mods::none, mods::flat
+    >;
+};
+template<> struct scale_def<scales::aeolian>
+{
+    using type = pack_to_scale_def<
+        scales::aeolian,
+        0, 2, 3, 5, 7, 8, 10,
+        mods::none, mods::none, mods::flat, mods::none, mods::none, mods::flat, mods::flat
+    >;
+};
+template<> struct scale_def<scales::locrian>
+{
+    using type = pack_to_scale_def<
+        scales::locrian,
+        0, 1, 3, 5, 6, 8, 10,
+        mods::none, mods::flat, mods::flat, mods::none, mods::flat, mods::flat, mods::flat
+    >;
+};
+template<class ScaledAs>
+using scale_def_t = typename scale_def<ScaledAs>::type;
 
 } // detail
 
 
+template<class ScaledAs, class... Idents>
+struct basic_scale<ScaledAs, basic_tone<Idents>...>
+{
+    static constexpr unsigned tones_count = sizeof...(Idents);
+    using tones_seq = std::tuple<basic_tone<Idents>...>;
+
+    using scaled_as_type = ScaledAs;
+    static constexpr bool is_wild = std::is_same_v<scaled_as_type, scales::wild>;
+
+    using canonical_type = cvt::detail::canonical_scale_t<basic_scale>;
+    static constexpr bool is_canonical = std::is_same_v<basic_scale, canonical_type>;
+
+    static constexpr auto assoc_sharps = saya::zed::fold_add_v<unsigned, detail::sharp_counter<Idents>::value...>;
+    static constexpr auto assoc_flats = saya::zed::fold_add_v<unsigned, detail::flat_counter<Idents>::value...>;
+};
+
+template<class... Tones>
+struct wild_scale : basic_scale<scales::wild, Tones...> {};
+
+template<class... Tones>
+inline constexpr auto make_wild_scale(Tones...)
+{
+    return wild_scale<Tones...>{};
+}
+
+
 namespace detail {
 
 template<class Ident, class ScaleDef>
-struct make_scale;
+struct rooted_scale;
 
-template<class Ident, unsigned... Heights, class... Mods>
-struct make_scale<Ident, basic_scale_def<basic_tone_ident<Heights, Mods>...>>
+template<class ScaledAs, class Ident, unsigned... Heights, class... Mods>
+struct rooted_scale<Ident, basic_scale_def<ScaledAs, basic_ident<Heights, Mods>...>>
 {
     using root_type = Ident;
     using type = basic_scale<
+        ScaledAs,
         basic_tone<
-            basic_tone_ident<(Ident::value + Heights) % 12, Mods>
+            basic_ident<(Ident::height + Heights) % 12, Mods>
         >...
     >;
 };
 
 template<class Ident, class ScaleDef>
-using make_scale_t = typename make_scale<Ident, ScaleDef>::type;
+using rooted_scale_t = typename rooted_scale<Ident, ScaleDef>::type;
 
 } // detail
 
@@ -117,147 +173,119 @@ using make_scale_t = typename make_scale<Ident, ScaleDef>::type;
 namespace scales {
 
 template<class Ident>
-using ionian = detail::make_scale_t<Ident, detail::ionian_scale_def>;
+using make_ionian = detail::rooted_scale_t<Ident, detail::scale_def_t<scales::ionian>>;
 
 template<class Ident>
-using dorian = detail::make_scale_t<Ident, detail::dorian_scale_def>;
+using make_dorian = detail::rooted_scale_t<Ident, detail::scale_def_t<scales::dorian>>;
 
 template<class Ident>
-using phrigian = detail::make_scale_t<Ident, detail::phrigian_scale_def>;
+using make_phrigian = detail::rooted_scale_t<Ident, detail::scale_def_t<scales::phrigian>>;
 
 template<class Ident>
-using lydian = detail::make_scale_t<Ident, detail::lydian_scale_def>;
+using make_lydian = detail::rooted_scale_t<Ident, detail::scale_def_t<scales::lydian>>;
 
 template<class Ident>
-using mixolydian = detail::make_scale_t<Ident, detail::mixolydian_scale_def>;
+using make_mixolydian = detail::rooted_scale_t<Ident, detail::scale_def_t<scales::mixolydian>>;
 
 template<class Ident>
-using aeolian = detail::make_scale_t<Ident, detail::aeolian_scale_def>;
+using make_aeolian = detail::rooted_scale_t<Ident, detail::scale_def_t<scales::aeolian>>;
 
 template<class Ident>
-using locrian = detail::make_scale_t<Ident, detail::locrian_scale_def>;
+using make_locrian = detail::rooted_scale_t<Ident, detail::scale_def_t<scales::locrian>>;
 
 } // scales
 
 
-namespace scale_mods {
-
-struct Natural {};
-struct Harmonic {};
-struct Melodic {};
-
-} // scale_mods
-
-
-namespace detail {
-
-template<class... Scales>
-struct dynamic_scale;
-
-template<class Scale>
-struct dynamic_scale<Scale>
+template<class ScaledAs, class Scale>
+struct dynamic_scale<ScaledAs, Scale>
 {
-    using scale_type = Scale;
+    using upward_scale_type = Scale;
+    using downward_scale_type = upward_scale_type;
+
+    using scaled_as_type = ScaledAs;
     static constexpr bool is_dynamic = false;
 };
 
-template<class Upward, class Downward>
-struct dynamic_scale<Upward, Downward>
+template<class ScaledAs, class Upward, class Downward>
+struct dynamic_scale<ScaledAs, Upward, Downward>
 {
     using upward_scale_type = Upward;
     using downward_scale_type = Downward;
+
+    static_assert(
+        std::is_same_v<typename Upward::scaled_as_type, typename Downward::scaled_as_type>,
+        "dynamic_scale: Upward and Downward scales must be scaled-as same role"
+    );
+    using scaled_as_type = ScaledAs; // typename Upward::scaled_as_type;
+
     static constexpr bool is_dynamic = true;
 };
 
 
-template<bool IsGoingUp, class Scale>
-struct resolve_dynamic_scale;
-
-template<bool IsGoingUp, class Scale>
-struct resolve_dynamic_scale<IsGoingUp, dynamic_scale<Scale>>
-{
-    using type = typename dynamic_scale<Scale>::scale_type;
-};
-
-template<class Upward, class Downward>
-struct resolve_dynamic_scale<true, dynamic_scale<Upward, Downward>>
-{
-    using type = typename dynamic_scale<Upward, Downward>::upward_scale_type;
-};
-
-template<class Upward, class Downward>
-struct resolve_dynamic_scale<false, dynamic_scale<Upward, Downward>>
-{
-    using type = typename dynamic_scale<Upward, Downward>::downward_scale_type;
-};
-
-template<bool IsGoingUp, class... Scales>
-using resolve_dynamic_scale_t = typename resolve_dynamic_scale<IsGoingUp, Scales...>::type;
-
-template<class... Scales>
-using canonical_key_scale_t = typename resolve_dynamic_scale<true, Scales...>::type;
-
-} // detail
-
-
 namespace detail {
 
-template<class ScaleDef, class... ExtraMods>
+template<class ScaledAs, class ScaleDef, class... ExtraMods>
 struct modded_scale_def;
 
-template<class... Idents, class... ExtraMods>
-struct modded_scale_def<basic_scale_def<Idents...>, ExtraMods...>
+template<class ScaledAs, class OriginallyScaledAs, class... Idents, class... ExtraMods>
+struct modded_scale_def<ScaledAs, basic_scale_def<OriginallyScaledAs, Idents...>, ExtraMods...>
 {
     using type = basic_scale_def<
-        modded_ident_t<Idents, ExtraMods>...
+        ScaledAs,
+        cvt::detail::modded_ident_t<Idents, ExtraMods>...
     >;
 };
 
-template<class ScaleDef, class... ExtraMods>
-using modded_scale_def_t = typename modded_scale_def<ScaleDef, ExtraMods...>::type;
+template<class ScaledAs, class ScaleDef, class... ExtraMods>
+using modded_scale_def_t = typename modded_scale_def<ScaledAs, ScaleDef, ExtraMods...>::type;
 
 } // detail
 
 
 namespace detail {
 
-template<class Ident, class KeyFeel, class ScaleMod>
+template<class Ident, class ScaleMod>
 struct modded_scale;
 
 template<class Ident>
-struct modded_scale<Ident, key_feels::Major, scale_mods::Natural>
+struct modded_scale<Ident, scales::natural<key_feels::major>>
 {
     using type = dynamic_scale<
-        make_scale_t<Ident, ionian_scale_def>
+        scales::natural<key_feels::major>,
+        rooted_scale_t<Ident, scale_def_t<scales::ionian>>
     >;
 };
 
 template<class Ident>
-struct modded_scale<Ident, key_feels::Major, scale_mods::Harmonic>
+struct modded_scale<Ident, scales::harmonic<key_feels::major>>
 {
-    using upper_scale_type = make_scale_t<
+    using upper_scale_type = rooted_scale_t<
         Ident,
         modded_scale_def_t<
-            ionian_scale_def,
-            mods::None, mods::None, mods::None, mods::None, mods::None, mods::Flat, mods::None
+            scales::harmonic<key_feels::major>,
+            scale_def_t<scales::ionian>,
+            mods::none, mods::none, mods::none, mods::none, mods::none, mods::flat, mods::none
         >
     >;
 
     using type = dynamic_scale<
+        scales::harmonic<key_feels::major>,
         upper_scale_type, upper_scale_type
     >;
 };
 
 template<class Ident>
-struct modded_scale<Ident, key_feels::Major, scale_mods::Melodic>
+struct modded_scale<Ident, scales::melodic<key_feels::major>>
 {
     using type = dynamic_scale<
-        make_scale_t<Ident, ionian_scale_def>,
-        make_scale_t<
+        scales::melodic<key_feels::major>,
+        rooted_scale_t<Ident, scale_def_t<scales::ionian>>,
+        rooted_scale_t<
             Ident,
             modded_scale_def_t<
-                ionian_scale_def,
-                mods::None, mods::None, mods::None, mods::None, mods::None, mods::Flat, mods::Flat
+                scales::melodic<key_feels::major>,
+                scale_def_t<scales::ionian>,
+                mods::none, mods::none, mods::none, mods::none, mods::none, mods::flat, mods::flat
             >
         >
     >;
@@ -268,46 +296,51 @@ struct modded_scale<Ident, key_feels::Major, scale_mods::Melodic>
 // vvvvv Minor vvvvv
 
 template<class Ident>
-struct modded_scale<Ident, key_feels::Minor, scale_mods::Natural>
+struct modded_scale<Ident, scales::natural<key_feels::minor>>
 {
     using type = dynamic_scale<
-        make_scale_t<Ident, aeolian_scale_def>
+        scales::natural<key_feels::minor>,
+        rooted_scale_t<Ident, scale_def_t<scales::aeolian>>
     >;
 };
 
 template<class Ident>
-struct modded_scale<Ident, key_feels::Minor, scale_mods::Harmonic>
+struct modded_scale<Ident, scales::harmonic<key_feels::minor>>
 {
-    using upper_scale_type = make_scale_t<
+    using upper_scale_type = rooted_scale_t<
         Ident,
         modded_scale_def_t<
-            aeolian_scale_def,
-            mods::None, mods::None, mods::None, mods::None, mods::None, mods::Sharp, mods::None
+            scales::harmonic<key_feels::minor>,
+            scale_def_t<scales::aeolian>,
+            mods::none, mods::none, mods::none, mods::none, mods::none, mods::sharp, mods::none
         >
     >;
 
     using type = dynamic_scale<
+        scales::harmonic<key_feels::minor>,
         upper_scale_type, upper_scale_type
     >;
 };
 
 template<class Ident>
-struct modded_scale<Ident, key_feels::Minor, scale_mods::Melodic>
+struct modded_scale<Ident, scales::melodic<key_feels::minor>>
 {
     using type = dynamic_scale<
-        make_scale_t<
+        scales::melodic<key_feels::minor>,
+        rooted_scale_t<
             Ident,
             modded_scale_def_t<
-                aeolian_scale_def,
-                mods::None, mods::None, mods::None, mods::None, mods::None, mods::Sharp, mods::Sharp
+                scales::melodic<key_feels::minor>,
+                scale_def_t<scales::aeolian>,
+                mods::none, mods::none, mods::none, mods::none, mods::none, mods::sharp, mods::sharp
             >
         >,
-        make_scale_t<Ident, aeolian_scale_def>
+        rooted_scale_t<Ident, scale_def_t<scales::aeolian>>
     >;
 };
 
-template<class Ident, class KeyFeel, class ScaleMod>
-using modded_scale_t = typename modded_scale<Ident, KeyFeel, ScaleMod>::type;
+template<class Ident, class ScaleMod>
+using modded_scale_t = typename modded_scale<Ident, ScaleMod>::type;
 
 } // detail
 
@@ -315,33 +348,33 @@ using modded_scale_t = typename modded_scale<Ident, KeyFeel, ScaleMod>::type;
 namespace scales {
 
 template<class Ident, class KeyFeel>
-struct natural : detail::modded_scale_t<Ident, KeyFeel, scale_mods::Natural> {};
+using make_natural = detail::modded_scale_t<Ident, scales::natural<KeyFeel>>;
 
 template<class Ident>
-using natural_major = natural<Ident, key_feels::Major>;
+using make_natural_major = make_natural<Ident, key_feels::major>;
 
 template<class Ident>
-using natural_minor = natural<Ident, key_feels::Minor>;
+using make_natural_minor = make_natural<Ident, key_feels::minor>;
 
 
 template<class Ident, class KeyFeel>
-struct harmonic : detail::modded_scale_t<Ident, KeyFeel, scale_mods::Harmonic> {};
+using make_harmonic = detail::modded_scale_t<Ident, scales::harmonic<KeyFeel>>;
 
 template<class Ident>
-using harmonic_major = harmonic<Ident, key_feels::Major>;
+using make_harmonic_major = make_harmonic<Ident, key_feels::major>;
 
 template<class Ident>
-using harmonic_minor = harmonic<Ident, key_feels::Minor>;
+using make_harmonic_minor = make_harmonic<Ident, key_feels::minor>;
 
 
 template<class Ident, class KeyFeel>
-struct melodic : detail::modded_scale_t<Ident, KeyFeel, scale_mods::Melodic> {};
+using make_melodic = detail::modded_scale_t<Ident, scales::melodic<KeyFeel>>;
 
 template<class Ident>
-using melodic_major = melodic<Ident, key_feels::Major>;
+using make_melodic_major = make_melodic<Ident, key_feels::major>;
 
 template<class Ident>
-using melodic_minor = melodic<Ident, key_feels::Minor>;
+using make_melodic_minor = make_melodic<Ident, key_feels::minor>;
 
 } // scales
 

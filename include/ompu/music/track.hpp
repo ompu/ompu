@@ -1,6 +1,7 @@
 #pragma once
 
-#include "ompu/music/traits.hpp"
+#include "ompu/music/music_fwd.hpp"
+#include "ompu/music/music_traits.hpp"
 #include "ompu/music/key.hpp"
 #include "ompu/music/chord.hpp"
 #include "ompu/music/symbol.hpp"
