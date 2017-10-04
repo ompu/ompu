@@ -164,85 +164,85 @@ struct tone_set;
 template<class ScaledAs, class ToneSet>
 struct basic_scale;
 
-template<class ToneSet>
-struct wild_scale;
-
 template<class ScaledAs, class... Scales>
 struct dynamic_scale;
 
 template<class Ident, class KeyFeel>
+struct key_ident;
+
+template<class KeyIdent>
 struct basic_key_sign;
 
-template<class Ident, class KeyFeel>
+template<class KeyIdent>
 struct key_traits;
 
-template<class Ident, class KeyFeel>
+template<class KeyIdent>
 struct basic_key;
 
 
 namespace keys {
 
-template<class KeyFeel> using C = basic_key<idents::C, KeyFeel>;
+template<class KeyFeel> using C = basic_key<key_ident<idents::C, KeyFeel>>;
 using CMaj = C<key_feels::major>; using Cmin = C<key_feels::minor>;
 
-template<class KeyFeel> using Cs = basic_key<idents::Cs, KeyFeel>;
+template<class KeyFeel> using Cs = basic_key<key_ident<idents::Cs, KeyFeel>>;
 using CsMaj = Cs<key_feels::major>; using Csmin = Cs<key_feels::minor>;
 
-template<class KeyFeel> using Cb = basic_key<idents::Cb, KeyFeel>;
+template<class KeyFeel> using Cb = basic_key<key_ident<idents::Cb, KeyFeel>>;
 using CbMaj = Cb<key_feels::major>; /* using Cbmin = Cb<key_feels::minor>; */
 
-template<class KeyFeel> using D = basic_key<idents::D, KeyFeel>;
+template<class KeyFeel> using D = basic_key<key_ident<idents::D, KeyFeel>>;
 using DMaj = D<key_feels::major>; using Dmin = D<key_feels::minor>;
 
-template<class KeyFeel> using Ds = basic_key<idents::Ds, KeyFeel>;
+template<class KeyFeel> using Ds = basic_key<key_ident<idents::Ds, KeyFeel>>;
 /* using DsMaj = D<key_feels::major>; */ using Dsmin = Ds<key_feels::minor>;
 
-template<class KeyFeel> using Db = basic_key<idents::Db, KeyFeel>;
+template<class KeyFeel> using Db = basic_key<key_ident<idents::Db, KeyFeel>>;
 using DbMaj = Db<key_feels::major>; /* using Dbmin = Db<key_feels::minor>; */
 
-template<class KeyFeel> using E = basic_key<idents::E, KeyFeel>;
+template<class KeyFeel> using E = basic_key<key_ident<idents::E, KeyFeel>>;
 using EMaj = E<key_feels::major>; using Emin = E<key_feels::minor>;
 
-//template<class KeyFeel> using Es = basic_key<idents::Es, KeyFeel>;
+//template<class KeyFeel> using Es = basic_key<key_ident<idents::Es, KeyFeel>>;
 //using EsMaj = E<key_feels::major>; using Esmin = Es<key_feels::minor>;
 
-template<class KeyFeel> using Eb = basic_key<idents::Eb, KeyFeel>;
+template<class KeyFeel> using Eb = basic_key<key_ident<idents::Eb, KeyFeel>>;
 using EbMaj = Eb<key_feels::major>; using Ebmin = Eb<key_feels::minor>;
 
-template<class KeyFeel> using F = basic_key<idents::F, KeyFeel>;
+template<class KeyFeel> using F = basic_key<key_ident<idents::F, KeyFeel>>;
 using FMaj = F<key_feels::major>; using Fmin = F<key_feels::minor>;
 
-template<class KeyFeel> using Fs = basic_key<idents::Fs, KeyFeel>;
+template<class KeyFeel> using Fs = basic_key<key_ident<idents::Fs, KeyFeel>>;
 using FsMaj = Fs<key_feels::major>; using Fsmin = Fs<key_feels::minor>;
 
-//template<class KeyFeel> using Fb = basic_key<idents::Fb, KeyFeel>;
+//template<class KeyFeel> using Fb = basic_key<key_ident<idents::Fb, KeyFeel>>;
 //using FbMaj = Fb<key_feels::major>; using Fbmin = Fb<key_feels::minor>;
 
-template<class KeyFeel> using G = basic_key<idents::G, KeyFeel>;
+template<class KeyFeel> using G = basic_key<key_ident<idents::G, KeyFeel>>;
 using GMaj = G<key_feels::major>; using Gmin = G<key_feels::minor>;
 
-template<class KeyFeel> using Gs = basic_key<idents::Gs, KeyFeel>;
+template<class KeyFeel> using Gs = basic_key<key_ident<idents::Gs, KeyFeel>>;
 /* using GsMaj = G<key_feels::major>; */ using Gsmin = Gs<key_feels::minor>;
 
-template<class KeyFeel> using Gb = basic_key<idents::Gb, KeyFeel>;
+template<class KeyFeel> using Gb = basic_key<key_ident<idents::Gb, KeyFeel>>;
 using GbMaj = Gb<key_feels::major>; /* using Gbmin = Gb<key_feels::minor>; */
 
-template<class KeyFeel> using A = basic_key<idents::A, KeyFeel>;
+template<class KeyFeel> using A = basic_key<key_ident<idents::A, KeyFeel>>;
 using AMaj = A<key_feels::major>; using Amin = A<key_feels::minor>;
 
-template<class KeyFeel> using As = basic_key<idents::As, KeyFeel>;
+template<class KeyFeel> using As = basic_key<key_ident<idents::As, KeyFeel>>;
 /* using AsMaj = A<key_feels::major>; */ using Asmin = As<key_feels::minor>;
 
-template<class KeyFeel> using Ab = basic_key<idents::Ab, KeyFeel>;
+template<class KeyFeel> using Ab = basic_key<key_ident<idents::Ab, KeyFeel>>;
 using AbMaj = Ab<key_feels::major>; using Abmin = Ab<key_feels::minor>;
 
-template<class KeyFeel> using B = basic_key<idents::B, KeyFeel>;
+template<class KeyFeel> using B = basic_key<key_ident<idents::B, KeyFeel>>;
 using BMaj = B<key_feels::major>; using Bmin = B<key_feels::minor>;
 
-//template<class KeyFeel> using Bs = basic_key<idents::Bs, KeyFeel>;
+//template<class KeyFeel> using Bs = basic_key<key_ident<idents::Bs, KeyFeel>>;
 //using BsMaj = Bs<key_feels::major>; using Bsmin = Bs<key_feels::minor>;
 
-template<class KeyFeel> using Bb = basic_key<idents::Bb, KeyFeel>;
+template<class KeyFeel> using Bb = basic_key<key_ident<idents::Bb, KeyFeel>>;
 using BbMaj = Bb<key_feels::major>; using Bbmin = Bb<key_feels::minor>;
 
 } // keys

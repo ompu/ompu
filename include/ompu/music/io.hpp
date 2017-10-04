@@ -91,13 +91,16 @@ inline std::ostream& operator<<(std::ostream& os, Scale const& v)
 }
 
 template<class Ident, class KeyFeel>
-inline std::ostream& operator<<(std::ostream& os, basic_key<Ident, KeyFeel> const&)
+inline std::ostream& operator<<(std::ostream& os, basic_key<key_ident<Ident, KeyFeel>> const& v)
 {
-    using key_type = basic_key<Ident, KeyFeel>;
+    using key_type = basic_key<key_ident<Ident, KeyFeel>>;
+
+    (void)v;
 
     return os
         << "[Key]\n"
         << "name: " << key_type::name << "\n"
+        << "symbol: " << key_type::key_sign_type::symbol << "\n"
         << "[Key scale]\n" << typename key_type::key_scale_type{} << "\n[/Key scale]\n"
         << "[/Key]"
         //<< ompu::music::make_resolve_in_key(key_type::key_scale_type{}, key_type{})

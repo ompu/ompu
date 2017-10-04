@@ -139,6 +139,24 @@ struct add_flat<basic_ident<Height, mods::flat>>
 template<class Ident>
 using add_flat_t = typename add_flat<Ident>::type;
 
+} // cvt::detail
+
+
+template<class Mod, class AppliedMod>
+struct add_mod;
+
+template<class AppliedMod>
+struct add_mod<mods::none, AppliedMod> { using type = AppliedMod; };
+template<> struct add_mod<mods::sharp, mods::sharp> { using type = mods::dbl_sharp; };
+template<> struct add_mod<mods::sharp, mods::flat> { using type = mods::natural; };
+template<> struct add_mod<mods::flat, mods::flat> { using type = mods::dbl_flat; };
+template<> struct add_mod<mods::flat, mods::sharp> { using type = mods::natural; };
+
+template<class Mod, class AppliedMod>
+using add_mod_t = typename add_mod<Mod, AppliedMod>::type;
+
+
+namespace detail {
 
 template<class Ident, class Mod>
 struct modded_ident;
@@ -181,6 +199,7 @@ struct rooted_ident<Ident, strict_root_holder<RootIdent>>
 };
 #endif
 
+} // cvt::detail
 
 template<class Ident> struct canonical_ident;
 template<class Mod> struct canonical_ident<basic_ident<0, Mod>> { using type = idents::C; };
@@ -199,12 +218,11 @@ template<class Mod> struct canonical_ident<basic_ident<11, Mod>> { using type = 
 template<class Ident>
 using canonical_ident_t = typename canonical_ident<Ident>::type;
 
-} // cvt::detail
 
-template<ident_height_type Height, class... Ts>
-struct canonical<basic_ident<Height, Ts...>>
+template<ident_height_type Height, class Mod>
+struct canonical<basic_ident<Height, Mod>>
 {
-    using type = detail::canonical_ident_t<basic_ident<Height, Ts...>>;
+    using type = canonical_ident_t<basic_ident<Height, Mod>>;
 };
 
 
@@ -249,7 +267,7 @@ struct canonical_tone;
 template<class Ident>
 struct canonical_tone<basic_tone<Ident>>
 {
-    using type = basic_tone<canonical_t<Ident>>;
+    using type = basic_tone<canonical_ident_t<Ident>>;
 };
 template<class Tone>
 using canonical_tone_t = typename canonical_tone<Tone>::type;
@@ -296,88 +314,243 @@ struct canonical<basic_scale<Ts...>>
 };
 
 
-template<class Tone, class ResolveToTone, class Context = contexts::key>
-struct resolved_to_tone_in_context
+namespace detail {
+
+template<class HeightSet, int Offset>
+struct height_set_shift;
+
+template<ident_height_type... Heights, int Offset>
+struct height_set_shift<height_set<Heights...>, Offset>
 {
-    // Example:
-
-    // Tone = C# (1, mods::none) on C#Maj
-    // Resolve to Tone = D (2, mods::none) on CMaj
-    // Result = C# (1, mods::sharp) -- reason: upward resolution
-
-    // Tone = C# (1, mods::none) on C#Maj
-    // Resolve to Tone = C (0, mods::none) on CMaj
-    // Result = Db (1, mods::flat) -- reason: downward resolution
-
-    static_assert(
-        is_canonical_v<ResolveToTone>,
-        "resolution context tone must be a canonical tone (you can't resolve a tone to an already-shapred-or-flatted another tone)"
-    );
-
-private:
-    static constexpr auto from_height = Tone::ident_type::height;
-    static constexpr auto to_height = ResolveToTone::ident_type::height;
-
-public:
-    static_assert(
-        from_height != to_height,
-        "you can't resolve a tone to an another tone with same height"
-    );
-
-    using type = std::conditional_t<
-        from_height < to_height,
-        basic_tone<basic_ident<from_height, mods::sharp>>,
-        basic_tone<basic_ident<from_height, mods::flat>>
+    using type = height_set<
+        height_shift<Heights, Offset>::value...
     >;
 };
 
-template<class... Args>
-using resolved_to_tone_in_context_t = typename resolved_to_tone_in_context<Args...>::type;
+template<class HeightSet, int Offset>
+using height_set_shift_t = typename height_set_shift<HeightSet, Offset>::type;
+
+} // detail
+
+} // cvt
 
 
 namespace detail {
 
-template<class Scale, class Mod>
-struct force_modded_scale_in_C;
+template<ident_height_type Height, class HeightSet>
+struct is_non_modded_height_impl;
 
-template<class Mod, class... Tones>
-struct force_modded_scale_in_C<basic_scale<Tones...>, Mod>
+template<ident_height_type Height, ident_height_type... CompareToHeight>
+struct is_non_modded_height_impl<
+    Height,
+    height_set<CompareToHeight...>
+> : saya::zed::any_of<
+    saya::zed::eq,
+    saya::zed::template_<std::integral_constant<ident_height_type, Height>, saya::zed::meta_arg>,
+    std::integral_constant<ident_height_type, CompareToHeight>...
+>
+{};
+
+template<ident_height_type Height>
+struct is_non_modded_height
+    : is_non_modded_height_impl<Height, height_set<0, 2, 4, 5, 7, 9, 11>>
+{};
+
+template<ident_height_type Height>
+constexpr bool is_non_modded_height_v = is_non_modded_height<Height>::value;
+
+
+template<class HeightSet>
+struct modded_height_count;
+
+template<ident_height_type... Heights>
+struct modded_height_count<
+    height_set<Heights...>
+> : std::integral_constant<
+    std::size_t, saya::zed::fold_add_v<std::size_t, !is_non_modded_height<Heights>::value...>
+>
+{};
+
+template<class HeightSet>
+constexpr auto modded_height_count_v = modded_height_count<HeightSet>::value;
+
+} // detail
+
+
+template<class Tone, class Scale>
+struct is_off_scaled;
+
+template<class Ident, class ScaledAs, class... Tones>
+struct is_off_scaled<
+    basic_tone<Ident>, basic_scale<ScaledAs, tone_set<Tones...>>
+> : saya::zed::any_of<
+    saya::zed::eq,
+    saya::zed::template_<Ident, saya::zed::meta_arg>,
+    typename Tones::ident_type...
+>
 {
     static_assert(
-        std::is_same_v<Mod, mods::sharp> ||
-        std::is_same_v<Mod, mods::flat>,
-        "Mod must be either Sharp or Flat here"
+        !std::is_same_v<ScaledAs, scales::wild>,
+        "it does not make sense to check whether a tone is off-scaled in a wild scale"
     );
+};
 
-    using type = basic_scale<
-        resolved_to_tone_in_context_t<
-            Tones,
-            basic_ident<
-                height_shift_v<Tones::height, Mod::value>,
-                mods::none
-            >,
-            contexts::key
-        >...
+template<class Tone, class Scale>
+constexpr bool is_off_scaled_v = is_off_scaled<Tone, Scale>;
+
+
+template<class ToneSet, class CompareToScale>
+struct off_scaled_tone_count;
+
+template<class CompareToScale, class... Tones>
+struct off_scaled_tone_count<
+    tone_set<Tones...>,
+    CompareToScale
+> : std::integral_constant<std::size_t, (0 + is_off_scaled<Tones, CompareToScale>::value)...>
+{};
+
+template<class ToneSet, class CompareToScale>
+constexpr auto off_scaled_tone_count_v = off_scaled_tone_count<ToneSet, CompareToScale>::value;
+
+
+namespace cvt {
+namespace detail {
+
+template<ident_height_type Height, class Mod>
+struct mod_if_off_scaled
+{
+    using type = basic_ident<
+        Height,
+        std::conditional_t<
+            music::detail::is_non_modded_height_v<Height>,
+            mods::none,
+            Mod
+        >
+    >;
+};
+template<ident_height_type Height, class Mod>
+using mod_if_off_scaled_t = typename mod_if_off_scaled<Height, Mod>::type;
+
+} // cvt::detail
+
+} // cvt
+
+
+
+template<ident_height_type Height, class KeyFeel>
+struct key_sign_mod_count;
+
+template<ident_height_type Height>
+struct key_sign_mod_count<Height, key_feels::major>
+    : std::integral_constant<
+        std::size_t,
+        detail::modded_height_count_v<
+            cvt::detail::height_set_shift_t<
+                height_set<0, 2, 4, 5, 7, 9, 11>,
+                Height
+            >
+        >
+    >
+{};
+
+template<ident_height_type Height>
+struct key_sign_mod_count<Height, key_feels::minor>
+    : std::integral_constant<
+        std::size_t,
+        key_sign_mod_count<cvt::detail::height_shift_v<Height, -9>, key_feels::major>::value
+    >
+{};
+
+template<ident_height_type Height, class KeyFeel>
+constexpr auto key_sign_mod_count_v = key_sign_mod_count<Height, KeyFeel>::value;
+
+
+template<class KeyIdent> struct key_sign_mod;
+template<> struct key_sign_mod<key_ident<idents::C, key_feels::major>> { using type = mods::none; };
+template<> struct key_sign_mod<key_ident<idents::A, key_feels::minor>> { using type = mods::none; };
+
+template<> struct key_sign_mod<key_ident<idents::G, key_feels::major>> { using type = mods::sharp; };
+template<> struct key_sign_mod<key_ident<idents::E, key_feels::minor>> { using type = mods::sharp; };
+template<> struct key_sign_mod<key_ident<idents::D, key_feels::major>> { using type = mods::sharp; };
+template<> struct key_sign_mod<key_ident<idents::B, key_feels::minor>> { using type = mods::sharp; };
+template<> struct key_sign_mod<key_ident<idents::A, key_feels::major>> { using type = mods::sharp; };
+template<> struct key_sign_mod<key_ident<idents::Fs, key_feels::minor>> { using type = mods::sharp; };
+template<> struct key_sign_mod<key_ident<idents::E, key_feels::major>> { using type = mods::sharp; };
+template<> struct key_sign_mod<key_ident<idents::Cs, key_feels::minor>> { using type = mods::sharp; };
+template<> struct key_sign_mod<key_ident<idents::B, key_feels::major>> { using type = mods::sharp; };
+template<> struct key_sign_mod<key_ident<idents::Gs, key_feels::minor>> { using type = mods::sharp; };
+template<> struct key_sign_mod<key_ident<idents::Fs, key_feels::major>> { using type = mods::sharp; };
+template<> struct key_sign_mod<key_ident<idents::Ds, key_feels::minor>> { using type = mods::sharp; };
+template<> struct key_sign_mod<key_ident<idents::Cs, key_feels::major>> { using type = mods::sharp; };
+template<> struct key_sign_mod<key_ident<idents::As, key_feels::minor>> { using type = mods::sharp; };
+
+template<> struct key_sign_mod<key_ident<idents::F, key_feels::major>> { using type = mods::flat; };
+template<> struct key_sign_mod<key_ident<idents::D, key_feels::minor>> { using type = mods::flat; };
+template<> struct key_sign_mod<key_ident<idents::Bb, key_feels::major>> { using type = mods::flat; };
+template<> struct key_sign_mod<key_ident<idents::G, key_feels::minor>> { using type = mods::flat; };
+template<> struct key_sign_mod<key_ident<idents::Eb, key_feels::major>> { using type = mods::flat; };
+template<> struct key_sign_mod<key_ident<idents::C, key_feels::minor>> { using type = mods::flat; };
+template<> struct key_sign_mod<key_ident<idents::Ab, key_feels::major>> { using type = mods::flat; };
+template<> struct key_sign_mod<key_ident<idents::F, key_feels::minor>> { using type = mods::flat; };
+template<> struct key_sign_mod<key_ident<idents::Db, key_feels::major>> { using type = mods::flat; };
+template<> struct key_sign_mod<key_ident<idents::Bb, key_feels::minor>> { using type = mods::flat; };
+template<> struct key_sign_mod<key_ident<idents::Gb, key_feels::major>> { using type = mods::flat; };
+template<> struct key_sign_mod<key_ident<idents::Eb, key_feels::minor>> { using type = mods::flat; };
+template<> struct key_sign_mod<key_ident<idents::Cb, key_feels::major>> { using type = mods::flat; };
+template<> struct key_sign_mod<key_ident<idents::Ab, key_feels::minor>> { using type = mods::flat; };
+
+template<class KeyIdent>
+using key_sign_mod_t = typename key_sign_mod<KeyIdent>::type;
+
+
+namespace cvt {
+
+template<class KeyIdent, class Target>
+struct interpret_in_key;
+
+template<class KeyIdent, ident_height_type Height, class Mod>
+struct interpret_in_key<KeyIdent, basic_ident<Height, Mod>>
+{
+    using type = detail::mod_if_off_scaled_t<
+        detail::height_shift_v<Height, KeyIdent::ident_type::height>,
+        key_sign_mod_t<KeyIdent>
     >;
 };
 
-template<class Scale, class Mod>
-using force_modded_scale_in_C_t = typename force_modded_scale_in_C<Scale, Mod>::type;
+template<class KeyIdent, class Ident>
+struct interpret_in_key<KeyIdent, basic_tone<Ident>>
+{
+    using type = basic_tone<typename interpret_in_key<KeyIdent, Ident>::type>;
+};
 
+template<class KeyIdent, class... Tones>
+struct interpret_in_key<KeyIdent, tone_set<Tones...>>
+{
+    using type = tone_set<typename interpret_in_key<KeyIdent, Tones>::type...>;
+};
+
+template<class KeyIdent, class Target>
+using interpret_in_key_t = typename interpret_in_key<KeyIdent, Target>::type;
+
+
+} // cvt
+
+
+namespace cvt { namespace detail {
 
 template<class Key>
 struct force_enharmonic_key;
 
 template<class Ident, class KeyFeel>
-struct force_enharmonic_key<basic_key<Ident, KeyFeel>>
+struct force_enharmonic_key<basic_key<key_ident<Ident, KeyFeel>>>
 {
-    using type = basic_key<canonical_ident_t<Ident>, KeyFeel>;
+    using type = basic_key<key_ident<canonical_ident_t<Ident>, KeyFeel>>;
 };
 
 template<class Key>
 using force_enharmonic_key_t = typename force_enharmonic_key<Key>::type;
 
-} // cvt::detail
+} // detail
 
 
 template<bool IsGoingUp, class Scale>
@@ -418,36 +591,6 @@ inline /* constexpr */ auto make_resolve_dynamic_scale(Scale const&, bool const 
 template<class... Scales>
 using canonical_key_scale_t = typename resolve_dynamic_scale<true, Scales...>::type;
 
-
-namespace detail {
-
-template<class RootMod, class SharpedScale, class FlattedScale>
-struct canonical_key_mod
-{
-    using mod_type = std::conditional_t<
-        SharpedScale::assoc_sharps == 0 && FlattedScale::assoc_flats == 0,
-        mods::none,
-        std::conditional_t<
-            SharpedScale::assoc_sharps == FlattedScale::assoc_flats,
-            RootMod,
-            std::conditional_t<
-                SharpedScale::assoc_sharps < FlattedScale::assoc_flats,
-                mods::sharp,
-                mods::flat
-            >
-        >
-    >;
-
-    static constexpr auto assoc_sharps = SharpedScale::assoc_sharps;
-    static constexpr auto assoc_flats = FlattedScale::assoc_flats;
-
-    static constexpr auto assoc_lesser_mods = assoc_sharps <= assoc_flats ? assoc_sharps : assoc_flats;
-};
-
-template<class RootMod, class SharpedScale, class FlattedScale>
-using canonical_key_mod_t = typename canonical_key_mod<RootMod, SharpedScale, FlattedScale>::type;
-
-} // cvt::detail
 } // cvt
 
 
@@ -511,23 +654,25 @@ struct enharmonic_key { using type = void; };
 
 template<class Ident, class KeyFeel>
 struct enharmonic_key<
-    basic_key<Ident, KeyFeel>,
+    basic_key<key_ident<Ident, KeyFeel>>,
     std::enable_if_t<
-        has_enharmonic_key_v<basic_key<Ident, KeyFeel>>
+        has_enharmonic_key_v<basic_key<key_ident<Ident, KeyFeel>>>
     >
 >
 {
     using type = basic_key<
-        basic_ident<
-            Ident::height,
-            std::conditional_t<
-                Ident::sharped, mods::flat, mods::sharp
-            >
-        >,
-        KeyFeel
+        key_ident<
+            basic_ident<
+                Ident::height,
+                std::conditional_t<
+                    Ident::sharped, mods::flat, mods::sharp
+                >
+            >,
+            KeyFeel
+        >
     >;
 
-    static_assert(!std::is_same_v<type, basic_key<Ident, KeyFeel>>, "enharmonic key must not be the same as original key");
+    static_assert(!std::is_same_v<type, basic_key<key_ident<Ident, KeyFeel>>>, "enharmonic key must not be the same as original key");
 };
 
 template<class Key>
@@ -602,11 +747,13 @@ template<class Key>
 struct relative_key;
 
 template<class Ident, class KeyFeel>
-struct relative_key<basic_key<Ident, KeyFeel>>
+struct relative_key<basic_key<key_ident<Ident, KeyFeel>>>
 {
     using type = basic_key<
-        detail::relative_ident_t<Ident, KeyFeel>,
-        opposite_key_feel_t<KeyFeel>
+        key_ident<
+            detail::relative_ident_t<Ident, KeyFeel>,
+            opposite_key_feel_t<KeyFeel>
+        >
     >;
 };
 

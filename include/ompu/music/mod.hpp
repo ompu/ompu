@@ -7,14 +7,14 @@ namespace ompu { namespace music {
 
 namespace mods {
 
-struct none : std::integral_constant<int, 0> {};
-struct sharp : std::integral_constant<int, 1> {};
-struct flat : std::integral_constant<int, -1> {};
+struct none : std::integral_constant<int, 0> { static constexpr auto const& name = detail::symbol_names::empty; };
+struct sharp : std::integral_constant<int, 1> { static constexpr auto const& name = detail::symbol_names::sharp; };
+struct flat : std::integral_constant<int, -1> { static constexpr auto const& name = detail::symbol_names::flat; };
 
-struct dbl_sharp : std::integral_constant<int, 2> {};
-struct dbl_flat : std::integral_constant<int, -2> {};
+struct dbl_sharp : std::integral_constant<int, 2> { static constexpr auto const name = detail::symbol_names::sharp + detail::symbol_names::sharp; };
+struct dbl_flat : std::integral_constant<int, -2> { static constexpr auto const name = detail::symbol_names::flat + detail::symbol_names::flat; };
 
-struct natural : std::integral_constant<int, 0> {};
+struct natural : std::integral_constant<int, 0> { static constexpr auto const& name = detail::symbol_names::natural; };
 
 } // mods
 

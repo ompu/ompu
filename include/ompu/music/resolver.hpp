@@ -75,10 +75,10 @@ struct context_resolver<
 
 template<class Identity, class Ident, class KeyFeel>
 struct context_resolver<
-    contexts::auto_select, Identity, basic_key<Ident, KeyFeel>
+    contexts::auto_select, Identity, basic_key<key_ident<Ident, KeyFeel>>
 >
 {
-    using type = key_context_resolver_t<Identity, basic_key<Ident, KeyFeel>>;
+    using type = key_context_resolver_t<Identity, basic_key<key_ident<Ident, KeyFeel>>>;
 };
 
 template<class ContextAs, class Identity, class Context>
