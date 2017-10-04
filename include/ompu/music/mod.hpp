@@ -18,15 +18,32 @@ struct natural : std::integral_constant<int, 0> {};
 
 } // mods
 
+
+template<class... Mods>
+struct mod_set
+{
+    static_assert(
+        saya::zed::all_of_v<
+            std::is_integral,
+            saya::zed::template_<>,
+            Mods...
+        >,
+        "all mods must be an integral type"
+    );
+    static constexpr std::size_t count = sizeof...(Mods);
+};
+
+
+
 namespace detail {
 
 template<class Mod> struct mod_names;
-template<> struct mod_names<mods::none> { static constexpr auto value = sprout::to_string(""); };
-template<> struct mod_names<mods::sharp> { static constexpr auto value = sprout::to_string(u8"\u266f"); };
-template<> struct mod_names<mods::flat> { static constexpr auto value = sprout::to_string(u8"\u266d"); };
-template<> struct mod_names<mods::dbl_sharp> { static constexpr auto value = mod_names<mods::sharp>::value + mod_names<mods::sharp>::value; };
-template<> struct mod_names<mods::dbl_flat> { static constexpr auto value = mod_names<mods::flat>::value + mod_names<mods::flat>::value; };
-template<> struct mod_names<mods::natural> { static constexpr auto value = sprout::to_string(u8"\u266e"); };
+template<> struct mod_names<mods::none> { static constexpr auto const& value = symbol_names::empty; };
+template<> struct mod_names<mods::sharp> { static constexpr auto const& value = symbol_names::sharp; };
+template<> struct mod_names<mods::flat> { static constexpr auto const& value = symbol_names::flat; };
+template<> struct mod_names<mods::dbl_sharp> { static constexpr auto value = symbol_names::sharp + symbol_names::sharp; };
+template<> struct mod_names<mods::dbl_flat> { static constexpr auto value = symbol_names::flat + symbol_names::flat; };
+template<> struct mod_names<mods::natural> { static constexpr auto const& value = symbol_names::natural; };
 
 } // detail
 

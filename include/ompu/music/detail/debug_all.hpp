@@ -20,8 +20,17 @@ inline void debug_all_impl(std::ostream& os, std::index_sequence<Heights...>)
     os << SEP << "ompu::music debug output (sampled)" << SEP << std::endl;
 
     os
-        << SEP << "Major keys" << SEP
-        << music::keys::CMaj{} << std::endl
+        << SEP << "[Major keys]" << SEP
+        << music::keys::CMaj{} << SEP
+        << music::keys::CsMaj{} << SEP
+        << music::keys::DbMaj{} << SEP
+        << SEP << "[/Major keys]" << SEP
+        << SEP << "[Minor keys]" << SEP
+        << music::keys::Amin{} << SEP
+        << music::keys::Asmin{} << SEP
+        << music::keys::Bbmin{} << SEP
+        << SEP << "[/Minor keys]" << SEP
+        << std::endl
     ;
 }
 

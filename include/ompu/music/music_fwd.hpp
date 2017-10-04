@@ -10,6 +10,8 @@
 #include "sprout/string.hpp"
 #pragma warning(pop)
 
+#include "ompu/music/detail/symbol_names.hpp"
+
 
 #include <type_traits>
 #include <utility>
@@ -18,7 +20,12 @@
 namespace ompu { namespace music {
 
 using ident_height_type = unsigned;
-using all_heights_seq = std::make_integer_sequence<ident_height_type, 12>;
+
+template<ident_height_type... Heights>
+struct height_set;
+
+using all_heights_set = height_set<0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11>;
+
 
 namespace mods {
 
@@ -32,6 +39,9 @@ struct dbl_flat;
 struct natural;
 
 } // mods
+
+template<class... Mods>
+struct mod_set;
 
 
 namespace idents {
@@ -68,6 +78,53 @@ struct minor;
 } // key_feels
 
 
+template<ident_height_type Offset>
+struct basic_degree;
+
+namespace degrees {
+
+using I = basic_degree<0>;
+using bII = basic_degree<1>;
+using II = basic_degree<2>;
+using bIII = basic_degree<3>;
+using III = basic_degree<4>;
+using IV = basic_degree<5>;
+using sIV = basic_degree<6>;
+using V = basic_degree<7>;
+using bVI = basic_degree<8>;
+using VI = basic_degree<9>;
+using bVII = basic_degree<10>;
+using VII = basic_degree<11>;
+
+} // degrees
+
+
+namespace feel_mods {
+
+struct same {};
+struct opposite {};
+
+template<class FixedKeyFeel>
+struct forced_fixed { /* using fixed_type = FixedKeyFeel; */ };
+
+} // feel_mods
+
+
+template<class OriginalKeyFeel, class Degree, class FeelMod>
+struct relation;
+
+
+namespace relations {
+
+template<class KeyFeel> struct tonic;
+template<class KeyFeel> struct parallel;
+template<class KeyFeel> struct relative;
+template<class KeyFeel> struct dominant;
+template<class KeyFeel> struct sub_dominant;
+
+} // relations
+
+
 namespace scales {
 
 struct wild;
@@ -97,6 +154,9 @@ struct ident_traits;
 template<class Ident>
 struct basic_tone;
 
+template<class... Tones>
+struct tone_set;
+
 template<class ScaledAs, class... Tones>
 struct basic_scale;
 
@@ -106,8 +166,8 @@ struct wild_scale;
 template<class ScaledAs, class... Scales>
 struct dynamic_scale;
 
-template<class Ident, class KeyScale>
-struct key_sign;
+template<class Ident, class KeyFeel>
+struct basic_key_sign;
 
 template<class Ident, class KeyFeel>
 struct key_traits;

@@ -130,9 +130,6 @@ struct basic_scale<ScaledAs, basic_tone<Idents>...>
     using scaled_as_type = ScaledAs;
     static constexpr bool is_wild = std::is_same_v<scaled_as_type, scales::wild>;
 
-    using canonical_type = cvt::detail::canonical_scale_t<basic_scale>;
-    static constexpr bool is_canonical = std::is_same_v<basic_scale, canonical_type>;
-
     static constexpr auto assoc_sharps = saya::zed::fold_add_v<unsigned, detail::sharp_counter<Idents>::value...>;
     static constexpr auto assoc_flats = saya::zed::fold_add_v<unsigned, detail::flat_counter<Idents>::value...>;
 };
@@ -159,7 +156,7 @@ struct rooted_scale<Ident, basic_scale_def<ScaledAs, basic_ident<Heights, Mods>.
     using type = basic_scale<
         ScaledAs,
         basic_tone<
-            basic_ident<(Ident::height + Heights) % 12, Mods>
+            basic_ident<cvt::detail::height_shift<Ident::height, Heights>::value, mods::none /* Mods */>
         >...
     >;
 };

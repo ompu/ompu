@@ -10,13 +10,31 @@ template<class Ident>
 struct basic_tone
 {
     using ident_type = Ident;
-    using canonical_ident_type = cvt::detail::canonical_ident_t<ident_type>;
-    using canonical_tone_type = basic_tone<canonical_ident_type>;
     using mod_type = typename ident_type::mod_type;
     static constexpr auto height = ident_type::height;
 
-    static constexpr bool is_canonical = std::is_same_v<basic_tone, canonical_tone_type>;
     static constexpr auto name = ident_type::name;
+};
+
+template<class... Tones>
+struct tone_set /* never defined for an unknown type; todo: concepts */;
+
+template<class... Idents>
+struct tone_set<basic_tone<Idents>...>
+{
+    static_assert(
+        saya::zed::all_of_v<
+            saya::zed::is_true,
+            saya::zed::template_<>,
+            saya::zed::reduced_t<
+                saya::zed::less,
+                saya::zed::template_<>,
+                Idents...
+            >
+        >,
+        "all tones must be greater than previous tone"
+    );
+    static constexpr std::size_t count = sizeof...(Idents);
 };
 
 
@@ -29,7 +47,7 @@ using D = basic_tone<idents::D>;
 using Ds = basic_tone<idents::Ds>;
 using Db = basic_tone<idents::Db>;
 using E = basic_tone<idents::E>;
-//using Es = basic_tone<idents::Es>;
+using Es = basic_tone<idents::Es>;
 using Eb = basic_tone<idents::Eb>;
 using F = basic_tone<idents::F>;
 using Fs = basic_tone<idents::Fs>;
@@ -41,7 +59,7 @@ using A = basic_tone<idents::A>;
 using As = basic_tone<idents::As>;
 using Ab = basic_tone<idents::Ab>;
 using B = basic_tone<idents::B>;
-//using Bs = basic_tone<idents::Bs>;
+using Bs = basic_tone<idents::Bs>;
 using Bb = basic_tone<idents::Bb>;
 
 } // tones

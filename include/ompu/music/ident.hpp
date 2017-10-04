@@ -20,6 +20,12 @@ template<> struct ident_names<6> { static constexpr auto value = sprout::to_stri
 } // detail
 
 
+template<ident_height_type... Heights>
+struct height_set
+{
+    static constexpr std::size_t count = sizeof...(Heights);
+};
+
 template<ident_height_type Height, class Mod>
 struct ident_traits
 {
@@ -36,7 +42,7 @@ struct ident_traits
 
 
 template<ident_height_type Height, class Mod>
-struct basic_ident
+struct basic_ident : std::integral_constant<ident_height_type, Height>
 {
     static constexpr auto height = Height;
     using mod_type = Mod;
