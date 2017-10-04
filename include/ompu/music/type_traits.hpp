@@ -367,7 +367,16 @@ template<ident_height_type... Heights>
 struct modded_height_count<
     height_set<Heights...>
 > : std::integral_constant<
-    std::size_t, saya::zed::fold_add_v<std::size_t, !is_non_modded_height<Heights>::value...>
+    std::size_t,
+    saya::zed::fold_add_v<
+        std::size_t,
+        0,
+        std::conditional_t<
+            is_non_modded_height<Heights>::value,
+            std::integral_constant<std::size_t, 0>,
+            std::integral_constant<std::size_t, 1>
+        >::value...
+    >
 >
 {};
 
@@ -512,7 +521,14 @@ template<class KeyIdent, ident_height_type Height, class Mod>
 struct interpret_in_key<KeyIdent, basic_ident<Height, Mod>>
 {
     using type = detail::mod_if_off_scaled_t<
-        detail::height_shift_v<Height, KeyIdent::ident_type::height>,
+        cvt::detail::height_shift_v<
+            Height,
+            std::conditional_t<
+                std::is_same_v<typename KeyIdent::key_feel, key_feels::major>,
+                std::integral_constant<ident_height_type, KeyIdent::ident_type::height>,
+                std::integral_constant<ident_height_type, cvt::detail::height_shift_v<KeyIdent::ident_type::height, -9>>
+            >::value
+        >,
         key_sign_mod_t<KeyIdent>
     >;
 };

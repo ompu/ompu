@@ -23,12 +23,12 @@ inline void debug_all_impl(std::ostream& os, std::index_sequence<Heights...>)
         << SEP << "[Major keys]" << SEP
         << music::keys::CMaj{} << SEP
         << music::keys::CsMaj{} << SEP
-        << music::keys::DbMaj{} << SEP
+        << music::keys::FMaj{} << SEP
         << SEP << "[/Major keys]" << SEP
         << SEP << "[Minor keys]" << SEP
         << music::keys::Amin{} << SEP
         << music::keys::Asmin{} << SEP
-        << music::keys::Bbmin{} << SEP
+        << music::keys::Emin{} << SEP
         << SEP << "[/Minor keys]" << SEP
         << std::endl
     ;

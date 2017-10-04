@@ -52,16 +52,24 @@ inline std::ostream& operator<<(std::ostream& os, dynamic_scale<ScaledAs, Scales
     using upward_scale_type = typename scale_type::upward_scale_type;
     using downward_scale_type = typename scale_type::downward_scale_type;
 
-    return os
+    os
         << "[Dynamic scale]\n"
         << "scaled as: " << ScaledAs::name << "\n"
         << "is_dynamic (i.e. upward != downward): " << std::boolalpha << scale_type::is_dynamic << "\n"
-        << "[Upward scale]\n"
-        << upward_scale_type{} << "\n[/Upward scale]\n"
-        << "[Downward scale]\n"
-        << downward_scale_type{} << "\n[/Downward scale]\n"
-        << "[/Dynamic scale]"
     ;
+    if (scale_type::is_dynamic) {
+        os
+            << "[Upward scale]\n"
+            << upward_scale_type{} << "\n[/Upward scale]\n"
+            << "[Downward scale]\n"
+            << downward_scale_type{} << "\n[/Downward scale]\n"
+        ;
+    } else {
+        os
+            << upward_scale_type{} << "\n"
+        ;
+    }
+    return os << "[/Dynamic scale]";
 }
 
 template<class... Args>
@@ -91,16 +99,15 @@ inline std::ostream& operator<<(std::ostream& os, Scale const& v)
 }
 
 template<class Ident, class KeyFeel>
-inline std::ostream& operator<<(std::ostream& os, basic_key<key_ident<Ident, KeyFeel>> const& v)
+inline std::ostream& operator<<(std::ostream& os, basic_key<key_ident<Ident, KeyFeel>> const&)
 {
     using key_type = basic_key<key_ident<Ident, KeyFeel>>;
-
-    (void)v;
 
     return os
         << "[Key]\n"
         << "name: " << key_type::name << "\n"
-        << "symbol: " << key_type::key_sign_type::symbol << "\n"
+        << "key sign: " << key_type::key_sign_type::symbol << "\n"
+        << "key sign count: " << key_type::key_sign_type::assoc_mods << "\n"
         << "[Key scale]\n" << typename key_type::key_scale_type{} << "\n[/Key scale]\n"
         << "[/Key]"
         //<< ompu::music::make_resolve_in_key(key_type::key_scale_type{}, key_type{})
