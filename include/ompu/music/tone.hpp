@@ -27,13 +27,14 @@ struct tone_set<basic_tone<Idents>...>
             saya::zed::is_true,
             saya::zed::template_<>,
             saya::zed::reduced_t<
-                saya::zed::less,
+                saya::zed::not_eq,
                 saya::zed::template_<>,
                 Idents...
             >
         >,
-        "all tones must be greater than previous tone"
+        "all tones must not have the same height as the previous tone"
     );
+
     static constexpr std::size_t count = sizeof...(Idents);
 };
 

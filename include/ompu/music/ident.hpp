@@ -55,6 +55,12 @@ struct basic_ident : std::integral_constant<ident_height_type, Height>
     static_assert(Height < 12, "ident: Height height must be less than 12");
 };
 
+template<class... Idents>
+struct ident_set
+{
+    static constexpr std::size_t ident_count = sizeof...(Idents);
+};
+
 
 namespace idents {
 

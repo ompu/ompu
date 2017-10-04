@@ -16,6 +16,31 @@ namespace ompu { namespace music {
 
 namespace cvt {
 
+template<class Seq>
+struct to_tuple;
+
+template<class... Args>
+struct to_tuple<std::tuple<Args...>>
+{
+    using type = std::tuple<Args...>;
+};
+
+template<class... Idents>
+struct to_tuple<ident_set<Idents...>>
+{
+    using type = std::tuple<Idents...>;
+};
+
+template<class... Tones>
+struct to_tuple<tone_set<Tones...>>
+{
+    using type = std::tuple<Tones...>;
+};
+
+template<class Seq>
+using to_tuple_t = typename to_tuple<Seq>::type;
+
+
 template<class T, class Enabled = void>
 struct canonical;
 
@@ -248,15 +273,15 @@ template<class Scale>
 struct canonical_scale;
 
 template<class OriginallyScaledAs, class... Tones>
-struct canonical_scale<basic_scale<OriginallyScaledAs, Tones...>>
+struct canonical_scale<basic_scale<OriginallyScaledAs, tone_set<Tones...>>>
 {
     // short-circuit for originally-canonically-defined scale
     using type = std::conditional_t<
         std::is_same_v<OriginallyScaledAs, scales::canonical>,
-        basic_scale<OriginallyScaledAs, Tones...>,
+        basic_scale<OriginallyScaledAs, tone_set<Tones...>>,
         basic_scale<
             scales::canonical,
-            canonical_tone_t<Tones>...
+            tone_set<canonical_tone_t<Tones>...>
         >
     >;
 };
@@ -631,6 +656,21 @@ struct modded_feel<
 template<class KeyFeel, class FeelMod>
 using modded_feel_t = typename modded_feel<KeyFeel, FeelMod>::type;
 
+
+template<class HeightSet, class ModSet>
+struct pack_to_ident_set;
+
+template<ident_height_type... Heights, class... Mods>
+struct pack_to_ident_set<
+    height_set<Heights...>,
+    mod_set<Mods...>
+>
+{
+    using type = ident_set<basic_ident<Heights, Mods>...>;
+};
+
+template<class HeightSet, class ModSet>
+using pack_to_ident_set_t = typename pack_to_ident_set<HeightSet, ModSet>::type;
 
 } // cvt
 

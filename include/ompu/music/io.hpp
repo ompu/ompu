@@ -24,9 +24,9 @@ inline std::ostream& operator<<(std::ostream& os, std::tuple<Tones...>)
 } // tuple_print
 
 template<class ScaledAs, class... Tones>
-inline std::ostream& operator<<(std::ostream& os, basic_scale<ScaledAs, Tones...> const&)
+inline std::ostream& operator<<(std::ostream& os, basic_scale<ScaledAs, tone_set<Tones...>> const&)
 {
-    using scale_type = basic_scale<ScaledAs, Tones...>;
+    using scale_type = basic_scale<ScaledAs, tone_set<Tones...>>;
 
     os
         << "[Scale]\n"
@@ -40,7 +40,7 @@ inline std::ostream& operator<<(std::ostream& os, basic_scale<ScaledAs, Tones...
         << "\n"
         << "canonical tones (on C): "
     ;
-    tuple_print::operator<<(os, saya::zed::reversed_t<typename cvt::canonical_t<scale_type>::tones_seq>{});
+    tuple_print::operator<<(os, saya::zed::reversed_t<cvt::to_tuple_t<typename cvt::canonical_t<scale_type>::tone_set_type>>{});
 
     return os << "\n[/Scale]";
 }

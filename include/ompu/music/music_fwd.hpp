@@ -148,6 +148,10 @@ template<class KeyFeel> struct melodic;
 template<ident_height_type Height, class Mod>
 struct basic_ident;
 
+template<class... Idents>
+struct ident_set;
+
+
 template<ident_height_type Height, class Mod>
 struct ident_traits;
 
@@ -157,10 +161,10 @@ struct basic_tone;
 template<class... Tones>
 struct tone_set;
 
-template<class ScaledAs, class... Tones>
+template<class ScaledAs, class ToneSet>
 struct basic_scale;
 
-template<class... Tones>
+template<class ToneSet>
 struct wild_scale;
 
 template<class ScaledAs, class... Scales>
