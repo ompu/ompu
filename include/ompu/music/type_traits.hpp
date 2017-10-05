@@ -765,12 +765,104 @@ struct is_diatonic : std::false_type {};
 template<class Degree>
 constexpr bool is_diatonic_v = is_diatonic<Degree>::value;
 
-template<> struct is_diatonic<basic_degree<relative_tone_height<0>>> : std::true_type {};
-template<> struct is_diatonic<basic_degree<relative_tone_height<2>>> : std::true_type {};
-template<> struct is_diatonic<basic_degree<relative_tone_height<4>>> : std::true_type {};
-template<> struct is_diatonic<basic_degree<relative_tone_height<5>>> : std::true_type {};
-template<> struct is_diatonic<basic_degree<relative_tone_height<7>>> : std::true_type {};
-template<> struct is_diatonic<basic_degree<relative_tone_height<9>>> : std::true_type {};
-template<> struct is_diatonic<basic_degree<relative_tone_height<11>>> : std::true_type {};
+template<> struct is_diatonic<basic_degree<relative_height<0>>> : std::true_type {};
+template<> struct is_diatonic<basic_degree<relative_height<2>>> : std::true_type {};
+template<> struct is_diatonic<basic_degree<relative_height<4>>> : std::true_type {};
+template<> struct is_diatonic<basic_degree<relative_height<5>>> : std::true_type {};
+template<> struct is_diatonic<basic_degree<relative_height<7>>> : std::true_type {};
+template<> struct is_diatonic<basic_degree<relative_height<9>>> : std::true_type {};
+template<> struct is_diatonic<basic_degree<relative_height<11>>> : std::true_type {};
+
+
+
+template<class T>
+struct is_seventh_chord;
+
+template<class CN3, class CN5, class CN6, class CN7>
+struct is_seventh_chord<chord_fund_set<CN3, CN5, CN6, CN7>>
+    : std::conditional_t<
+        !std::is_void_v<CN7>,
+        std::true_type, std::false_type
+    >
+{};
+
+template<class FundSet, class TensionSet>
+struct is_seventh_chord<basic_chord<FundSet, TensionSet>>
+    : is_seventh_chord<FundSet>::type
+{};
+
+template<class T>
+constexpr bool is_seventh_chord_v = is_seventh_chord<T>::value;
+
+
+template<class T1, class T2 = void, class Enabled = void>
+struct is_power_chord;
+
+template<class CN3, class CN5, class CN6, class CN7, class TensionSet>
+struct is_power_chord<chord_fund_set<CN3, CN5, CN6, CN7>, TensionSet>
+    : std::conditional_t<
+        TensionSet::is_empty &&
+        std::is_void_v<CN3> && std::is_void_v<CN6> && std::is_void_v<CN7>,
+        std::true_type, std::false_type
+    >
+{};
+
+template<class FundSet, class TensionSet>
+struct is_power_chord<basic_chord<FundSet, TensionSet>>
+    : is_power_chord<FundSet, TensionSet>::type
+{};
+
+template<class T1, class T2 = void>
+constexpr bool is_power_chord_v = is_power_chord<T1, T2>::value;
+
+
+template<class T, class Enabled = void>
+struct is_minor;
+
+template<class CN3, class CN5, class CN6, class CN7>
+struct is_minor<chord_fund_set<CN3, CN5, CN6, CN7>>
+    : std::conditional_t<
+        CN3::id_type::unsafe_mod_offset == -1,
+        std::true_type, std::false_type
+>
+{
+    static_assert(is_power_chord_v<chord_fund_set<CN3, CN5, CN6, CN7>, chord_tension_set<>>, "you can't check whether a power chord is major/minor");
+};
+
+template<class FundSet, class TensionSet>
+struct is_minor<basic_chord<FundSet, TensionSet>>
+    : is_minor<FundSet>::type
+{};
+
+template<class T>
+constexpr bool is_minor_v = is_minor<T>::value;
+
+
+template<class T>
+struct is_major
+    : std::conditional_t<
+        is_minor<T>::value,
+        std::false_type,
+        std::true_type
+    >
+{};
+
+template<class T>
+constexpr bool is_major_v = is_major<T>::value;
+
+
+template<class T>
+struct is_tension;
+
+template<class ID>
+struct is_tension<basic_chord_note<ID>>
+    : std::conditional_t<ID::is_tension, std::true_type, std::false_type>
+{};
+
+template<class T>
+constexpr bool is_tension_v = is_tension<T>::value;
+
+
+
 
 }} // ompu

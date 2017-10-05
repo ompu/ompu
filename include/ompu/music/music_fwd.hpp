@@ -12,7 +12,9 @@
 
 #include "ompu/music/detail/symbol_names.hpp"
 
+#include "saya/zed/seq.hpp"
 
+#include <tuple>
 #include <type_traits>
 #include <utility>
 
@@ -22,8 +24,8 @@ namespace ompu { namespace music {
 template<unsigned Height>
 struct tone_height;
 
-template<unsigned Height>
-struct relative_tone_height;
+template<int UnsafeOffset>
+struct relative_height;
 
 template<int Offset>
 struct tone_offset;
@@ -149,18 +151,20 @@ struct basic_degree;
 
 namespace degrees {
 
-using I    = basic_degree<relative_tone_height<0>>;
-using bII  = basic_degree<relative_tone_height<1>>;
-using II   = basic_degree<relative_tone_height<2>>;
-using bIII = basic_degree<relative_tone_height<3>>;
-using III  = basic_degree<relative_tone_height<4>>;
-using IV   = basic_degree<relative_tone_height<5>>;
-using sIV  = basic_degree<relative_tone_height<6>>;
-using V    = basic_degree<relative_tone_height<7>>;
-using bVI  = basic_degree<relative_tone_height<8>>;
-using VI   = basic_degree<relative_tone_height<9>>;
-using bVII = basic_degree<relative_tone_height<10>>;
-using VII  = basic_degree<relative_tone_height<11>>;
+using I    = basic_degree<relative_height<0>>;
+using bII  = basic_degree<relative_height<1>>;
+using II   = basic_degree<relative_height<2>>;
+using bIII = basic_degree<relative_height<3>>;
+using III  = basic_degree<relative_height<4>>;
+using IV   = basic_degree<relative_height<5>>;
+using sIV  = basic_degree<relative_height<6>>;
+using V    = basic_degree<relative_height<7>>;
+using bVI  = basic_degree<relative_height<8>>;
+using VI   = basic_degree<relative_height<9>>;
+using bVII = basic_degree<relative_height<10>>;
+using VII  = basic_degree<relative_height<11>>;
+
+using diatonic_seq = std::tuple<I, II, III, IV, V, VI, VII>;
 
 } // degrees
 
@@ -296,6 +300,54 @@ template<class KeyFeel> using Bb = basic_key<key_ident<idents::Bb, KeyFeel>>;
 using BbMaj = Bb<key_feels::major>; using Bbmin = Bb<key_feels::minor>;
 
 } // keys
+
+
+template<bool IsTension, unsigned ID, int ModOffset = 0>
+struct chord_note_id;
+
+template<class ID>
+struct basic_chord_note;
+
+template<unsigned TensionID, class Mod>
+struct basic_chord_tension;
+
+
+namespace chord_notes {
+
+struct M3;
+struct m3;
+struct P5;
+struct b5;
+struct aug5;
+struct M6;
+struct m6;
+struct M7;
+struct m7;
+struct dim7;
+struct P9;
+struct s9;
+// struct b10;
+struct s11;
+struct P13;
+struct s13;
+struct b13;
+
+} // chord_notes
+
+
+template<class CN3, class CN5, class CN6, class CN7>
+struct chord_fund_set;
+
+template<class... Tensions>
+struct chord_tension_set;
+
+using no_tensions = chord_tension_set<saya::zed::void_elem>;
+
+template<class FundSet, class TensionSet>
+struct chord_traits;
+
+template<class FundSet, class TensionSet>
+struct basic_chord;
 
 
 namespace contexts {

@@ -27,14 +27,14 @@ template<class Scale, class... CompareToRoles>
 struct scale_role_fetcher<Scale, std::tuple<CompareToRoles...>>
 {
     using scaled_as_type = typename Scale::scaled_as_type;
-    using type = /* saya::zed::compact_t< */
-        saya::zed::maybe_empty_seq<
+    using type = saya::zed::compact_t<
+        std::tuple<
             std::conditional_t<
                 std::is_same_v<scaled_as_type, CompareToRoles>,
                 CompareToRoles,
-                CompareToRoles // saya::zed::void_elem
+                saya::zed::void_elem
             >...
-        /*>*/
+        >
     >;
 };
 

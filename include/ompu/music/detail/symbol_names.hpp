@@ -27,6 +27,22 @@ struct symbol_names
     static constexpr auto relative_r = to_related(relative);
 };
 
+template<unsigned N> struct number_names { static constexpr auto name = sprout::to_string("(empty-name)"); };
+// template<> struct number_names<0> { static constexpr auto name = sprout::to_string("0"); };
+// template<> struct number_names<1> { static constexpr auto name = sprout::to_string("0"); };
+// template<> struct number_names<2> { static constexpr auto name = sprout::to_string("0"); };
+// template<> struct number_names<3> { static constexpr auto name = sprout::to_string("0"); };
+// template<> struct number_names<4> { static constexpr auto name = sprout::to_string("0"); };
+template<> struct number_names<5> { static constexpr auto name = sprout::to_string("5"); };
+template<> struct number_names<6> { static constexpr auto name = sprout::to_string("6"); };
+template<> struct number_names<7> { static constexpr auto name = sprout::to_string("7"); };
+// template<> struct number_names<8> { static constexpr auto name = sprout::to_string("0"); };
+template<> struct number_names<9> { static constexpr auto name = sprout::to_string("9"); };
+template<> struct number_names<10> { static constexpr auto name = sprout::to_string("10"); };
+template<> struct number_names<11> { static constexpr auto name = sprout::to_string("11"); };
+// template<> struct number_names<12> { static constexpr auto name = sprout::to_string("0"); };
+template<> struct number_names<13> { static constexpr auto name = sprout::to_string("13"); };
+
 } // detail
 
 }} // ompu

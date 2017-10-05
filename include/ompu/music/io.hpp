@@ -12,37 +12,42 @@ namespace ompu { namespace music {
 
 namespace io_detail {
 
-namespace tuple_print {
-
-template<class... Idents>
-inline std::ostream& operator<<(std::ostream& os, std::tuple<Idents...>)
+template<class... Tones, class... Mods>
+inline std::ostream& operator<<(std::ostream& os, std::tuple<basic_ident<Tones, Mods>...>)
 {
-    saya::zed::blackhole((os << "|" << std::setw(4) << std::left << Idents{})...);
+    saya::zed::blackhole((os << "|" << std::setw(4) << std::left << basic_ident<Tones, Mods>{})...);
     return os << "|";
 }
 
-} // tuple_print
+template<class... FundSet, class... TensionSet>
+inline std::ostream& operator<<(std::ostream& os, std::tuple<basic_chord<FundSet, TensionSet>...>)
+{
+    saya::zed::blackhole((os << "|" << std::setw(6) << std::left << basic_chord<FundSet, TensionSet>{})...);
+    return os << "|";
+}
+
+template<class FundSet, class TensionSet>
+inline std::ostream& operator<<(std::ostream& os, basic_chord<FundSet, TensionSet> const&)
+{
+    using chord_type = basic_chord<FundSet, TensionSet>;
+    return os
+        << "(chord)"
+    ;
+}
 
 template<class ScaledAs, class... Idents>
 inline std::ostream& operator<<(std::ostream& os, basic_scale<ScaledAs, ident_set<Idents...>> const&)
 {
     using scale_type = basic_scale<ScaledAs, ident_set<Idents...>>;
 
-    os
+    return os
         << "[Scale]\n"
         << "originally scaled as: " << ScaledAs::name << "\n"
-        << "tones: "
-    ;
-
-    tuple_print::operator<<(os, saya::zed::reversed_t<std::tuple<Idents...>>{});
-
-    os
-        << "\n"
+        << "tones: " << saya::zed::reversed_t<std::tuple<Idents...>>{} << "\n"
         << "canonical tones (on C): "
+        << saya::zed::reversed_t<cvt::to_tuple_t<typename cvt::canonical_t<scale_type>::ident_set_type>>{}
+        << "\n[/Scale]"
     ;
-    tuple_print::operator<<(os, saya::zed::reversed_t<cvt::to_tuple_t<typename cvt::canonical_t<scale_type>::ident_set_type>>{});
-
-    return os << "\n[/Scale]";
 }
 
 template<class ScaledAs, class... Scales>
@@ -72,13 +77,6 @@ inline std::ostream& operator<<(std::ostream& os, dynamic_scale<ScaledAs, Scales
     return os << "[/Dynamic scale]";
 }
 
-template<class... Args>
-inline std::ostream& operator<<(std::ostream& os, saya::zed::maybe_empty_seq<Args...>)
-{
-    saya::zed::blackhole((os << Args{})...);
-    return os;
-}
-
 } // io_detail
 
 
@@ -103,15 +101,22 @@ inline std::ostream& operator<<(std::ostream& os, basic_key<key_ident<Ident, Key
 {
     using key_type = basic_key<key_ident<Ident, KeyFeel>>;
 
-    return os
+    os
         << "[Key]\n"
         << "name: " << key_type::name << "\n"
         << "key sign: " << key_type::key_sign_type::symbol << "\n"
-        << "key sign count: " << key_type::key_sign_type::assoc_mods << "\n"
+        << "diatonic chords: "
+    ;
+
+    io_detail::operator<<(os, typename key_type::diatonic_chords_seq{}) << "\n";
+
+    os
         << "[Key scale]\n" << typename key_type::key_scale_type{} << "\n[/Key scale]\n"
         << "[/Key]"
         //<< ompu::music::make_resolve_in_key(key_type::key_scale_type{}, key_type{})
     ;
+
+    return os;
 }
 
 }} // ompu

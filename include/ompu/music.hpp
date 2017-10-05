@@ -13,6 +13,7 @@
 #include "ompu/music/part.hpp"
 #include "ompu/music/track.hpp"
 #include "ompu/music/chord.hpp"
+#include "ompu/music/chord_classifier.hpp"
 
 // #include "ompu/music/resolver.hpp"
 // #include "ompu/music/io.hpp"
