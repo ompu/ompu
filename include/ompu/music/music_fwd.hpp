@@ -19,12 +19,65 @@
 
 namespace ompu { namespace music {
 
-using ident_height_type = unsigned;
+template<unsigned Height>
+struct tone_height;
 
-template<ident_height_type... Heights>
-struct height_set;
+template<unsigned Height>
+struct relative_tone_height;
 
-using all_heights_set = height_set<0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11>;
+template<int Offset>
+struct tone_offset;
+
+template<class ToneHeight>
+struct basic_tone;
+
+
+namespace detail {
+
+template<unsigned Height>
+using make_tone = basic_tone<tone_height<Height>>;
+
+} // detail
+
+
+namespace tones {
+
+using C  = music::detail::make_tone<0>;
+using Cs = music::detail::make_tone<1>;
+using D  = music::detail::make_tone<2>;
+using Ds = music::detail::make_tone<3>;
+using E  = music::detail::make_tone<4>;
+using F  = music::detail::make_tone<5>;
+using Fs = music::detail::make_tone<6>;
+using G  = music::detail::make_tone<7>;
+using Gs = music::detail::make_tone<8>;
+using A  = music::detail::make_tone<9>;
+using As = music::detail::make_tone<10>;
+using B  = music::detail::make_tone<11>;
+
+} // tones
+
+
+template<class... Tones>
+struct tone_set;
+
+template<class... ToneHeights>
+using make_tone_set = tone_set<basic_tone<ToneHeights>...>;
+
+namespace detail {
+
+template<unsigned ... ToneHeights>
+using make_tone_set = tone_set<basic_tone<tone_height<ToneHeights>>...>;
+
+} // detail
+
+
+using all_tones_set = tone_set<
+    tones::C, tones::Cs, tones::D, tones::Ds,
+    tones::E, tones::F, tones::Fs,
+    tones::G, tones::Gs, tones::A, tones::As,
+    tones::B
+>;
 
 
 namespace mods {
@@ -44,31 +97,43 @@ template<class... Mods>
 struct mod_set;
 
 
+
+template<class Tone, class Mod>
+struct ident_traits;
+
+template<class Tone, class Mod>
+struct basic_ident;
+
+template<class... Idents>
+struct ident_set;
+
+
 namespace idents {
 
-struct C;
-struct Cs;
-struct Cb;
-struct D;
-struct Ds;
-struct Db;
-struct E;
-struct Es;
-struct Eb;
-struct F;
-struct Fs;
-struct Fb;
-struct G;
-struct Gs;
-struct Gb;
-struct A;
-struct As;
-struct Ab;
-struct B;
-struct Bs;
-struct Bb;
+using C  = basic_ident<music::detail::make_tone<0 >, mods::none>;
+using Cs = basic_ident<music::detail::make_tone<1 >, mods::sharp>;
+using Cb = basic_ident<music::detail::make_tone<11>, mods::flat>;
+using D  = basic_ident<music::detail::make_tone<2 >, mods::none>;
+using Ds = basic_ident<music::detail::make_tone<3 >, mods::sharp>;
+using Db = basic_ident<music::detail::make_tone<1 >, mods::flat>;
+using E  = basic_ident<music::detail::make_tone<4 >, mods::none>;
+using Es = basic_ident<music::detail::make_tone<5 >, mods::sharp>;
+using Eb = basic_ident<music::detail::make_tone<3 >, mods::flat>;
+using F  = basic_ident<music::detail::make_tone<5 >, mods::none>;
+using Fs = basic_ident<music::detail::make_tone<6 >, mods::sharp>;
+using Fb = basic_ident<music::detail::make_tone<4 >, mods::flat>;
+using G  = basic_ident<music::detail::make_tone<7 >, mods::none>;
+using Gs = basic_ident<music::detail::make_tone<8 >, mods::sharp>;
+using Gb = basic_ident<music::detail::make_tone<6 >, mods::flat>;
+using A  = basic_ident<music::detail::make_tone<9 >, mods::none>;
+using As = basic_ident<music::detail::make_tone<10>, mods::sharp>;
+using Ab = basic_ident<music::detail::make_tone<8 >, mods::flat>;
+using B  = basic_ident<music::detail::make_tone<11>, mods::none>;
+using Bs = basic_ident<music::detail::make_tone<0 >, mods::sharp>;
+using Bb = basic_ident<music::detail::make_tone<10>, mods::flat>;
 
 } // idents
+
 
 namespace key_feels {
 
@@ -78,23 +143,24 @@ struct minor;
 } // key_feels
 
 
-template<ident_height_type Offset>
+template<class RelativeHeight>
 struct basic_degree;
+
 
 namespace degrees {
 
-using I = basic_degree<0>;
-using bII = basic_degree<1>;
-using II = basic_degree<2>;
-using bIII = basic_degree<3>;
-using III = basic_degree<4>;
-using IV = basic_degree<5>;
-using sIV = basic_degree<6>;
-using V = basic_degree<7>;
-using bVI = basic_degree<8>;
-using VI = basic_degree<9>;
-using bVII = basic_degree<10>;
-using VII = basic_degree<11>;
+using I    = basic_degree<relative_tone_height<0>>;
+using bII  = basic_degree<relative_tone_height<1>>;
+using II   = basic_degree<relative_tone_height<2>>;
+using bIII = basic_degree<relative_tone_height<3>>;
+using III  = basic_degree<relative_tone_height<4>>;
+using IV   = basic_degree<relative_tone_height<5>>;
+using sIV  = basic_degree<relative_tone_height<6>>;
+using V    = basic_degree<relative_tone_height<7>>;
+using bVI  = basic_degree<relative_tone_height<8>>;
+using VI   = basic_degree<relative_tone_height<9>>;
+using bVII = basic_degree<relative_tone_height<10>>;
+using VII  = basic_degree<relative_tone_height<11>>;
 
 } // degrees
 
@@ -145,23 +211,7 @@ template<class KeyFeel> struct melodic;
 } // scales
 
 
-template<ident_height_type Height, class Mod>
-struct basic_ident;
-
-template<class... Idents>
-struct ident_set;
-
-
-template<ident_height_type Height, class Mod>
-struct ident_traits;
-
-template<class Ident>
-struct basic_tone;
-
-template<class... Tones>
-struct tone_set;
-
-template<class ScaledAs, class ToneSet>
+template<class ScaledAs, class IdentSet>
 struct basic_scale;
 
 template<class ScaledAs, class... Scales>

@@ -12,8 +12,8 @@ namespace ompu { namespace music {
 
 namespace detail {
 
-template<std::size_t... Heights>
-inline void debug_all_impl(std::ostream& os, std::index_sequence<Heights...>)
+template<std::size_t... ToneHeights>
+inline void debug_all_impl(std::ostream& os, std::index_sequence<ToneHeights...>)
 {
     static std::string const SEP = "\n--------------------------------------\n";
 

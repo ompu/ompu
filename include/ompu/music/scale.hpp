@@ -49,10 +49,10 @@ struct melodic
 
 
 template<class ScaledAs, class... Idents>
-struct basic_scale<ScaledAs, tone_set<basic_tone<Idents>...>>
+struct basic_scale<ScaledAs, ident_set<Idents...>>
 {
     static constexpr unsigned tones_count = sizeof...(Idents);
-    using tone_set_type = tone_set<basic_tone<Idents>...>;
+    using ident_set_type = ident_set<Idents...>;
 
     using scaled_as_type = ScaledAs;
     static constexpr bool is_wild = std::is_same_v<scaled_as_type, scales::wild>;

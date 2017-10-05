@@ -14,8 +14,8 @@ namespace detail {
 template<class...>
 struct any_key_impl;
 
-template<class KeyFeel, ident_height_type... Roots, class... Mods>
-struct any_key_impl<KeyFeel, std::integer_sequence<ident_height_type, Roots...>, std::tuple<Mods...>>
+template<class KeyFeel, tone_height_type... Roots, class... Mods>
+struct any_key_impl<KeyFeel, std::integer_sequence<tone_height_type, Roots...>, std::tuple<Mods...>>
 {
     using type = boost::variant<
         saya::zed::t_seq_concat_t<

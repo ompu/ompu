@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ompu/music/tone_types.hpp"
 #include "ompu/music/type_traits.hpp"
 
 
@@ -7,14 +8,44 @@ namespace ompu { namespace music {
 
 namespace mods {
 
-struct none : std::integral_constant<int, 0> { static constexpr auto const& name = detail::symbol_names::empty; };
-struct sharp : std::integral_constant<int, 1> { static constexpr auto const& name = detail::symbol_names::sharp; };
-struct flat : std::integral_constant<int, -1> { static constexpr auto const& name = detail::symbol_names::flat; };
+struct none
+{
+    using offset_type = tone_offset<0>;
+    static constexpr auto offset = offset_type::value;
+    static constexpr auto const& name = detail::symbol_names::empty;
+};
+struct sharp
+{
+    using offset_type = tone_offset<1>;
+    static constexpr auto offset = offset_type::value;
+    static constexpr auto const& name = detail::symbol_names::sharp;
+};
+struct flat
+{
+    using offset_type = tone_offset<-1>;
+    static constexpr auto offset = offset_type::value;
+    static constexpr auto const& name = detail::symbol_names::flat;
+};
 
-struct dbl_sharp : std::integral_constant<int, 2> { static constexpr auto const name = detail::symbol_names::sharp + detail::symbol_names::sharp; };
-struct dbl_flat : std::integral_constant<int, -2> { static constexpr auto const name = detail::symbol_names::flat + detail::symbol_names::flat; };
+struct dbl_sharp
+{
+    using offset_type = tone_offset<2>;
+    static constexpr auto offset = offset_type::value;
+    static constexpr auto const name = detail::symbol_names::sharp + detail::symbol_names::sharp;
+};
+struct dbl_flat
+{
+    using offset_type = tone_offset<-2>;
+    static constexpr auto offset = offset_type::value;
+    static constexpr auto const name = detail::symbol_names::flat + detail::symbol_names::flat;
+};
 
-struct natural : std::integral_constant<int, 0> { static constexpr auto const& name = detail::symbol_names::natural; };
+struct natural
+{
+    using offset_type = tone_offset<0>;
+    static constexpr auto offset = offset_type::value;
+    static constexpr auto const& name = detail::symbol_names::natural;
+};
 
 } // mods
 
@@ -26,9 +57,9 @@ struct mod_set
         saya::zed::all_of_v<
             std::is_integral,
             saya::zed::template_<>,
-            Mods...
+            typename Mods::offset_type...
         >,
-        "all mods must be an integral type"
+        "all mods must have an integral offset_type"
     );
     static constexpr std::size_t count = sizeof...(Mods);
 };

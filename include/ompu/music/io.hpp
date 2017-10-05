@@ -14,19 +14,19 @@ namespace io_detail {
 
 namespace tuple_print {
 
-template<class... Tones>
-inline std::ostream& operator<<(std::ostream& os, std::tuple<Tones...>)
+template<class... Idents>
+inline std::ostream& operator<<(std::ostream& os, std::tuple<Idents...>)
 {
-    saya::zed::blackhole((os << "|" << std::setw(4) << std::left << Tones{})...);
+    saya::zed::blackhole((os << "|" << std::setw(4) << std::left << Idents{})...);
     return os << "|";
 }
 
 } // tuple_print
 
-template<class ScaledAs, class... Tones>
-inline std::ostream& operator<<(std::ostream& os, basic_scale<ScaledAs, tone_set<Tones...>> const&)
+template<class ScaledAs, class... Idents>
+inline std::ostream& operator<<(std::ostream& os, basic_scale<ScaledAs, ident_set<Idents...>> const&)
 {
-    using scale_type = basic_scale<ScaledAs, tone_set<Tones...>>;
+    using scale_type = basic_scale<ScaledAs, ident_set<Idents...>>;
 
     os
         << "[Scale]\n"
@@ -34,13 +34,13 @@ inline std::ostream& operator<<(std::ostream& os, basic_scale<ScaledAs, tone_set
         << "tones: "
     ;
 
-    tuple_print::operator<<(os, saya::zed::reversed_t<std::tuple<Tones...>>{});
+    tuple_print::operator<<(os, saya::zed::reversed_t<std::tuple<Idents...>>{});
 
     os
         << "\n"
         << "canonical tones (on C): "
     ;
-    tuple_print::operator<<(os, saya::zed::reversed_t<cvt::to_tuple_t<typename cvt::canonical_t<scale_type>::tone_set_type>>{});
+    tuple_print::operator<<(os, saya::zed::reversed_t<cvt::to_tuple_t<typename cvt::canonical_t<scale_type>::ident_set_type>>{});
 
     return os << "\n[/Scale]";
 }
@@ -85,11 +85,11 @@ inline std::ostream& operator<<(std::ostream& os, saya::zed::maybe_empty_seq<Arg
 template<class Identity, class Enabled = std::enable_if_t<false, int>>
 std::ostream& operator<<(std::ostream& os, Identity const&);
 
-template<class Ident>
-inline std::ostream& operator<<(std::ostream& os, basic_tone<Ident> const&)
+template<class Tone, class Mod>
+inline std::ostream& operator<<(std::ostream& os, basic_ident<Tone, Mod> const&)
 {
-    using tone_type = basic_tone<Ident>;
-    return os << tone_type::name;
+    using ident_type = basic_ident<Tone, Mod>;
+    return os << ident_type::name;
 }
 
 template<class Scale, std::enable_if_t<is_scale_v<Scale>, int> = 0>

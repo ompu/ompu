@@ -24,6 +24,7 @@ struct basic_key
         scales::melodic<key_feel>
     >;
 
+    static constexpr auto height = ident_type::height;
     static constexpr auto name = ident_type::name + sprout::to_string(" ") + key_feel::name;
 };
 

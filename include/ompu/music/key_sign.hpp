@@ -34,8 +34,9 @@ struct basic_key_sign;
 template<class Ident, class KeyFeel>
 struct basic_key_sign<key_ident<Ident, KeyFeel>>
 {
-    using mod_type = key_sign_mod_t<key_ident<Ident, KeyFeel>>;
-    static constexpr auto assoc_mods = key_sign_mod_count_v<Ident::height, KeyFeel>;
+    using key_ident_type = key_ident<Ident, KeyFeel>;
+    using mod_type = key_sign_mod_t<key_ident_type>;
+    static constexpr auto assoc_mods = key_sign_mod_count_v<key_ident_type>;
     static constexpr auto const symbol = key_sign_symbol<mod_type, assoc_mods>::name;
 };
 
