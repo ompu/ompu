@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ompu/music/resolver.hpp"
-
 #include "saya/zed/seq.hpp"
 
 #include <iosfwd>
@@ -13,26 +11,10 @@ namespace ompu { namespace music {
 namespace io_detail {
 
 template<class... Tones, class... Mods>
-inline std::ostream& operator<<(std::ostream& os, std::tuple<basic_ident<Tones, Mods>...>)
+inline std::ostream& operator<<(std::ostream& os, ident_set<basic_ident<Tones, Mods>...>)
 {
     saya::zed::blackhole((os << "|" << std::setw(4) << std::left << basic_ident<Tones, Mods>{})...);
     return os << "|";
-}
-
-template<class... FundSet, class... TensionSet>
-inline std::ostream& operator<<(std::ostream& os, std::tuple<basic_chord<FundSet, TensionSet>...>)
-{
-    saya::zed::blackhole((os << "|" << std::setw(6) << std::left << basic_chord<FundSet, TensionSet>{})...);
-    return os << "|";
-}
-
-template<class FundSet, class TensionSet>
-inline std::ostream& operator<<(std::ostream& os, basic_chord<FundSet, TensionSet> const&)
-{
-    using chord_type = basic_chord<FundSet, TensionSet>;
-    return os
-        << "(chord)"
-    ;
 }
 
 template<class ScaledAs, class... Idents>
@@ -43,9 +25,18 @@ inline std::ostream& operator<<(std::ostream& os, basic_scale<ScaledAs, ident_se
     return os
         << "[Scale]\n"
         << "originally scaled as: " << ScaledAs::name << "\n"
-        << "tones: " << saya::zed::reversed_t<std::tuple<Idents...>>{} << "\n"
+        << "tones: "
+        << saya::zed::unwrap_apply_t<
+            ident_set,
+            saya::zed::reversed,
+            ident_set<Idents...>
+        >{} << "\n"
         << "canonical tones (on C): "
-        << saya::zed::reversed_t<cvt::to_tuple_t<typename cvt::canonical_t<scale_type>::ident_set_type>>{}
+        << saya::zed::unwrap_apply_t<
+            ident_set,
+            saya::zed::reversed,
+            typename cvt::canonical_t<scale_type>::ident_set_type
+        >{}
         << "\n[/Scale]"
     ;
 }
@@ -77,6 +68,12 @@ inline std::ostream& operator<<(std::ostream& os, dynamic_scale<ScaledAs, Scales
     return os << "[/Dynamic scale]";
 }
 
+template<class... Ts>
+inline std::ostream& operator<<(std::ostream& os, std::tuple<Ts...> const&)
+{
+    saya::zed::blackhole((os << Ts{})...);
+    return os;
+}
 } // io_detail
 
 
@@ -96,6 +93,26 @@ inline std::ostream& operator<<(std::ostream& os, Scale const& v)
     return io_detail::operator<<(os, v);
 }
 
+
+namespace io_detail {
+
+template<class KeyIdent, class... Degrees, class... Chords>
+inline std::ostream& key_chord_print(std::ostream& os, std::tuple<degreed_chord<Degrees, Chords>...> const&)
+{
+    saya::zed::blackhole(
+        (
+            os
+                << "|" << std::setw(6) << std::right
+                << cvt::interpret_in_key_t<KeyIdent, basic_tone<tone_height<Degrees::relative_height>>>{}
+                << Chords::ornament_name
+        )...
+    );
+    return os;
+}
+
+} // io_detail
+
+
 template<class Ident, class KeyFeel>
 inline std::ostream& operator<<(std::ostream& os, basic_key<key_ident<Ident, KeyFeel>> const&)
 {
@@ -108,7 +125,7 @@ inline std::ostream& operator<<(std::ostream& os, basic_key<key_ident<Ident, Key
         << "diatonic chords: "
     ;
 
-    io_detail::operator<<(os, typename key_type::diatonic_chords_seq{}) << "\n";
+    io_detail::key_chord_print<typename key_type::key_ident_type>(os, typename key_type::diatonic_chords_tetrad{}) << "\n";
 
     os
         << "[Key scale]\n" << typename key_type::key_scale_type{} << "\n[/Key scale]\n"

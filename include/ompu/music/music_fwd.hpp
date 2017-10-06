@@ -12,7 +12,7 @@
 
 #include "ompu/music/detail/symbol_names.hpp"
 
-#include "saya/zed/seq.hpp"
+#include "saya/zed/meta.hpp"
 
 #include <tuple>
 #include <type_traits>
@@ -35,6 +35,13 @@ struct basic_tone;
 
 
 namespace detail {
+
+using all_heights = std::tuple<
+    tone_height<0>, tone_height<1>, tone_height<2>,
+    tone_height<3>, tone_height<4>, tone_height<5>,
+    tone_height<6>, tone_height<7>, tone_height<8>,
+    tone_height<9>, tone_height<10>, tone_height<11>
+>;
 
 template<unsigned Height>
 using make_tone = basic_tone<tone_height<Height>>;
@@ -59,6 +66,11 @@ using B  = music::detail::make_tone<11>;
 
 } // tones
 
+using all_tones = std::tuple<
+    tones::C, tones::Cs, tones::D, tones::Ds, tones::E,
+    tones::F, tones::Fs, tones::G, tones::Gs, tones::A, tones::As, tones::B
+>;
+
 
 template<class... Tones>
 struct tone_set;
@@ -74,13 +86,6 @@ using make_tone_set = tone_set<basic_tone<tone_height<ToneHeights>>...>;
 } // detail
 
 
-using all_tones_set = tone_set<
-    tones::C, tones::Cs, tones::D, tones::Ds,
-    tones::E, tones::F, tones::Fs,
-    tones::G, tones::Gs, tones::A, tones::As,
-    tones::B
->;
-
 
 namespace mods {
 
@@ -94,6 +99,10 @@ struct dbl_flat;
 struct natural;
 
 } // mods
+
+using all_mods = std::tuple<
+    mods::none, mods::sharp, mods::dbl_sharp, mods::flat, mods::dbl_flat, mods::natural
+>;
 
 template<class... Mods>
 struct mod_set;
@@ -136,6 +145,13 @@ using Bb = basic_ident<music::detail::make_tone<10>, mods::flat>;
 
 } // idents
 
+using all_idents = saya::zed::zipped_t<
+    std::tuple,
+    basic_ident,
+    all_tones,
+    all_mods
+>;
+
 
 namespace key_feels {
 
@@ -147,6 +163,12 @@ struct minor;
 
 template<class RelativeHeight>
 struct basic_degree;
+
+template<class Degree, class RelativeToneHeight>
+struct degreed_tone;
+
+template<class Degree, class Chord>
+struct degreed_chord;
 
 
 namespace degrees {
@@ -164,9 +186,10 @@ using VI   = basic_degree<relative_height<9>>;
 using bVII = basic_degree<relative_height<10>>;
 using VII  = basic_degree<relative_height<11>>;
 
-using diatonic_seq = std::tuple<I, II, III, IV, V, VI, VII>;
-
 } // degrees
+
+using all_diatonic_degrees = std::tuple<degrees::I, degrees::II, degrees::III, degrees::IV, degrees::V, degrees::VI, degrees::VII>;
+using all_degrees = std::tuple<degrees::I, degrees::bII, degrees::II, degrees::bIII, degrees::III, degrees::IV, degrees::sIV, degrees::V, degrees::bVI, degrees::VI, degrees::bVII, degrees::VII>;
 
 
 namespace feel_mods {
@@ -223,6 +246,9 @@ struct dynamic_scale;
 
 template<class Ident, class KeyFeel>
 struct key_ident;
+
+template<class KeyIdent>
+struct key_natural_tones;
 
 template<class KeyIdent>
 struct basic_key_sign;
@@ -301,36 +327,54 @@ using BbMaj = Bb<key_feels::major>; using Bbmin = Bb<key_feels::minor>;
 
 } // keys
 
+using all_keys = std::tuple<
+    keys::CMaj , keys::Cmin ,
+    keys::CsMaj, keys::Csmin,
+    keys::CbMaj,
+    keys::DMaj , keys::Dmin ,
+    keys::Dsmin,
+    keys::DbMaj,
+    keys::EMaj , keys::Emin ,
+    keys::EbMaj, keys::Ebmin,
+    keys::FMaj , keys::Fmin ,
+    keys::FsMaj, keys::Fsmin,
+    keys::GMaj , keys::Gmin ,
+    keys::Gsmin,
+    keys::GbMaj,
+    keys::AMaj , keys::Amin ,
+    keys::Asmin,
+    keys::AbMaj, keys::Abmin,
+    keys::BMaj , keys::Bmin ,
+    keys::BbMaj, keys::Bbmin
+>;
 
-template<bool IsTension, unsigned ID, int ModOffset = 0>
+
+template<bool IsTension, unsigned ID, class Mod = mods::none>
 struct chord_note_id;
 
 template<class ID>
 struct basic_chord_note;
 
-template<unsigned TensionID, class Mod>
-struct basic_chord_tension;
-
 
 namespace chord_notes {
 
-struct M3;
-struct m3;
-struct P5;
-struct b5;
-struct aug5;
-struct M6;
-struct m6;
-struct M7;
-struct m7;
-struct dim7;
-struct P9;
-struct s9;
-// struct b10;
-struct s11;
-struct P13;
-struct s13;
-struct b13;
+using M3   = basic_chord_note<chord_note_id<false, 3>>;
+using m3   = basic_chord_note<chord_note_id<false, 3, mods::flat>>;
+using P5   = basic_chord_note<chord_note_id<false, 5>>;
+using b5   = basic_chord_note<chord_note_id<false, 5, mods::flat>>;
+using aug5 = basic_chord_note<chord_note_id<false, 5, mods::sharp>>;
+using dim5 = basic_chord_note<chord_note_id<false, 5, mods::dbl_flat>>;
+using P6   = basic_chord_note<chord_note_id<false, 6>>;
+using M7   = basic_chord_note<chord_note_id<false, 7>>;
+using m7   = basic_chord_note<chord_note_id<false, 7, mods::flat>>;
+using dim7 = basic_chord_note<chord_note_id<false, 7, mods::dbl_flat>>;
+
+using P9   = basic_chord_note<chord_note_id<true, 9>>;
+using s9   = basic_chord_note<chord_note_id<true, 9, mods::sharp>>;
+using s11  = basic_chord_note<chord_note_id<true, 11, mods::sharp>>;
+using P13  = basic_chord_note<chord_note_id<true, 13>>;
+using s13  = basic_chord_note<chord_note_id<true, 13, mods::sharp>>;
+using b13  = basic_chord_note<chord_note_id<true, 13, mods::flat>>;
 
 } // chord_notes
 
@@ -341,13 +385,14 @@ struct chord_fund_set;
 template<class... Tensions>
 struct chord_tension_set;
 
-using no_tensions = chord_tension_set<saya::zed::void_elem>;
-
 template<class FundSet, class TensionSet>
 struct chord_traits;
 
 template<class FundSet, class TensionSet>
 struct basic_chord;
+
+template<class Degree, class Chord>
+struct degreed_chord;
 
 
 namespace contexts {

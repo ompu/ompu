@@ -21,30 +21,23 @@ struct chord_fund_set
     >;
 
     static_assert(unsafe_count == 3 || unsafe_count == 4, "a chord must be at least triad or tetrad");
-    using notes_type = saya::zed::compact_t<std::tuple<cn3, cn5, cn6, cn7>>;
+    // using notes_type = saya::zed::compact_t<std::tuple, cn3, cn5, cn6, cn7>;
 };
-
-
-namespace detail {
-
-template<class T1, class... Rest>
-struct chord_tension_set_extract_1st
-{
-    using type = T1;
-};
-
-} // detail
-
 
 template<class... Tensions>
 struct chord_tension_set
 {
-    static_assert(sizeof...(Tensions) > 0, "tension count cannot be 0; did you mean: no_tensions?");
-
-    using notes_type = saya::zed::compact_t<std::tuple<Tensions...>>;
-    static constexpr bool is_empty = saya::zed::is_empty<notes_type>::value;
-    static constexpr std::size_t count = is_empty ? 0 : saya::zed::count<notes_type>::value;
+    static_assert(saya::zed::any_of<std::is_void, saya::zed::template_<>, Tensions...>::value, "tension note cannot be void");
+    static constexpr bool is_empty = false;
+    static constexpr std::size_t count = sizeof...(Tensions);
     static_assert(count <= 2, "a chord cannot have more than 2 tension notes");
+};
+
+template<>
+struct chord_tension_set<>
+{
+    static constexpr bool is_empty = true;
+    static constexpr std::size_t count = 0;
 };
 
 }} // ompu

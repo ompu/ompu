@@ -26,112 +26,71 @@ template<> struct chord_note_id_id_to_relative_height<13> { using type = relativ
 } // detail
 
 
-template<bool IsTension, unsigned ID, int ModOffset>
+template<class Note> struct chord_note_name;
+
+template<> struct chord_note_name<chord_note_id<false, 3>>
+{ static constexpr auto const& name = detail::symbol_names::empty; };
+template<> struct chord_note_name<chord_note_id<false, 3, mods::flat>>
+{ static constexpr auto name = sprout::to_string("m"); };
+template<> struct chord_note_name<chord_note_id<false, 5>>
+{ static constexpr auto const& name = detail::symbol_names::empty; };
+template<> struct chord_note_name<chord_note_id<false, 5, mods::flat>>
+{ static constexpr auto name = sprout::to_string("-5"); };
+template<> struct chord_note_name<chord_note_id<false, 5, mods::sharp>>
+{ static constexpr auto const& name = detail::symbol_names::aug; };
+template<> struct chord_note_name<chord_note_id<false, 6>>
+{ static constexpr auto name = sprout::to_string("6"); };
+template<> struct chord_note_name<chord_note_id<false, 7>>
+{ static constexpr auto name = sprout::to_string("M") + detail::number_names<7>::name; };
+template<> struct chord_note_name<chord_note_id<false, 7, mods::flat>>
+{ static constexpr auto const& name = detail::number_names<7>::name; };
+template<> struct chord_note_name<chord_note_id<false, 7, mods::dbl_flat>>
+{ static constexpr auto name = detail::symbol_names::dim + detail::number_names<7>::name; };
+
+template<> struct chord_note_name<chord_note_id<true, 9, mods::none>>
+{ static constexpr auto name = sprout::to_string("add") + detail::number_names<9>::name; };
+template<> struct chord_note_name<chord_note_id<true, 9, mods::sharp>>
+{ static constexpr auto name = detail::symbol_names::sharp + detail::number_names<9>::name;};
+template<> struct chord_note_name<chord_note_id<true, 11, mods::sharp>>
+{ static constexpr auto name = detail::symbol_names::sharp + detail::number_names<11>::name; };
+template<> struct chord_note_name<chord_note_id<true, 13, mods::none>>
+{ static constexpr auto const& name = detail::number_names<13>::name; };
+template<> struct chord_note_name<chord_note_id<true, 13, mods::sharp>>
+{ static constexpr auto name = detail::symbol_names::sharp + detail::number_names<13>::name; };
+template<> struct chord_note_name<chord_note_id<true, 13, mods::flat>>
+{ static constexpr auto name = detail::symbol_names::flat + detail::number_names<13>::name; };
+
+template<class ID>
+struct chord_note_name<
+    basic_chord_note<ID>
+>
+{
+    static constexpr auto const& name = chord_note_name<ID>::name;
+};
+
+
+template<bool IsTension, unsigned ID, class Mod>
 struct chord_note_id
 {
     static constexpr auto is_tension = IsTension;
     static constexpr auto unsafe_id = ID;
-    static constexpr auto unsafe_mod_offset = ModOffset;
+    using mod_type = Mod;
 
     using height_type = relative_height<
         detail::chord_note_id_id_to_relative_height<ID>::type::unsafe_offset +
-        ModOffset
+        Mod::offset
     >;
-
-    static constexpr auto const& id_str = detail::number_names<ID>::name;
 };
-
 
 template<class ID>
 struct basic_chord_note
 {
     using id_type = ID;
+    using height_type = typename ID::height_type;
+    using mod_type = typename ID::mod_type;
     static constexpr bool is_tension = ID::is_tension;
+
+    // static constexpr auto const& name = chord_note_name<ID>::name;
 };
-
-template<unsigned TensionID, class Mod>
-struct basic_chord_tension
-    : basic_chord_note<
-        chord_note_id<true, TensionID, Mod::offset>
-    >
-{
-    static constexpr auto tension_id = TensionID;
-    using mod_type = Mod;
-};
-
-
-namespace chord_notes {
-
-struct M3
-    : basic_chord_note<chord_note_id<false, 3>>
-{};
-
-struct m3
-    : basic_chord_note<chord_note_id<false, 3, -1>>
-{};
-
-struct P5
-    : basic_chord_note<chord_note_id<false, 5>>
-{};
-
-struct b5
-    : basic_chord_note<chord_note_id<false, 5, -1>>
-{};
-
-struct aug5
-    : basic_chord_note<chord_note_id<false, 5, +1>>
-{};
-
-struct M6
-    : basic_chord_note<chord_note_id<false, 6>>
-{};
-
-struct m6
-    : basic_chord_note<chord_note_id<false, 6, -1>>
-{};
-
-struct M7
-    : basic_chord_note<chord_note_id<false, 7>>
-{};
-
-struct m7
-    : basic_chord_note<chord_note_id<false, 7, -1>>
-{};
-
-struct dim7
-    : basic_chord_note<chord_note_id<false, 7, -2>>
-{};
-
-
-// tensions ------------------------------------
-
-
-struct P9
-    : basic_chord_tension<9, mods::none>
-{};
-
-struct s9
-    : basic_chord_tension<9, mods::sharp>
-{};
-
-// struct b10 : basic_chord_tension<10, mods::flat> {};
-
-struct s11
-    : basic_chord_tension<11, mods::sharp>
-{};
-
-struct P13
-    : basic_chord_tension<13, mods::none>
-{};
-
-struct s13
-    : basic_chord_tension<13, mods::sharp>
-{};
-
-struct b13
-    : basic_chord_tension<13, mods::flat>
-{};
-
-} // chord_notes
 
 }} // ompu

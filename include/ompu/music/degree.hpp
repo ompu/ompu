@@ -31,7 +31,7 @@ template<class RelativeHeight>
 struct basic_degree
 {
     using height_type = RelativeHeight;
-    static constexpr auto relative_height = RelativeHeight::value;
+    static constexpr auto relative_height = RelativeHeight::unsafe_offset;
     static constexpr auto name = detail::degree_names<RelativeHeight>::name;
 };
 

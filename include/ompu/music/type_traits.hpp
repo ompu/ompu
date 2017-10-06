@@ -105,8 +105,14 @@ using canonical_tone_shift_t = typename canonical_tone_shift<Tone, ToneOffset>::
 template<class Mod, class AppliedMod>
 struct add_mod;
 
+template<>
+struct add_mod<mods::none, mods::none> { using type = mods::none; };
+
 template<class AppliedMod>
 struct add_mod<mods::none, AppliedMod> { using type = AppliedMod; };
+template<class OriginalMod>
+struct add_mod<OriginalMod, mods::none> { using type = OriginalMod; };
+
 template<> struct add_mod<mods::sharp, mods::sharp> { using type = mods::dbl_sharp; };
 template<> struct add_mod<mods::sharp, mods::flat> { using type = mods::natural; };
 template<> struct add_mod<mods::flat, mods::flat> { using type = mods::dbl_flat; };
@@ -274,17 +280,40 @@ constexpr auto modded_height_count_v = modded_height_count<ToneSet>::value;
 } // detail
 
 
-template<class Tone, class Scale>
+template<class Context, class Tone>
 struct is_off_scaled;
+
+template<class Tone, class... Tones>
+struct is_off_scaled<
+    tone_set<Tones...>, Tone
+> : std::conditional_t<
+        saya::zed::any_of<
+            saya::zed::eq,
+            saya::zed::template_<typename Tone::height_type, saya::zed::meta_arg>,
+            typename Tones::height_type...
+        >::value,
+        std::false_type,
+        std::true_type
+    >
+{};
+
+template<class KeyIdent, class Tone>
+struct is_off_scaled<
+    key_natural_tones<KeyIdent>, Tone
+> : is_off_scaled<typename key_natural_tones<KeyIdent>::type, Tone>::type
+{};
+
+template<class Ident, class KeyFeel, class Tone>
+struct is_off_scaled<
+    key_ident<Ident, KeyFeel>, Tone
+> : is_off_scaled<typename key_natural_tones<key_ident<Ident, KeyFeel>>::type, Tone>::type
+{};
 
 template<class Tone, class ScaledAs, class... Tones>
 struct is_off_scaled<
-    Tone, basic_scale<ScaledAs, tone_set<Tones...>>
-> : saya::zed::any_of<
-    saya::zed::eq,
-    saya::zed::template_<typename Tone::height_type, saya::zed::meta_arg>,
-    typename Tones::height_type...
->
+    basic_scale<ScaledAs, tone_set<Tones...>>,
+    Tone
+> : is_off_scaled<tone_set<Tones...>, Tone>::type
 {
     static_assert(
         !std::is_same_v<ScaledAs, scales::wild>,
@@ -292,43 +321,42 @@ struct is_off_scaled<
     );
 };
 
-template<class Tone, class Scale>
-constexpr bool is_off_scaled_v = is_off_scaled<Tone, Scale>;
+template<class Context, class Tone>
+constexpr bool is_off_scaled_v = is_off_scaled<Context, Tone>;
 
 
-template<class ToneSet, class CompareToScale>
+
+template<class Context, class ToneSet>
 struct off_scaled_tone_count;
 
-template<class CompareToScale, class... Tones>
+template<class Context, class... Tones>
 struct off_scaled_tone_count<
-    tone_set<Tones...>,
-    CompareToScale
-> : std::integral_constant<std::size_t, (0 + is_off_scaled<Tones, CompareToScale>::value)...>
+    Context,
+    tone_set<Tones...>
+>
+    : std::integral_constant<std::size_t, saya::zed::fold_add<std::size_t, 0, is_off_scaled<Context, Tones>::value...>::value>
 {};
 
-template<class ToneSet, class CompareToScale>
-constexpr auto off_scaled_tone_count_v = off_scaled_tone_count<ToneSet, CompareToScale>::value;
+template<class Context, class ToneSet>
+constexpr auto off_scaled_tone_count_v = off_scaled_tone_count<Context, ToneSet>::value;
 
 
 namespace cvt {
-namespace detail {
 
-template<class Tone, class Mod>
+template<class KeyIdent, class Ident>
 struct mod_if_off_scaled
 {
     using type = basic_ident<
-        Tone,
+        typename Ident::tone_type,
         std::conditional_t<
-            music::detail::is_non_modded_height_v<Tone>,
-            mods::none,
-            Mod
+            is_off_scaled<KeyIdent, typename Ident::tone_type>::value,
+            add_mod_t<typename basic_key_sign<KeyIdent>::mod_type, typename Ident::mod_type>,
+            mods::none
         >
     >;
 };
-template<class Tone, class Mod>
-using mod_if_off_scaled_t = typename mod_if_off_scaled<Tone, Mod>::type;
-
-} // cvt::detail
+template<class KeyIdent, class Ident>
+using mod_if_off_scaled_t = typename mod_if_off_scaled<KeyIdent, Ident>::type;
 
 } // cvt
 
@@ -413,43 +441,46 @@ namespace cvt {
 template<class KeyIdent, class Target>
 struct interpret_in_key;
 
-template<class KeyIdent, class Tone, class UnusedMod>
-struct interpret_in_key<KeyIdent, basic_ident<Tone, UnusedMod>>
+template<class KeyIdent, class Target>
+using interpret_in_key_t = typename interpret_in_key<KeyIdent, Target>::type;
+
+
+template<class KeyIdent, class Tone, class Mod>
+struct interpret_in_key<KeyIdent, basic_ident<Tone, Mod>>
 {
-    using type = detail::mod_if_off_scaled_t<
-        cvt::detail::canonical_tone_shift_t<
-            Tone,
-            std::conditional_t<
-                std::is_same_v<typename KeyIdent::key_feel, key_feels::major>,
-                tone_offset<KeyIdent::height_type::value>,
-                tone_offset<cvt::detail::canonical_tone_shift_t<typename KeyIdent::tone_type, tone_offset<-9>>::height>
-            >
-        >,
-        key_sign_mod_t<KeyIdent>
+    using type = mod_if_off_scaled_t<
+        KeyIdent,
+        basic_ident<
+            cvt::detail::canonical_tone_shift_t<
+                Tone,
+                std::conditional_t<
+                    std::is_same_v<typename KeyIdent::key_feel, key_feels::major>,
+                    tone_offset<KeyIdent::height_type::value>,
+                    tone_offset<cvt::detail::canonical_tone_shift_t<typename KeyIdent::tone_type, tone_offset<-9>>::height>
+                >
+            >,
+            Mod
+        >
     >;
 };
 
 template<class KeyIdent, class ToneHeight>
 struct interpret_in_key<KeyIdent, basic_tone<ToneHeight>>
 {
-    using type = typename interpret_in_key<KeyIdent, basic_ident<basic_tone<ToneHeight>, mods::none>>::tone_type;
+    using type = interpret_in_key_t<KeyIdent, basic_ident<basic_tone<ToneHeight>, mods::none>>;
 };
 
 template<class KeyIdent, class... Tones>
 struct interpret_in_key<KeyIdent, tone_set<Tones...>>
 {
-    using type = tone_set<typename interpret_in_key<KeyIdent, Tones>::tone_type...>;
+    using type = ident_set<interpret_in_key_t<KeyIdent, Tones>...>;
 };
 
 template<class KeyIdent, class... Idents>
 struct interpret_in_key<KeyIdent, ident_set<Idents...>>
 {
-    using type = ident_set<typename interpret_in_key<KeyIdent, Idents>::type...>;
+    using type = ident_set<interpret_in_key_t<KeyIdent, Idents>...>;
 };
-
-template<class KeyIdent, class Target>
-using interpret_in_key_t = typename interpret_in_key<KeyIdent, Target>::type;
-
 
 } // cvt
 
@@ -776,6 +807,26 @@ template<> struct is_diatonic<basic_degree<relative_height<11>>> : std::true_typ
 
 
 template<class T>
+struct is_sixth_chord;
+
+template<class CN3, class CN5, class CN6, class CN7>
+struct is_sixth_chord<chord_fund_set<CN3, CN5, CN6, CN7>>
+    : std::conditional_t<
+        !std::is_void_v<CN6>,
+        std::true_type, std::false_type
+    >
+{};
+
+template<class FundSet, class TensionSet>
+struct is_sixth_chord<basic_chord<FundSet, TensionSet>>
+    : is_sixth_chord<FundSet>::type
+{};
+
+template<class T>
+constexpr bool is_sixth_chord_v = is_sixth_chord<T>::value;
+
+
+template<class T>
 struct is_seventh_chord;
 
 template<class CN3, class CN5, class CN6, class CN7>
@@ -863,6 +914,143 @@ template<class T>
 constexpr bool is_tension_v = is_tension<T>::value;
 
 
+template<class Note>
+struct chord_note_height
+{
+    static_assert(!std::is_void<Note>::value, "note must not be void to resolve height");
+    using type = typename Note::height_type;
+};
 
+template<class Note>
+using chord_note_height_t = typename chord_note_height<Note>::type;
+
+
+namespace cvt {
+
+template<class Degree, class RelativeHeight>
+struct degreed_height;
+
+template<class DegreeHeight, class RelativeHeight>
+struct degreed_height<
+    basic_degree<DegreeHeight>, RelativeHeight
+>
+{
+    using type = detail::canonical_tone_shift_t<
+        basic_tone<tone_height<DegreeHeight::unsafe_offset>>,
+        tone_offset<RelativeHeight::unsafe_offset>
+    >;
+};
+
+template<class Degree, class RelativeHeight>
+using degreed_height_t = typename degreed_height<Degree, RelativeHeight>::type;
+
+
+template<class Degree, class RelativeToneHeight>
+struct degreed_tone;
+
+template<class DegreeHeight, class RelativeToneHeight>
+struct degreed_tone<
+    basic_degree<DegreeHeight>, RelativeToneHeight
+>
+{
+    using type = degreed_height_t<
+        basic_degree<DegreeHeight>, RelativeToneHeight
+    >;
+};
+
+template<class Degree, class RelativeToneHeight>
+using degreed_tone_t = typename degreed_tone<Degree, RelativeToneHeight>::type;
+
+
+
+template<class Degree, class... Notes>
+struct chord_tone_set
+{
+    using type = tone_set<
+        degreed_tone_t<Degree, chord_note_height_t<Notes>>...
+    >;
+};
+
+template<class Degree, class... Notes>
+struct chord_tone_set<Degree, std::tuple<Notes...>>
+{
+    using type = typename chord_tone_set<Degree, Notes...>::type;
+};
+
+
+template<class Degree, class... Notes>
+using chord_tone_set_t = typename chord_tone_set<Degree, Notes...>::type;
+
+
+template<class Degree, class Chord>
+struct degreed_tone_set;
+
+template<class RelativeHeight, class... Notes, class... Tensions>
+struct degreed_tone_set<
+    basic_degree<RelativeHeight>, basic_chord<chord_fund_set<Notes...>, chord_tension_set<Tensions...>>
+>
+{
+    using degree_type = basic_degree<RelativeHeight>;
+    using root_height_type = RelativeHeight;
+    using fund_set_type = chord_fund_set<Notes...>;
+    using tension_set_type = chord_tension_set<Tensions...>;
+    using chord_type = basic_chord<fund_set_type, tension_set_type>;
+
+    using type = saya::zed::concat_t<
+        tone_set,
+        tone_set<
+            degreed_tone_t<degree_type, relative_height<0>>// the root
+        >,
+        chord_tone_set_t<degree_type, saya::zed::compact_t<std::tuple, Notes..., Tensions...>>
+    >;
+};
+
+template<class Degree, class Chord>
+using degreed_tone_set_t = typename degreed_tone_set<Degree, Chord>::type;
+
+
+template<class Chord>
+struct reduce_to_triad;
+
+template<class CN3, class CN5, class CN6, class CN7, class TensionSet>
+struct reduce_to_triad<
+    basic_chord<chord_fund_set<CN3, CN5, CN6, CN7>, TensionSet>
+>
+{
+    static_assert(
+        !is_power_chord<chord_fund_set<CN3, CN5, CN6, CN7>, chord_tension_set<>>::value,
+        "cannot reduce a power chord"
+    );
+    using type = basic_chord<chord_fund_set<CN3, CN5, void, void>, chord_tension_set<>>;
+};
+
+template<class Chord>
+using reduce_to_triad_t = typename reduce_to_triad<Chord>::type;
+
+
+template<class Chord>
+struct reduce_to_tetrad;
+
+template<class CN3, class CN5, class CN6, class CN7, class TensionSet>
+struct reduce_to_tetrad<
+    basic_chord<chord_fund_set<CN3, CN5, CN6, CN7>, TensionSet>
+>
+{
+    static_assert(
+        !is_power_chord<chord_fund_set<CN3, CN5, CN6, CN7>, chord_tension_set<>>::value,
+        "cannot reduce a power chord"
+    );
+    static_assert(
+        !std::is_void<CN7>::value,
+        "cannot reduce a triad to tetrad"
+    );
+
+    using type = basic_chord<chord_fund_set<CN3, CN5, void, CN7>, chord_tension_set<>>;
+};
+
+template<class Chord>
+using reduce_to_tetrad_t = typename reduce_to_tetrad<Chord>::type;
+
+} // cvt
 
 }} // ompu

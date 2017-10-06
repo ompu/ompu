@@ -11,6 +11,9 @@ struct symbol_names
     static constexpr auto flat = sprout::to_string(u8"\u266d");
     static constexpr auto natural = sprout::to_string(u8"\u266e");
 
+    static constexpr auto aug = sprout::to_string("aug");
+    static constexpr auto dim = sprout::to_string("dim");
+
     template<class Str>
     static constexpr auto to_related(Str const& str) { return sprout::to_string("[") + str + sprout::to_string("]"); }
 
@@ -25,6 +28,11 @@ struct symbol_names
     static constexpr auto parallel_r = to_related(parallel);
     static constexpr auto relative = sprout::to_string("Relative");
     static constexpr auto relative_r = to_related(relative);
+};
+
+struct symbol_name_empty
+{
+    static constexpr auto const& name = symbol_names::empty;
 };
 
 template<unsigned N> struct number_names { static constexpr auto name = sprout::to_string("(empty-name)"); };
