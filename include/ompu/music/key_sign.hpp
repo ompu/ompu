@@ -32,9 +32,7 @@ template<class KeyIdent>
 struct key_natural_tones;
 
 template<class Ident>
-struct key_natural_tones<
-    key_ident<Ident, key_feels::major>
->
+struct key_natural_tones<key_ident<Ident, key_feels::major>>
 {
     using type = cvt::detail::tone_set_shift_t<
         detail::make_tone_set<0, 2, 4, 5, 7, 9, 11>,
@@ -43,13 +41,11 @@ struct key_natural_tones<
 };
 
 template<class Ident>
-struct key_natural_tones<
-    key_ident<Ident, key_feels::minor>
->
+struct key_natural_tones<key_ident<Ident, key_feels::minor>>
 {
     using type = cvt::detail::tone_set_shift_t<
         detail::make_tone_set<9, 11, 0, 2, 4, 5, 7>,
-        tone_offset<cvt::detail::canonical_tone_shift_t<typename Ident::tone_type, tone_offset<-9>>::height>
+        tone_offset<Ident::height - 9>
     >;
 };
 
@@ -65,7 +61,16 @@ struct basic_key_sign<key_ident<Ident, KeyFeel>>
 {
     using key_ident_type = key_ident<Ident, KeyFeel>;
     using mod_type = key_sign_mod_t<key_ident_type>;
-    static constexpr auto assoc_mods = off_scaled_tone_count<key_ident_type, key_natural_tones_t<key_ident_type>>::value;
+    static constexpr auto assoc_mods =
+        off_scaled_tone_count<
+            std::conditional_t<
+                std::is_same<KeyFeel, key_feels::major>::value,
+                key_natural_tones<key_ident<idents::C, key_feels::major>>,
+                key_natural_tones<key_ident<idents::A, key_feels::minor>>
+            >,
+            key_natural_tones_t<key_ident<Ident, KeyFeel>>
+        >::value
+    ;
     static constexpr auto const& symbol = key_sign_symbol<mod_type, assoc_mods>::name;
 };
 

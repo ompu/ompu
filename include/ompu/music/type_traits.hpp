@@ -213,6 +213,12 @@ namespace detail {
 template<class ToneSet, class ToneOffset>
 struct tone_set_shift;
 
+template<class... Tones>
+struct tone_set_shift<tone_set<Tones...>, tone_offset<0>>
+{
+    using type = tone_set<Tones...>;
+};
+
 template<class... Tones, class ToneOffset>
 struct tone_set_shift<tone_set<Tones...>, ToneOffset>
 {
@@ -349,7 +355,14 @@ struct mod_if_off_scaled
     using type = basic_ident<
         typename Ident::tone_type,
         std::conditional_t<
-            is_off_scaled<KeyIdent, typename Ident::tone_type>::value,
+            is_off_scaled<
+                std::conditional_t<
+                    std::is_same<typename KeyIdent::key_feel, key_feels::major>::value,
+                    key_ident<idents::C, key_feels::major>,
+                    key_ident<idents::A, key_feels::minor>
+                >,
+                typename Ident::tone_type
+            >::value,
             add_mod_t<typename basic_key_sign<KeyIdent>::mod_type, typename Ident::mod_type>,
             mods::none
         >
