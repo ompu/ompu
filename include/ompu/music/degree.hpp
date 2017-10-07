@@ -36,7 +36,7 @@ struct basic_degree
     using height_type = DegreeHeight;
     using mod_type = Mod;
     static constexpr auto N = DegreeHeight::N;
-    static constexpr auto name = detail::degree_names<DegreeHeight>::name;
+    static constexpr auto name = Mod::name + detail::degree_names<DegreeHeight>::name;
 };
 
 }} // ompu
