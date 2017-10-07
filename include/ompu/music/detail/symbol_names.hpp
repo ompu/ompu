@@ -14,6 +14,8 @@ struct symbol_names
     static constexpr auto aug = sprout::to_string("aug");
     static constexpr auto dim = sprout::to_string("dim");
 
+    static constexpr auto g_clef = sprout::to_string(u8"\U0001D11E");
+
     template<class Str>
     static constexpr auto to_related(Str const& str) { return sprout::to_string("[") + str + sprout::to_string("]"); }
 

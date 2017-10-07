@@ -157,6 +157,9 @@ struct minor;
 
 } // key_feels
 
+using all_key_feels = std::tuple<key_feels::major, key_feels::minor>;
+
+
 template<unsigned N>
 struct degree_height;
 

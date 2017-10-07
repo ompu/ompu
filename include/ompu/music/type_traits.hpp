@@ -495,6 +495,36 @@ using nth_natural_tone_on_key_t = typename nth_natural_tone_on_key<KeyIdent, N>:
 
 namespace cvt {
 
+namespace detail {
+
+template<class KeyIdent, class Ident>
+struct force_interpret_again_on_key;
+
+template<class KeyIdent, class Tone, class Mod>
+struct force_interpret_again_on_key<KeyIdent, basic_ident<Tone, Mod>>
+{
+    using type = mod_if_off_scaled_t<
+        KeyIdent,
+        basic_ident<
+            canonical_tone_shift_t<
+                Tone,
+                std::conditional_t<
+                    std::is_same_v<typename KeyIdent::key_feel, key_feels::major>,
+                    tone_offset<KeyIdent::height_type::value>,
+                    tone_offset<canonical_tone_shift_t<typename KeyIdent::tone_type, tone_offset<-9>>::height>
+                >
+            >,
+            Mod
+        >
+    >;
+};
+
+template<class KeyIdent, class Ident>
+using force_interpret_again_on_key_t = typename force_interpret_again_on_key<KeyIdent, Ident>::type;
+
+} // detail
+
+
 template<class KeyIdent, class Degree>
 struct degree_to_tone;
 
@@ -521,29 +551,10 @@ template<class KeyIdent, class Target>
 using interpret_on_key_t = typename interpret_on_key<KeyIdent, Target>::type;
 
 
-template<class KeyIdent, class Tone, class Mod>
-struct interpret_on_key<KeyIdent, basic_ident<Tone, Mod>>
-{
-    using type = mod_if_off_scaled_t<
-        KeyIdent,
-        basic_ident<
-            cvt::detail::canonical_tone_shift_t<
-                Tone,
-                std::conditional_t<
-                    std::is_same_v<typename KeyIdent::key_feel, key_feels::major>,
-                    tone_offset<KeyIdent::height_type::value>,
-                    tone_offset<cvt::detail::canonical_tone_shift_t<typename KeyIdent::tone_type, tone_offset<-9>>::height>
-                >
-            >,
-            Mod
-        >
-    >;
-};
-
 template<class KeyIdent, class ToneHeight>
 struct interpret_on_key<KeyIdent, basic_tone<ToneHeight>>
 {
-    using type = interpret_on_key_t<KeyIdent, basic_ident<basic_tone<ToneHeight>, mods::none>>;
+    using type = detail::force_interpret_again_on_key_t<KeyIdent, basic_ident<basic_tone<ToneHeight>, mods::none>>;
 };
 
 template<class KeyIdent, class DegreeHeight, class Mod>
@@ -561,13 +572,13 @@ struct interpret_on_key<KeyIdent, basic_degree<DegreeHeight, Mod>>
 template<class KeyIdent, class... Tones>
 struct interpret_on_key<KeyIdent, tone_set<Tones...>>
 {
-    using type = ident_set<interpret_on_key_t<KeyIdent, Tones>...>;
+    using type = ident_set<detail::force_interpret_again_on_key_t<KeyIdent, Tones>...>;
 };
 
 template<class KeyIdent, class... Idents>
 struct interpret_on_key<KeyIdent, ident_set<Idents...>>
 {
-    using type = ident_set<interpret_on_key_t<KeyIdent, Idents>...>;
+    using type = ident_set<detail::force_interpret_again_on_key_t<KeyIdent, Idents>...>;
 };
 
 } // cvt

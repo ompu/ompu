@@ -5,6 +5,7 @@
 #include "ompu/music/mod.hpp"
 #include "ompu/music/relation.hpp"
 #include "ompu/music/degree.hpp"
+#include "ompu/music/diatonic.hpp"
 #include "ompu/music/interval.hpp"
 #include "ompu/music/tone.hpp"
 #include "ompu/music/scale.hpp"
