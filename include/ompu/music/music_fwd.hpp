@@ -24,9 +24,6 @@ namespace ompu { namespace music {
 template<unsigned Height>
 struct tone_height;
 
-template<int UnsafeOffset>
-struct relative_height;
-
 template<int Offset>
 struct tone_offset;
 
@@ -160,8 +157,10 @@ struct minor;
 
 } // key_feels
 
+template<unsigned N>
+struct degree_height;
 
-template<class RelativeHeight>
+template<class DegreeHeight, class Mod = mods::none>
 struct basic_degree;
 
 template<class Degree, class RelativeToneHeight>
@@ -173,18 +172,18 @@ struct degreed_chord;
 
 namespace degrees {
 
-using I    = basic_degree<relative_height<0>>;
-using bII  = basic_degree<relative_height<1>>;
-using II   = basic_degree<relative_height<2>>;
-using bIII = basic_degree<relative_height<3>>;
-using III  = basic_degree<relative_height<4>>;
-using IV   = basic_degree<relative_height<5>>;
-using sIV  = basic_degree<relative_height<6>>;
-using V    = basic_degree<relative_height<7>>;
-using bVI  = basic_degree<relative_height<8>>;
-using VI   = basic_degree<relative_height<9>>;
-using bVII = basic_degree<relative_height<10>>;
-using VII  = basic_degree<relative_height<11>>;
+using I    = basic_degree<degree_height<1>>;
+using bII  = basic_degree<degree_height<2>, mods::flat>;
+using II   = basic_degree<degree_height<2>>;
+using bIII = basic_degree<degree_height<3>, mods::flat>;
+using III  = basic_degree<degree_height<3>>;
+using IV   = basic_degree<degree_height<4>>;
+using sIV  = basic_degree<degree_height<4>, mods::sharp>;
+using V    = basic_degree<degree_height<5>>;
+using bVI  = basic_degree<degree_height<6>, mods::flat>;
+using VI   = basic_degree<degree_height<6>>;
+using bVII = basic_degree<degree_height<7>, mods::flat>;
+using VII  = basic_degree<degree_height<7>>;
 
 } // degrees
 

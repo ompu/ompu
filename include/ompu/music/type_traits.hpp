@@ -96,6 +96,9 @@ struct canonical_tone_shift
     using type = typename canonical_tone_shift_impl<Tone, ToneOffset>::type;
 };
 
+template<class Tone>
+struct canonical_tone_shift<Tone, tone_offset<0>> { using type = Tone; };
+
 template<class Tone, class ToneOffset>
 using canonical_tone_shift_t = typename canonical_tone_shift<Tone, ToneOffset>::type;
 
@@ -449,17 +452,77 @@ template<class KeyIdent>
 using key_sign_mod_t = typename key_sign_mod<KeyIdent>::type;
 
 
+
+template<class KeyIdent>
+struct key_natural_tones;
+
+template<class Ident>
+struct key_natural_tones<key_ident<Ident, key_feels::major>>
+{
+    using type = cvt::detail::tone_set_shift_t<
+        detail::make_tone_set<0, 2, 4, 5, 7, 9, 11>,
+        tone_offset<Ident::height>
+    >;
+};
+
+template<class Ident>
+struct key_natural_tones<key_ident<Ident, key_feels::minor>>
+{
+    using type = cvt::detail::tone_set_shift_t<
+        detail::make_tone_set<9, 11, 0, 2, 4, 5, 7>,
+        tone_offset<Ident::height - 9>
+    >;
+};
+
+template<class KeyIdent>
+using key_natural_tones_t = typename key_natural_tones<KeyIdent>::type;
+
+
+template<class KeyIdent, unsigned N>
+struct nth_natural_tone_on_key
+{
+    static_assert(1 <= N && N <= 7, "nth natural tone: 1 <= N && N <= 7");
+    using type = saya::zed::element_t<
+        tone_set,
+        N - 1,
+        key_natural_tones_t<KeyIdent>
+    >;
+};
+
+template<class KeyIdent, unsigned N>
+using nth_natural_tone_on_key_t = typename nth_natural_tone_on_key<KeyIdent, N>::type;
+
+
 namespace cvt {
 
-template<class KeyIdent, class Target>
-struct interpret_in_key;
+template<class KeyIdent, class Degree>
+struct degree_to_tone;
+
+template<class KeyIdent, unsigned N, class Mod>
+struct degree_to_tone<
+    KeyIdent,
+    basic_degree<degree_height<N>, Mod>
+>
+{
+    using type = detail::canonical_tone_shift_t<
+        nth_natural_tone_on_key_t<KeyIdent, N>,
+        typename Mod::offset_type
+    >;
+};
+
+template<class KeyIdent, class Degree>
+using degree_to_tone_t = typename degree_to_tone<KeyIdent, Degree>::type;
+
 
 template<class KeyIdent, class Target>
-using interpret_in_key_t = typename interpret_in_key<KeyIdent, Target>::type;
+struct interpret_on_key;
+
+template<class KeyIdent, class Target>
+using interpret_on_key_t = typename interpret_on_key<KeyIdent, Target>::type;
 
 
 template<class KeyIdent, class Tone, class Mod>
-struct interpret_in_key<KeyIdent, basic_ident<Tone, Mod>>
+struct interpret_on_key<KeyIdent, basic_ident<Tone, Mod>>
 {
     using type = mod_if_off_scaled_t<
         KeyIdent,
@@ -478,21 +541,33 @@ struct interpret_in_key<KeyIdent, basic_ident<Tone, Mod>>
 };
 
 template<class KeyIdent, class ToneHeight>
-struct interpret_in_key<KeyIdent, basic_tone<ToneHeight>>
+struct interpret_on_key<KeyIdent, basic_tone<ToneHeight>>
 {
-    using type = interpret_in_key_t<KeyIdent, basic_ident<basic_tone<ToneHeight>, mods::none>>;
+    using type = interpret_on_key_t<KeyIdent, basic_ident<basic_tone<ToneHeight>, mods::none>>;
+};
+
+template<class KeyIdent, class DegreeHeight, class Mod>
+struct interpret_on_key<KeyIdent, basic_degree<DegreeHeight, Mod>>
+{
+    using type = mod_if_off_scaled_t<
+        KeyIdent,
+        basic_ident<
+            degree_to_tone_t<KeyIdent, basic_degree<DegreeHeight>>,
+            Mod
+        >
+    >;
 };
 
 template<class KeyIdent, class... Tones>
-struct interpret_in_key<KeyIdent, tone_set<Tones...>>
+struct interpret_on_key<KeyIdent, tone_set<Tones...>>
 {
-    using type = ident_set<interpret_in_key_t<KeyIdent, Tones>...>;
+    using type = ident_set<interpret_on_key_t<KeyIdent, Tones>...>;
 };
 
 template<class KeyIdent, class... Idents>
-struct interpret_in_key<KeyIdent, ident_set<Idents...>>
+struct interpret_on_key<KeyIdent, ident_set<Idents...>>
 {
-    using type = ident_set<interpret_in_key_t<KeyIdent, Idents>...>;
+    using type = ident_set<interpret_on_key_t<KeyIdent, Idents>...>;
 };
 
 } // cvt
@@ -809,14 +884,11 @@ struct is_diatonic : std::false_type {};
 template<class Degree>
 constexpr bool is_diatonic_v = is_diatonic<Degree>::value;
 
-template<> struct is_diatonic<basic_degree<relative_height<0>>> : std::true_type {};
-template<> struct is_diatonic<basic_degree<relative_height<2>>> : std::true_type {};
-template<> struct is_diatonic<basic_degree<relative_height<4>>> : std::true_type {};
-template<> struct is_diatonic<basic_degree<relative_height<5>>> : std::true_type {};
-template<> struct is_diatonic<basic_degree<relative_height<7>>> : std::true_type {};
-template<> struct is_diatonic<basic_degree<relative_height<9>>> : std::true_type {};
-template<> struct is_diatonic<basic_degree<relative_height<11>>> : std::true_type {};
-
+template<class DegreeHeight>
+struct is_diatonic<
+    basic_degree<DegreeHeight, mods::none>
+> : std::true_type
+{};
 
 
 template<class T>
@@ -939,88 +1011,6 @@ using chord_note_height_t = typename chord_note_height<Note>::type;
 
 
 namespace cvt {
-
-template<class Degree, class RelativeHeight>
-struct degreed_height;
-
-template<class DegreeHeight, class RelativeHeight>
-struct degreed_height<
-    basic_degree<DegreeHeight>, RelativeHeight
->
-{
-    using type = detail::canonical_tone_shift_t<
-        basic_tone<tone_height<DegreeHeight::unsafe_offset>>,
-        tone_offset<RelativeHeight::unsafe_offset>
-    >;
-};
-
-template<class Degree, class RelativeHeight>
-using degreed_height_t = typename degreed_height<Degree, RelativeHeight>::type;
-
-
-template<class Degree, class RelativeToneHeight>
-struct degreed_tone;
-
-template<class DegreeHeight, class RelativeToneHeight>
-struct degreed_tone<
-    basic_degree<DegreeHeight>, RelativeToneHeight
->
-{
-    using type = degreed_height_t<
-        basic_degree<DegreeHeight>, RelativeToneHeight
-    >;
-};
-
-template<class Degree, class RelativeToneHeight>
-using degreed_tone_t = typename degreed_tone<Degree, RelativeToneHeight>::type;
-
-
-
-template<class Degree, class... Notes>
-struct chord_tone_set
-{
-    using type = tone_set<
-        degreed_tone_t<Degree, chord_note_height_t<Notes>>...
-    >;
-};
-
-template<class Degree, class... Notes>
-struct chord_tone_set<Degree, std::tuple<Notes...>>
-{
-    using type = typename chord_tone_set<Degree, Notes...>::type;
-};
-
-
-template<class Degree, class... Notes>
-using chord_tone_set_t = typename chord_tone_set<Degree, Notes...>::type;
-
-
-template<class Degree, class Chord>
-struct degreed_tone_set;
-
-template<class RelativeHeight, class... Notes, class... Tensions>
-struct degreed_tone_set<
-    basic_degree<RelativeHeight>, basic_chord<chord_fund_set<Notes...>, chord_tension_set<Tensions...>>
->
-{
-    using degree_type = basic_degree<RelativeHeight>;
-    using root_height_type = RelativeHeight;
-    using fund_set_type = chord_fund_set<Notes...>;
-    using tension_set_type = chord_tension_set<Tensions...>;
-    using chord_type = basic_chord<fund_set_type, tension_set_type>;
-
-    using type = saya::zed::concat_t<
-        tone_set,
-        tone_set<
-            degreed_tone_t<degree_type, relative_height<0>>// the root
-        >,
-        chord_tone_set_t<degree_type, saya::zed::compact_t<std::tuple, Notes..., Tensions...>>
-    >;
-};
-
-template<class Degree, class Chord>
-using degreed_tone_set_t = typename degreed_tone_set<Degree, Chord>::type;
-
 
 template<class Chord>
 struct reduce_to_triad;

@@ -10,18 +10,18 @@ namespace ompu { namespace music {
 namespace detail {
 
 template<unsigned ID>
-struct chord_note_id_id_to_relative_height;
+struct chord_note_id_id_to_tone_offset;
 
-template<> struct chord_note_id_id_to_relative_height<1 > { using type = relative_height<0 >; };
-template<> struct chord_note_id_id_to_relative_height<2 > { using type = relative_height<2 >; };
-template<> struct chord_note_id_id_to_relative_height<3 > { using type = relative_height<4 >; };
-template<> struct chord_note_id_id_to_relative_height<4 > { using type = relative_height<5 >; };
-template<> struct chord_note_id_id_to_relative_height<5 > { using type = relative_height<7 >; };
-template<> struct chord_note_id_id_to_relative_height<6 > { using type = relative_height<9 >; };
-template<> struct chord_note_id_id_to_relative_height<7 > { using type = relative_height<11>; };
-template<> struct chord_note_id_id_to_relative_height<9 > { using type = relative_height<14>; };
-template<> struct chord_note_id_id_to_relative_height<11> { using type = relative_height<17>; };
-template<> struct chord_note_id_id_to_relative_height<13> { using type = relative_height<21>; };
+template<> struct chord_note_id_id_to_tone_offset<1 > { using type = tone_offset<0 >; };
+template<> struct chord_note_id_id_to_tone_offset<2 > { using type = tone_offset<2 >; };
+template<> struct chord_note_id_id_to_tone_offset<3 > { using type = tone_offset<4 >; };
+template<> struct chord_note_id_id_to_tone_offset<4 > { using type = tone_offset<5 >; };
+template<> struct chord_note_id_id_to_tone_offset<5 > { using type = tone_offset<7 >; };
+template<> struct chord_note_id_id_to_tone_offset<6 > { using type = tone_offset<9 >; };
+template<> struct chord_note_id_id_to_tone_offset<7 > { using type = tone_offset<11>; };
+template<> struct chord_note_id_id_to_tone_offset<9 > { using type = tone_offset<14>; };
+template<> struct chord_note_id_id_to_tone_offset<11> { using type = tone_offset<17>; };
+template<> struct chord_note_id_id_to_tone_offset<13> { using type = tone_offset<21>; };
 
 } // detail
 
@@ -76,8 +76,8 @@ struct chord_note_id
     static constexpr auto unsafe_id = ID;
     using mod_type = Mod;
 
-    using height_type = relative_height<
-        detail::chord_note_id_id_to_relative_height<ID>::type::unsafe_offset +
+    using height_type = tone_offset<
+        detail::chord_note_id_id_to_tone_offset<ID>::type::value +
         Mod::offset
     >;
 };

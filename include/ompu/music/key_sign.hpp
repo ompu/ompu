@@ -29,31 +29,6 @@ struct key_sign_symbol<Mod, 0>
 
 
 template<class KeyIdent>
-struct key_natural_tones;
-
-template<class Ident>
-struct key_natural_tones<key_ident<Ident, key_feels::major>>
-{
-    using type = cvt::detail::tone_set_shift_t<
-        detail::make_tone_set<0, 2, 4, 5, 7, 9, 11>,
-        tone_offset<Ident::height>
-    >;
-};
-
-template<class Ident>
-struct key_natural_tones<key_ident<Ident, key_feels::minor>>
-{
-    using type = cvt::detail::tone_set_shift_t<
-        detail::make_tone_set<9, 11, 0, 2, 4, 5, 7>,
-        tone_offset<Ident::height - 9>
-    >;
-};
-
-template<class KeyIdent>
-using key_natural_tones_t = typename key_natural_tones<KeyIdent>::type;
-
-
-template<class KeyIdent>
 struct basic_key_sign;
 
 template<class Ident, class KeyFeel>

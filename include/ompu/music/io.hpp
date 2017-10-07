@@ -13,7 +13,7 @@ namespace io_detail {
 template<class... Tones, class... Mods>
 inline std::ostream& operator<<(std::ostream& os, ident_set<basic_ident<Tones, Mods>...>)
 {
-    saya::zed::blackhole((os << "|" << std::setw(4) << std::left << basic_ident<Tones, Mods>{})...);
+    saya::zed::blackhole{((os << "|" << std::setw(4) << std::left << basic_ident<Tones, Mods>{}), nullptr)...};
     return os << "|";
 }
 
@@ -26,18 +26,10 @@ inline std::ostream& operator<<(std::ostream& os, basic_scale<ScaledAs, ident_se
         << "[Scale]\n"
         << "originally scaled as: " << ScaledAs::name << "\n"
         << "tones: "
-        << saya::zed::unwrap_apply_t<
-            ident_set,
-            saya::zed::reversed,
-            ident_set<Idents...>
-        >{} << "\n"
+        << ident_set<Idents...>{} << "\n"
         << "canonical tones (on C): "
-        << saya::zed::unwrap_apply_t<
-            ident_set,
-            saya::zed::reversed,
-            typename cvt::canonical_t<scale_type>::ident_set_type
-        >{}
-        << "\n[/Scale]"
+        << typename cvt::canonical_t<scale_type>::ident_set_type{} << "\n"
+        << "[/Scale]"
     ;
 }
 
@@ -71,7 +63,7 @@ inline std::ostream& operator<<(std::ostream& os, dynamic_scale<ScaledAs, Scales
 template<class... Ts>
 inline std::ostream& operator<<(std::ostream& os, std::tuple<Ts...> const&)
 {
-    saya::zed::blackhole((os << Ts{})...);
+    saya::zed::blackhole{(os << Ts{}, nullptr)...};
     return os;
 }
 } // io_detail
@@ -99,14 +91,15 @@ namespace io_detail {
 template<class KeyIdent, class... Degrees, class... Chords>
 inline std::ostream& key_chord_print(std::ostream& os, std::tuple<degreed_chord<Degrees, Chords>...> const&)
 {
-    saya::zed::blackhole(
+    saya::zed::blackhole{
         (
-            os
+            (os
                 << "|" << std::setw(6) << std::right
-                << cvt::interpret_in_key_t<KeyIdent, basic_tone<tone_height<Degrees::relative_height>>>{}
+                << cvt::interpret_on_key_t<KeyIdent, Degrees>{}
                 << Chords::ornament_name
+            ), nullptr
         )...
-    );
+    };
     return os;
 }
 

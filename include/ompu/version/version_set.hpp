@@ -73,12 +73,12 @@ public:
     template<class Policy>
     void upgrade_from(VersionSet const& real, Policy)
     {
-        saya::zed::blackhole(detail::version_set_upgrade_impl(
+        saya::zed::blackhole{(detail::version_set_upgrade_impl(
             Policy{},
             real,
             *this,
             Tags{}
-        )...);
+        ), 0)...};
     }
 
     components_type const& components() const noexcept { return components_; }

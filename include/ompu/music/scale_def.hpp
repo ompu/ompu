@@ -200,7 +200,7 @@ struct scale_def_to_scale
     using upward_scale =
         basic_scale<
             ScaledAs,
-            cvt::interpret_in_key_t<
+            cvt::interpret_on_key_t<
                 KeyIdent,
                 pack_to_ident_set_t<special_scale_set_t<ScaledAs, true>>
             >
@@ -209,7 +209,7 @@ struct scale_def_to_scale
     using downward_scale =
         basic_scale<
             ScaledAs,
-            cvt::interpret_in_key_t<
+            cvt::interpret_on_key_t<
                 KeyIdent,
                 pack_to_ident_set_t<special_scale_set_t<ScaledAs, false>>
             >
