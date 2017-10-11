@@ -35,12 +35,7 @@ struct modded_scale_def<ReScaledAs, scale_def<ScaledAs, tone_set<Tones...>, mod_
     using type = scale_def<
         ReScaledAs,
         tone_set<cvt::detail::canonical_tone_shift_t<Tones, typename AppliedMods::offset_type>...>,
-        mod_set<
-            std::conditional_t<
-                std::is_same<AppliedMods, mods::none>::value,
-                Mods, cvt::add_mod_t<Mods, AppliedMods>
-            >...
-        >
+        mod_set<cvt::add_mod_t<Mods, AppliedMods>...>
     >;
 };
 
@@ -52,7 +47,7 @@ template<bool Upper> struct special_scale_set<scales::natural<key_feels::major>,
 {
     using type = scale_def<
         scales::natural<key_feels::major>,
-        detail::make_tone_set<0, 2, 4, 5, 7, 9, 11>,
+        detail::predef::C_natural_major_tone_set,
         mod_set<mods::none, mods::none, mods::none, mods::none, mods::none, mods::none, mods::none>
     >;
 };
@@ -87,7 +82,7 @@ template<bool Upper> struct special_scale_set<scales::natural<key_feels::minor>,
 {
     using type = scale_def<
         scales::natural<key_feels::minor>,
-        detail::make_tone_set<9, 11, 0, 2, 4, 5, 7>,
+        detail::predef::C_natural_minor_tone_set,
         mod_set<mods::none, mods::none, mods::none, mods::none, mods::none, mods::none, mods::none>
     >;
 };
@@ -122,7 +117,7 @@ template<bool Upper> struct special_scale_set<scales::ionian, Upper>
 {
     using type = scale_def<
         scales::ionian,
-        detail::make_tone_set<0, 2, 4, 5, 7, 9, 11>,
+        detail::predef::C_natural_major_tone_set,
         mod_set<mods::none, mods::none, mods::none, mods::none, mods::none, mods::none, mods::none>
     >;
 };
@@ -179,42 +174,38 @@ template<class ScaledAs, bool Upper>
 using special_scale_set_t = typename special_scale_set<ScaledAs, Upper>::type;
 
 
-template<class ScaleDef>
+template<class KeyIdent, class ScaleDef>
 struct pack_to_ident_set;
 
-template<class ScaledAs, class... Tones, class... Mods>
-struct pack_to_ident_set<scale_def<ScaledAs, tone_set<Tones...>, mod_set<Mods...>>>
+template<class KeyIdent, class ScaledAs, class... Tones, class... Mods>
+struct pack_to_ident_set<KeyIdent, scale_def<ScaledAs, tone_set<Tones...>, mod_set<Mods...>>>
 {
     using type = ident_set<
-        basic_ident<Tones, Mods>...
+        basic_ident<
+            cvt::detail::canonical_tone_shift_t<
+                Tones,
+                tone_offset<KeyIdent::height>
+            >,
+            Mods
+        >...
     >;
 };
 
-template<class ScaleDef>
-using pack_to_ident_set_t = typename pack_to_ident_set<ScaleDef>::type;
+template<class KeyIdent, class ScaleDef>
+using pack_to_ident_set_t = typename pack_to_ident_set<KeyIdent, ScaleDef>::type;
 
 
 template<class KeyIdent, class ScaledAs>
 struct scale_def_to_scale
 {
-    using upward_scale =
-        basic_scale<
-            ScaledAs,
-            cvt::interpret_on_key_t<
-                KeyIdent,
-                pack_to_ident_set_t<special_scale_set_t<ScaledAs, true>>
-            >
-        >
-    ;
-    using downward_scale =
-        basic_scale<
-            ScaledAs,
-            cvt::interpret_on_key_t<
-                KeyIdent,
-                pack_to_ident_set_t<special_scale_set_t<ScaledAs, false>>
-            >
-        >
-    ;
+    using upward_scale = basic_scale<
+        ScaledAs,
+        pack_to_ident_set_t<KeyIdent, special_scale_set_t<ScaledAs, true>>
+    >;
+    using downward_scale = basic_scale<
+        ScaledAs,
+        pack_to_ident_set_t<KeyIdent, special_scale_set_t<ScaledAs, false>>
+    >;
 
     using type = std::conditional_t<
         std::is_same_v<upward_scale, downward_scale>,

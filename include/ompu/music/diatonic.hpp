@@ -25,19 +25,19 @@ template<> struct diatonic_chords<key_feels::major, degrees::VII, true>
 { using type = degreed_chord<degrees::VII, basic_chord<chord_fund_set<chord_notes::m3, chord_notes::b5, void, chord_notes::m7>, chord_tension_set<>>>; };
 
 template<> struct diatonic_chords<key_feels::minor, degrees::I, true>
-{ using type = degreed_chord<degrees::I, basic_chord<chord_fund_set<chord_notes::m3, chord_notes::P5, void, chord_notes::M7>, chord_tension_set<>>>; };
+{ using type = degreed_chord<degrees::I, basic_chord<chord_fund_set<chord_notes::m3, chord_notes::P5, void, chord_notes::m7>, chord_tension_set<>>>; };
 template<> struct diatonic_chords<key_feels::minor, degrees::II, true>
 { using type = degreed_chord<degrees::II, basic_chord<chord_fund_set<chord_notes::m3, chord_notes::b5, void, chord_notes::m7>, chord_tension_set<>>>; };
 template<> struct diatonic_chords<key_feels::minor, degrees::III, true>
-{ using type = degreed_chord<degrees::III, basic_chord<chord_fund_set<chord_notes::M3, chord_notes::aug5, void, chord_notes::M7>, chord_tension_set<>>>; };
+{ using type = degreed_chord<degrees::III, basic_chord<chord_fund_set<chord_notes::M3, chord_notes::P5, void, chord_notes::M7>, chord_tension_set<>>>; };
 template<> struct diatonic_chords<key_feels::minor, degrees::IV, true>
 { using type = degreed_chord<degrees::IV, basic_chord<chord_fund_set<chord_notes::m3, chord_notes::P5, void, chord_notes::m7>, chord_tension_set<>>>; };
 template<> struct diatonic_chords<key_feels::minor, degrees::V, true>
-{ using type = degreed_chord<degrees::V, basic_chord<chord_fund_set<chord_notes::M3, chord_notes::P5, void, chord_notes::m7>, chord_tension_set<>>>; };
+{ using type = degreed_chord<degrees::V, basic_chord<chord_fund_set<chord_notes::m3, chord_notes::P5, void, chord_notes::m7>, chord_tension_set<>>>; };
 template<> struct diatonic_chords<key_feels::minor, degrees::VI, true>
 { using type = degreed_chord<degrees::VI, basic_chord<chord_fund_set<chord_notes::M3, chord_notes::P5, void, chord_notes::M7>, chord_tension_set<>>>; };
 template<> struct diatonic_chords<key_feels::minor, degrees::VII, true>
-{ using type = degreed_chord<degrees::VII, basic_chord<chord_fund_set<chord_notes::m3, chord_notes::b5, void, chord_notes::dim7>, chord_tension_set<>>>; };
+{ using type = degreed_chord<degrees::VII, basic_chord<chord_fund_set<chord_notes::M3, chord_notes::P5, void, chord_notes::m7>, chord_tension_set<>>>; };
 
 
 template<class KeyFeel, class Degree>

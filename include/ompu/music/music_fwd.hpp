@@ -72,16 +72,21 @@ using all_tones = std::tuple<
 template<class... Tones>
 struct tone_set;
 
-template<class... ToneHeights>
-using make_tone_set = tone_set<basic_tone<ToneHeights>...>;
-
 namespace detail {
 
 template<unsigned ... ToneHeights>
 using make_tone_set = tone_set<basic_tone<tone_height<ToneHeights>>...>;
 
-} // detail
+namespace predef {
 
+using C_natural_major_tone_set = make_tone_set<0, 2, 4, 5, 7, 9, 11>;
+using A_natural_minor_tone_set = make_tone_set<9, 11, 0, 2, 4, 5, 7>;
+
+using C_natural_minor_tone_set = make_tone_set<0, 2, 3, 5, 7, 8, 10>;
+
+} // predef
+
+} // detail
 
 
 namespace mods {

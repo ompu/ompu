@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ompu/music/tone.hpp"
+
 #include "saya/zed/fold.hpp"
 #include "saya/zed/seq.hpp"
 
@@ -87,9 +89,9 @@ key_white_keys_before_v =
 template<std::size_t Octaves>
 using make_octave_sequence = std::make_index_sequence<Octaves>;
 
-using octave_white_key_sequence = std::index_sequence<
-    0, 2, 4, 5, 7, 9, 11
->;
+
+using octave_white_key_sequence = music::cvt::to_index_sequence_t<music::detail::predef::C_natural_major_tone_set>;
+
 
 namespace detail {
 

@@ -57,11 +57,16 @@ struct mod_set
         saya::zed::all_of_v<
             std::is_integral,
             saya::zed::template_<>,
-            typename Mods::offset_type...
+            decltype(Mods::offset)...
         >,
-        "all mods must have an integral offset_type"
+        "all mods must have an integral offset value"
     );
+
     static constexpr std::size_t count = sizeof...(Mods);
+    static constexpr std::size_t modded_count = saya::zed::fold_add_v<
+        std::size_t, 0,
+        std::conditional_t<std::is_same_v<Mods, mods::none>, std::integral_constant<std::size_t, 0>, std::integral_constant<std::size_t, 1>>::value...
+    >;
 };
 
 

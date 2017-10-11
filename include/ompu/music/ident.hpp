@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ompu/music/type_traits.hpp"
 #include "ompu/music/mod.hpp"
+#include "ompu/music/type_traits.hpp"
 
 
 namespace ompu { namespace music {

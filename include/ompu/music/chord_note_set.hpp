@@ -12,7 +12,7 @@ template<class CN3, class CN5, class CN6, class CN7>
 struct chord_fund_set
 {
     using cn3 = CN3; using cn5 = CN5; using cn6 = CN6; using cn7 = CN7;
-    static_assert(!std::is_void_v<cn5>, "a chord must have the 5th note");
+    static_assert(!std::is_void_v<cn5>, "a chord must (at least) have the 5th note");
 
     static constexpr std::size_t unsafe_count = saya::zed::fold_add_v<
         std::size_t,
