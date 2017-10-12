@@ -29,6 +29,7 @@ If you have any questions, [file an issue](https://github.com/ompu/ompu/issues) 
 4. MIDI (`ompu::midi::*`)
 5. Concrete components for runtime data (`ompu::music::concrete::*`)
 6. Perpetuation interfaces (serializers and deserializers)
+7. Bridges for the JUCE library (`ompu::juicy::*`)
 
 Also see the [ompu Wiki](https://github.com/ompu/ompu/wiki).
 
