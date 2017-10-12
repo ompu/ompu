@@ -103,10 +103,15 @@ void Chord::reorganize()
             break;
 
         case 2: // add9
-            // ignore
+            if (dtag.cns[1]) {
+                throw disharmony_error();
+            }
             break;
 
         case 3: // m3
+            if (dtag.cns[2]) {
+                throw disharmony_error();
+            }
             tag_.cn3 = cn.value();
             break;
 

@@ -31,7 +31,7 @@ struct too_many_tensions : too_many_notes
 struct disharmony_error : invalid_chord_error
 {
     using invalid_chord_error::invalid_chord_error;
-    disharmony_error() : invalid_chord_error("specified notes yields inevitable disharmony") {}
+    disharmony_error() : invalid_chord_error("specified notes yield inevitable disharmony") {}
 };
 
 
