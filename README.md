@@ -13,30 +13,22 @@ Currently under **open alpha**.
 If you have any questions, [file an issue](https://github.com/ompu/ompu/issues) or please send an email to: support@ompu.io
 
 
-## Concepts
+## ompu::music Concepts
 
-1. Free, [open-source licensed (MIT)](LICENSE)
-2. Everything is a __*Tag object*__, which basically means:
-   1. All components (i.e. classes) are designed to be lightweight enough to instantiate for heavy runtime data structures
-3. Everything can be __*static*__,  based on compile-time type-traits
-   1. __*Abstract components*__ are defined as `std::tuple<Ts...>` and/or `std::integer_sequence<T, T...>` sequences
-   2. __*Concrete components*__ are defined as `boost::variant<Ts...>` sequences
-4. Everything can be __*statically dynamic*__, based on compile-time __*Tag Dispatch*__
-   1. This can be achieved with __*concrete components*__ and `boost::static_visitor<your_return_type>`
+1. No heavy SFINAE, just specializations
+2. No heavy preprocessors
+3. Everything is __*static*__, determined at compile-time
+4. Sequences are defined as `std::tuple<Ts...>` and/or `std::integer_sequence<T, T...>`
 
-The fundamental components are:
+
+## Components
 
 1. [Modern Music Theory & Church Mode components](https://github.com/ompu/ompu/wiki/Component-(Music)) (`ompu::music::*`)
-
-All concepts apply to every classes in this library, with some exceptions:
-
-1. Components to deal specifically with runtime I/O and graphics:
-   1. I/O related (e.g. `ompu::net::*`)
-   2. Game related (e.g. `ompu::game::*`, `ompu::geo::*`)
-2. Components to deal with runtime data:
-   1. MIDI related (`ompu::midi::*`)
-3. Concrete components (e.g. `ompu::music::concretes::*`)
-4. Perpetuation interfaces
+2. Network I/O (`ompu::net::*`)
+3. Game graphics and geometry (`ompu::game::*`, `ompu::geo::*`)
+4. MIDI (`ompu::midi::*`)
+5. Concrete components for runtime data (`ompu::music::concrete::*`)
+6. Perpetuation interfaces (serializers and deserializers)
 
 Also see the [ompu Wiki](https://github.com/ompu/ompu/wiki).
 
@@ -45,7 +37,7 @@ Also see the [ompu Wiki](https://github.com/ompu/ompu/wiki).
 ## Roadmap (v1)
 
 - [ ] The game
-- [ ] Basic music theory support
+- [x] Basic music theory support
 - [ ] BPM detection
 - [ ] Key detection
 - [ ] Chord detection
