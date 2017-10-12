@@ -18,7 +18,7 @@ If you have any questions, [file an issue](https://github.com/ompu/ompu/issues) 
 1. No heavy SFINAE, just specializations
 2. No heavy preprocessors
 3. Everything is __*static*__, determined at compile-time
-4. Sequences are defined as `std::tuple<Ts...>` and/or `std::integer_sequence<T, T...>`
+4. Sequences are defined as Tuples and/or Integer-sequences
 
 
 ## Components
