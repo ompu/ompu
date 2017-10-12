@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ompu/music/concrete/types.hpp"
+#include "ompu/music/concrete/interval.hpp"
 #include "ompu/music/ident.hpp"
 
 #include "ompu/midi/midi_fwd.hpp"
@@ -28,6 +29,9 @@ public:
     Note(Note const&) = default;
     Note(Note&&) noexcept = default;
     ~Note() noexcept = default;
+
+    Note& operator=(Note const&) = default;
+    Note& operator=(Note&&) noexcept = default;
 
     note_height_type height() const noexcept { return nh_; }
     octave_type octave() const noexcept { return oct_; }

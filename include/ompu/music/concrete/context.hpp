@@ -2,6 +2,7 @@
 
 #include "ompu/music/music_fwd.hpp"
 
+#include "ompu/music/concrete/types.hpp"
 #include "ompu/music/concrete/note.hpp"
 #include "ompu/music/concrete/chord.hpp"
 #include "ompu/music/concrete/key.hpp"
@@ -38,9 +39,9 @@ private:
 } // detail
 
 
-struct context_error : std::runtime_error
+struct context_error : concrete_error
 {
-    explicit context_error(std::string reason) : std::runtime_error(std::move(reason)) {}
+    explicit context_error(std::string reason) : concrete_error(std::move(reason)) {}
 };
 
 class Context

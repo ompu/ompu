@@ -5,11 +5,17 @@
 #include <boost/variant/variant_fwd.hpp>
 
 #include <iosfwd>
+#include <stdexcept>
 
 
 namespace ompu { namespace music { namespace concrete {
 
 using octave_type = int;
+
+struct concrete_error : std::runtime_error
+{
+    using std::runtime_error::runtime_error;
+};
 
 
 using any_mods = saya::zed::rewrap_t<

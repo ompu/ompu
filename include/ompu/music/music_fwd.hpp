@@ -1,6 +1,6 @@
 #pragma once
 
-#include <boost/config.hpp>
+#include "ompu/config.hpp"
 
 #pragma warning(push)
 #if BOOST_MSVC

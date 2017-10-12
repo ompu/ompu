@@ -18,6 +18,7 @@ Note::Note(midi::Message const& mes) noexcept
     , oct_(mes.note_num / 12)
 {}
 
+
 bool Note::operator==(Note const& rhs) const noexcept
 {
     return nh_ == rhs.nh_ && oct_ == rhs.oct_;
