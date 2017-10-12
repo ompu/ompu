@@ -8,6 +8,11 @@
 
 namespace ompu { namespace music { namespace concrete {
 
+Note::Note(note_height_type nh, octave_type oct) noexcept
+    : nh_(nh)
+    , oct_(oct)
+{}
+
 Note::Note(CanonicalNoteHeight nh, ModType mod, octave_type oct) noexcept
     : nh_(static_cast<note_height_type>(nh) + mod_value(mod))
     , oct_(oct)

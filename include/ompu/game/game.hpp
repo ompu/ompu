@@ -2,6 +2,7 @@
 
 #include "ompu/game/game_fwd.hpp"
 #include "ompu/game/error.hpp"
+#include "ompu/game/scheduler.hpp"
 #include "ompu/game/scene.hpp"
 #include "ompu/game/game_data.hpp"
 #include "ompu/game/visitor.hpp"
@@ -35,10 +36,12 @@ class Game
 {
 public:
     explicit Game(saya::logger_env_set envs, Updater* const suv, Drawer* const sdv)
-        : is_running_(false)
+        : l_(envs, "Game")
+        , music_l_(envs, "MCtx")
+        , is_running_(false)
         , gd_(std::make_unique<GameData>(std::move(envs)))
-        , l_(gd_->envs(), "Game")
-        , eh_(gd_.get())
+        , sch_(4)
+        , eh_(sch_, *gd_)
         , gc_(gd_.get())
         , suv_(suv)
         , sdv_(sdv)
@@ -55,6 +58,8 @@ public:
     ~Game()
     {
         //l_.info() << "game over" << std::endl;
+
+        sch_.halt();
 
         //l_.info() << "stopping GC..." << std::endl;
         gc_.stop();
@@ -163,6 +168,7 @@ private:
         }
     }
 
+    saya::logger l_, music_l_;
 
     std::atomic<bool> is_running_;
     std::unique_ptr<GameData> gd_;
@@ -170,8 +176,8 @@ private:
     Updater* const suv_;
     Drawer* const sdv_;
 
-    saya::logger l_;
 
+    Scheduler sch_;
     EventHandler eh_;
 
     GC gc_;

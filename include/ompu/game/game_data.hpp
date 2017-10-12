@@ -4,6 +4,8 @@
 #include "ompu/game/scene.hpp"
 #include "ompu/midi/midi_fwd.hpp"
 
+#include "ompu/music/concrete/context.hpp"
+
 #include "saya/logger/logger_env.hpp"
 
 #include <boost/lockfree/queue.hpp>
@@ -54,6 +56,9 @@ public:
     scenes::all_type scene() const { return scene_; }
     double fps() const;
 
+    music::concrete::Context& music_ctx() noexcept { return music_ctx_; }
+    music::concrete::Context const& music_ctx() const noexcept { return music_ctx_; }
+
     //std::chrono::steady_clock::time_point last_snapshot_at() const { return last_snapshot_at_; }
 
     // ------------------------------------------
@@ -83,6 +88,8 @@ private:
     std::chrono::steady_clock::time_point last_snapshot_at_, last_fps_at_;
     unsigned fps_count_{0};
     double last_fps_{0};
+
+    music::concrete::Context music_ctx_;
 };
 
 }} // ompu

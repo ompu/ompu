@@ -24,6 +24,8 @@ class Message : public std::enable_shared_from_this<Message>
 public:
     OMPU_DEF_HELPER_EXTRACT_CLASS_TRAITS(Message)
     OMPU_DEF_HELPER_EXTRACT_VARIABLES(OMPU_MIDI_MESSAGE_DEF)
+
+    bool is_note_on_or_off() const noexcept { return type == MessageType::NoteOn || type == MessageType::NoteOff; }
 };
 
 #include "ompu/def_helper_undef.hpp"

@@ -11,13 +11,13 @@ namespace ompu { namespace game {
 class EventHandler
 {
 public:
-    explicit EventHandler(GameData* gd);
+    explicit EventHandler(Scheduler& sch, GameData& gd);
     ~EventHandler() = default;
 
-    void in_midi(std::unique_ptr<midi::Message> v);
+    void in_midi(std::shared_ptr<midi::Message> msg);
 
 #if 0
-    void in_midi_sysex(std::unique_ptr<midi::Sysex> v);
+    void in_midi_sysex(std::unique_ptr<midi::Sysex> msg);
 #endif
 
 
@@ -28,7 +28,8 @@ public:
     EventHandler& operator=(EventHandler&&) = delete;
 
 private:
-    GameData* const gd_;
+    Scheduler& sch_;
+    GameData& gd_;
 };
 
 }} // ompu

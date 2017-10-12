@@ -13,6 +13,8 @@ class GameDataSnapshot;
 
 // class Game;
 
+class Scheduler;
+
 class Event;
 class EventHandler;
 

@@ -42,10 +42,30 @@ void Context::set(Key key) noexcept
 std::vector<Chord>
 Context::get_closest_chords(std::size_t const limit) const
 {
+    auto const notes = kb_.notes();
+
     std::vector<Chord> ret;
     ret.reserve(limit);
 
+    try {
+        for (auto possible_root : notes) {
+            auto const root_height = possible_root.height();
+            Chord chord{std::move(possible_root)};
 
+            for (auto possible_note : notes) {
+                if (possible_note.height() == root_height) continue;
+                chord.add(std::move(possible_note));
+            }
+
+            ret.emplace_back(std::move(chord));
+            if (ret.size() >= limit) break;
+        }
+
+    } catch (invalid_chord_error const& e) {
+        if (logger_) {
+            *logger_ << e.what() << std::endl;
+        }
+    }
 
     return ret;
 }

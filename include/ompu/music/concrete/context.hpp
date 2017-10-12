@@ -62,9 +62,13 @@ public:
     std::vector<Chord>
     get_closest_chords(std::size_t limit = 3) const;
 
+    void set_logger(std::ostream* logger) noexcept { logger_ = logger; }
+
 private:
     Key key_;
     detail::ContextKeyboard kb_;
+
+    std::ostream* logger_{nullptr};
 };
 
 }}} // ompu

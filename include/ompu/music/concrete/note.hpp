@@ -2,7 +2,6 @@
 
 #include "ompu/music/concrete/types.hpp"
 #include "ompu/music/concrete/interval.hpp"
-#include "ompu/music/ident.hpp"
 
 #include "ompu/midi/midi_fwd.hpp"
 
@@ -15,12 +14,6 @@ class Note : boost::partially_ordered<Note>
 {
 public:
     Note() noexcept = default;
-
-    template<class Tone, class Mod>
-    explicit Note(basic_ident<Tone, Mod>) noexcept
-        : nh_(Tone::height)
-        , mod_(make_mod(Mod{}))
-    {}
 
     explicit Note(note_height_type nh, octave_type oct) noexcept;
     explicit Note(CanonicalNoteHeight nh, ModType mod, octave_type oct) noexcept;
@@ -42,7 +35,6 @@ public:
 
 private:
     note_height_type nh_;
-    ModType mod_;
     octave_type oct_;
 };
 
