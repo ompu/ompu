@@ -67,6 +67,7 @@ Context::get_closest_chords(std::size_t const limit) const
         }
     }
 
+    ret.shrink_to_fit();
     return ret;
 }
 
