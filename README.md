@@ -24,12 +24,12 @@ If you have any questions, [file an issue](https://github.com/ompu/ompu/issues) 
 ## Components
 
 1. [Modern Music Theory & Church Mode components](https://github.com/ompu/ompu/wiki/Component-(Music)) (`ompu::music::*`)
-2. Network I/O (`ompu::net::*`)
-3. Game graphics and geometry (`ompu::game::*`, `ompu::geo::*`)
-4. MIDI (`ompu::midi::*`)
-5. Concrete components for runtime data (`ompu::music::concrete::*`)
-6. Perpetuation interfaces (serializers and deserializers)
-7. Bridges for the JUCE library (`ompu::juicy::*`)
+2. File/stream I/O (`ompu::io::*`)
+3. Network I/O (`ompu::net::*`)
+4. Game graphics and geometry (`ompu::game::*`, `ompu::geo::*`)
+5. MIDI (`ompu::midi::*`)
+6. Concrete components for runtime data (`ompu::music::concrete::*`)
+7. Bridge for 3rd party libraries (`ompu::juicy::*`)
 
 Also see the [ompu Wiki](https://github.com/ompu/ompu/wiki).
 
@@ -52,6 +52,14 @@ Also see the [ompu Wiki](https://github.com/ompu/ompu/wiki).
 - [ ] OSC protocol support
 - [ ] ompu hardware
 
+## Building
+
+```bash
+git submodule update --init
+mkdir build
+cd build
+cmake -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT=path/to/boost ..
+```
 
 ## Requirements
 

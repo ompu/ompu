@@ -2,10 +2,7 @@
 #include "ompu/io.hpp"
 
 #pragma warning(push)
-
-#if BOOST_MSVC
-#pragma warning(disable: 4819 4459)
-#endif
+#include "ompu/juicy/qi_warnings.hpp"
 
 // #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/qi_rule.hpp>
@@ -16,11 +13,10 @@
 #include <boost/spirit/include/qi_optional.hpp>
 #include <boost/spirit/include/qi_operator.hpp>
 #include <boost/spirit/include/qi_parse.hpp>
+#pragma warning(pop)
 
 #pragma warning(push)
-#if BOOST_MSVC
-#pragma warning(disable: 4456)
-#endif
+#include "ompu/juicy/karma_warnings.hpp"
 
 // #include <boost/spirit/include/karma.hpp>
 #include <boost/spirit/include/karma_rule.hpp>
@@ -32,8 +28,6 @@
 #include <boost/spirit/include/karma_optional.hpp>
 #include <boost/spirit/include/karma_operator.hpp>
 #include <boost/spirit/include/karma_generate.hpp>
-#pragma warning(pop)
-
 #pragma warning(pop)
 
 

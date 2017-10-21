@@ -1,0 +1,9 @@
+[submodule "modules/saya"]
+	path = modules/saya
+	url = https://github.com/saya-io/saya.git
+[submodule "modules/sprout"]
+	path = modules/sprout
+	url = https://github.com/bolero-MURAKAMI/Sprout.git
+[submodule "modules/googletest"]
+	path = modules/googletest
+	url = https://github.com/ompu/googletest.git

@@ -57,14 +57,36 @@ public:
     void auto_set_root() noexcept;
     void add(Note note);
 
+    // std::string str() const;
+
+    bool is_valid() const noexcept;
+
     bool is_power_chord() const noexcept;
     bool is_triad() const noexcept;
     bool is_tetrad() const noexcept;
 
+    bool is_sixth_chord() const noexcept;
+    bool is_seventh_chord() const noexcept;
+
     bool is_on_chord() const noexcept;
+
+    // other trivial chord traits
+    bool is_major() const noexcept;
+    bool is_minor() const noexcept;
+    bool has_b5() const noexcept;
+    bool has_aug5() const noexcept;
+
+    bool has_m7() const noexcept;
+    bool has_M7() const noexcept;
+    bool has_dim7() const noexcept;
+
+    bool has_tension() const noexcept;
+    bool has_add9() const noexcept;
+
 
     std::vector<Note> valid_notes() const;
 
+    Note const& bass() const noexcept;
     Note const& note_1() const noexcept;
     Note const& note_3() const noexcept;
     Note const& note_5() const noexcept;
@@ -73,13 +95,18 @@ public:
 
     tensions_type const& tensions() const noexcept { return tensions_; }
 
+    friend std::ostream& operator<<(std::ostream& os, Chord const& ch);
+
 private:
     void reorganize();
+    char const* the_7_or_9() const noexcept;
+    char const* the_tension() const noexcept;
+    note_height_type distance_from_root(Note const* to_note) const noexcept;
 
     struct NoteTagger
     {
         using pointer_type = Note const*;
-        pointer_type cn1{nullptr}, cn3{nullptr}, cn5{nullptr}, cn6{nullptr}, cn7{nullptr};
+        pointer_type cn1{nullptr}, cn3{nullptr}, cn5{nullptr}, cn6{nullptr}, cn7{nullptr}, cn9{nullptr};
     };
 
     struct DynamicTagger

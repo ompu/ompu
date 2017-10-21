@@ -3,7 +3,11 @@
 #include <boost/range/algorithm/count_if.hpp>
 #include <boost/range/adaptor/indexed.hpp>
 
+#include <boost/format.hpp>
 #include <boost/assert.hpp>
+
+#include <sstream>
+#include <iostream>
 
 
 namespace ompu { namespace music { namespace concrete {
@@ -67,7 +71,7 @@ void Chord::reorganize()
         bool const is_tension = (note.height() - root_height) >= 12;
 
         if (is_tension) {
-            if (tensions_.size() >= 2) {
+            if (tensions_.size() >= 1) {
                 throw too_many_tensions();
             }
 
@@ -83,6 +87,12 @@ void Chord::reorganize()
         }
         dtag.cns[intv.semitones()] = note_ptr;
     }
+
+    // auto-assign trivial tensions
+    if (dtag.cns[14]) {
+        tag_.cn9 = dtag.cns[14];
+    }
+
 
     if (boost::range::count_if(dtag.cns, [] (auto const* const cn) -> bool {
         return cn;
@@ -179,6 +189,12 @@ void Chord::reorganize()
 } // reorganize()
 
 
+bool Chord::is_valid() const noexcept
+{
+    // a chord must at least be a power chord
+    return notes_.size() >= 2 && tag_.cn1 && tag_.cn5;
+}
+
 bool Chord::is_power_chord() const noexcept
 {
     return !tag_.cn3 && !tag_.cn6 && !tag_.cn7;
@@ -186,12 +202,12 @@ bool Chord::is_power_chord() const noexcept
 
 bool Chord::is_triad() const noexcept
 {
-    return tag_.cn3 && !tag_.cn6 && !tag_.cn7;
+    return notes_.size() == 3;
 }
 
 bool Chord::is_tetrad() const noexcept
 {
-    return tag_.cn3 && !tag_.cn6 && tag_.cn7;
+    return notes_.size() == 4;
 }
 
 bool Chord::is_on_chord() const noexcept
@@ -200,35 +216,108 @@ bool Chord::is_on_chord() const noexcept
     return tag_.cn1 != std::addressof(*notes_.begin());
 }
 
+bool Chord::is_sixth_chord() const noexcept
+{
+    return tag_.cn6;
+}
+
+bool Chord::is_seventh_chord() const noexcept
+{
+    return tag_.cn7;
+}
+
+
+bool Chord::is_major() const noexcept
+{
+    BOOST_ASSERT(tag_.cn3);
+    return distance_from_root(tag_.cn3) == 4;
+}
+bool Chord::is_minor() const noexcept
+{
+    BOOST_ASSERT(tag_.cn3);
+    return distance_from_root(tag_.cn3) == 3;
+}
+
+bool Chord::has_b5() const noexcept
+{
+    BOOST_ASSERT(tag_.cn5);
+    return distance_from_root(tag_.cn5) == 6;
+}
+bool Chord::has_aug5() const noexcept
+{
+    BOOST_ASSERT(tag_.cn5);
+    return distance_from_root(tag_.cn5) == 8;
+}
+bool Chord::has_dim7() const noexcept
+{
+    BOOST_ASSERT(tag_.cn7);
+    return distance_from_root(tag_.cn7) == 9;
+}
+bool Chord::has_m7() const noexcept
+{
+    BOOST_ASSERT(tag_.cn7);
+    return distance_from_root(tag_.cn7) == 10;
+}
+bool Chord::has_M7() const noexcept
+{
+    BOOST_ASSERT(tag_.cn7);
+    return distance_from_root(tag_.cn7) == 11;
+}
+bool Chord::has_add9() const noexcept
+{
+    BOOST_ASSERT(is_valid());
+    return tag_.cn9;
+}
+bool Chord::has_tension() const noexcept
+{
+    BOOST_ASSERT(is_valid());
+    return !tensions_.empty();
+}
+
+
+Note const& Chord::bass() const noexcept
+{
+    BOOST_ASSERT(!notes_.empty());
+    BOOST_ASSERT(tag_.cn1);
+    return *notes_.cbegin();
+}
 
 Note const& Chord::note_1() const noexcept
 {
+    BOOST_ASSERT(!notes_.empty());
     BOOST_ASSERT(tag_.cn1); return *tag_.cn1;
 }
 
 Note const& Chord::note_3() const noexcept
 {
+    BOOST_ASSERT(!notes_.empty());
     BOOST_ASSERT(tag_.cn3); return *tag_.cn3;
 }
 
 Note const& Chord::note_5() const noexcept
 {
+    BOOST_ASSERT(!notes_.empty());
     BOOST_ASSERT(tag_.cn5); return *tag_.cn5;
 }
 
 Note const& Chord::note_6() const noexcept
 {
+    BOOST_ASSERT(!notes_.empty());
     BOOST_ASSERT(tag_.cn6); return *tag_.cn6;
 }
 
 Note const& Chord::note_7() const noexcept
 {
+    BOOST_ASSERT(!notes_.empty());
     BOOST_ASSERT(tag_.cn7); return *tag_.cn7;
 }
 
 std::vector<Note>
 Chord::valid_notes() const
 {
+    BOOST_ASSERT(!notes_.empty());
+    BOOST_ASSERT(tag_.cn1);
+
     std::vector<Note> res;
     res.reserve(5);
 
@@ -242,6 +331,132 @@ Chord::valid_notes() const
     return res;
 }
 
+note_height_type Chord::distance_from_root(Note const* to_note) const noexcept
+{
+    BOOST_ASSERT(is_valid());
+    return note_1().height() - to_note->height();
+}
+
+char const* Chord::the_7_or_9() const noexcept
+{
+    BOOST_ASSERT(is_valid());
+    BOOST_ASSERT(tag_.cn7);
+    return has_add9() ? "9" : "7";
+}
+
+
+char const* Chord::the_tension() const noexcept
+{
+    BOOST_ASSERT(has_tension());
+    switch (distance_from_root(tensions_.front())) {
+    case 13:
+        return "b9";
+
+    // case 14:
+        // return "add9";
+
+    case 17:
+        return "11";
+
+    case 18:
+        return "#11";
+
+    case 21:
+        return "b13";
+
+    case 22:
+        return "13";
+
+    case 23:
+        return "#13";
+    }
+    BOOST_ASSERT(!"unhandled tension");
+    return "";
+}
+
+
+std::ostream& operator<<(std::ostream& os, Chord const& ch)
+{
+    BOOST_ASSERT(ch.is_valid());
+
+    // always print the root
+    os << ch.note_1();
+
+    // C5
+    if (ch.is_power_chord()) {
+        return os << "5";
+    }
+
+    if (ch.is_seventh_chord()) {
+        if (ch.has_dim7()) {
+            BOOST_ASSERT(ch.is_minor());
+            BOOST_ASSERT(ch.has_b5());
+            os << "dim7";
+
+        } else if (ch.has_m7()) {
+            if (ch.is_major()) {
+                if (ch.has_b5()) {
+                    os << ch.the_7_or_9() << "-5";
+
+                } else if (ch.has_aug5()) {
+                    os << "aug" << ch.the_7_or_9();
+
+                } else {
+                    os << ch.the_7_or_9() << ch.the_tension();
+                }
+
+            } else {
+                os << "m" << ch.the_7_or_9();
+            }
+
+        } else if (ch.has_M7()) {
+            if (ch.is_major()) {
+                os << "M" << ch.the_7_or_9();
+            } else {
+                os << "mM" << ch.the_7_or_9();
+            }
+        }
+
+    } else if (ch.is_sixth_chord()) {
+        if (ch.is_minor()) {
+            os << "m";
+        }
+        os << "6";
+
+        if (ch.has_add9()) {
+            os << "9";
+        }
+
+    } else {
+        if (ch.has_b5()) {
+            if (ch.is_major()) {
+                os << "b5";
+            } else {
+                os << "dim";
+            }
+        } else if (ch.has_aug5()) {
+            BOOST_ASSERT(ch.is_major());
+            os << "aug";
+
+        } else {
+            if (ch.is_major()) {
+                // just major
+            } else {
+                os << "m";
+            }
+        }
+    }
+
+    std::ostringstream oss;
+    oss << "[BUG] attempt to print an unhandled chord type (";
+    oss << "notes: [";
+    for (auto const& note : ch.notes_) {
+        oss << " " << note.height();
+    }
+    oss << "])";
+    throw std::logic_error(oss.str());
+    BOOST_ASSERT(false);
+}
 
 }}} // ompu
 
