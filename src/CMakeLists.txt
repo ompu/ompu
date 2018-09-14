@@ -38,12 +38,16 @@ ompu_src(
   "midi/track"
   "midi/midi_io"
 
+  "music/concrete/error"
+  "music/concrete/chord_identity"
   "music/concrete/chord"
+  "music/concrete/chord_detector"
   "music/concrete/context"
   "music/concrete/interval"
   "music/concrete/key"
   "music/concrete/note"
   "music/concrete/types"
+  "music/concrete/chord_score"
 
   "game/database"
   "game/error"
@@ -63,11 +67,10 @@ ompu_src(
 add_library(ompu STATIC "${OMPU_SRCS}")
 
 
-target_include_directories(ompu SYSTEM BEFORE PUBLIC "${OMPU_SYSTEM_INCLUDE_DIRS}")
-target_include_directories(ompu BEFORE PUBLIC "${OMPU_INCLUDE_DIRS}")
-
 if(MSVC)
   link_directories("${BOOST_ROOT}/lib")
 endif()
 
+target_include_directories(ompu SYSTEM BEFORE PUBLIC "${OMPU_SYSTEM_INCLUDE_DIRS}")
+target_include_directories(ompu BEFORE PUBLIC "${OMPU_INCLUDE_DIRS}")
 target_link_libraries(ompu PUBLIC "${OMPU_LIBS}")

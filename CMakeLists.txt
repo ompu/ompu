@@ -58,6 +58,8 @@ set(
 set(
   OMPU_LIBS
   
+  ompu_headers
+
   # TODO: saya
 
   "${CMAKE_THREAD_LIBS_INIT}"
@@ -82,6 +84,15 @@ set(
   OMPU_INCLUDE_DIRS
   "${OMPU_ROOT}/include"
 )
+
+
+add_library(ompu_headers INTERFACE)
+file(GLOB_RECURSE OMPU_HEADER_FILES "${OMPU_ROOT}/include/ompu/*.hpp")
+
+target_include_directories(ompu_headers INTERFACE "${OMPU_ROOT}/include")
+target_sources(ompu_headers INTERFACE ${OMPU_HEADER_FILES})
+source_group("ompu Headers" FILES ${OMPU_HEADER_FILES})
+
 
 set(CMAKE_DEBUG_POSTFIX d)
 add_subdirectory(src)
