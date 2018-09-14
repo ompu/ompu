@@ -1,8 +1,14 @@
 CMakeFiles/
+cmake_install.cmake
+CMakeCache.txt
 
 /.vs/
 
 /build/
 /lib/
 /bin/
+
+/Builds/
+# /Lib/
+/JuceLibraryCode/
 

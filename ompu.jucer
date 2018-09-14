@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="SSz7kz" name="ompu" displaySplashScreen="1" reportAppUsage="1"
+              splashScreenColour="Dark" projectType="guiapp" version="2.0.0"
+              bundleIdentifier="com.ompu.ompu" includeBinaryInAppConfig="1"
+              cppLanguageStandard="latest" buildVST="0" buildVST3="0" buildAU="0"
+              buildAUv3="0" buildRTAS="0" buildAAX="0" buildStandalone="1"
+              enableIAA="0" pluginName="ompu" pluginDesc="Music Game for Musicians"
+              pluginManufacturer="ompu" pluginManufacturerCode="OMPU" pluginCode="OMom"
+              pluginChannelConfigs="" pluginIsSynth="1" pluginWantsMidiIn="1"
+              pluginProducesMidiOut="1" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="1"
+              pluginAUExportPrefix="ompuAU" pluginRTASCategory="" aaxIdentifier="com.ompu.ompu"
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="5.1.2"
+              binaryDataNamespace="" companyName="ompu" companyWebsite="https://ompu.io/"
+              companyEmail="support@ompu.io" defines="DONT_SET_USING_JUCE_NAMESPACE&#10;JUCE_DONT_DECLARE_PROJECTINFO">
+  <MAINGROUP id="b1omZO" name="ompu">
+    <GROUP id="{ED0A56E3-FE11-8CCA-AAFA-8446871D1613}" name="Modules">
+      <GROUP id="{1461ADF4-6359-7A72-9D5E-FD5B6F26E888}" name="saya">
+        <GROUP id="{1336F981-0BE4-E263-15E0-AE3EBC753D64}" name="console">
+          <FILE id="zxhKmF" name="color.hpp" compile="0" resource="0" file="Modules/saya/include/saya/console/color.hpp"/>
+        </GROUP>
+        <GROUP id="{093C9542-FEA4-3205-5555-29AC179E0901}" name="encoding">
+          <GROUP id="{293E73A8-47F2-FEA6-A4DE-5E08D35F661F}" name="detail">
+            <FILE id="Slue7R" name="unicode_cast.hpp" compile="0" resource="0"
+                  file="Modules/saya/include/saya/encoding/detail/unicode_cast.hpp"/>
+          </GROUP>
+          <FILE id="GfdILP" name="error.hpp" compile="0" resource="0" file="Modules/saya/include/saya/encoding/error.hpp"/>
+          <FILE id="xyz0jG" name="ustring.hpp" compile="0" resource="0" file="Modules/saya/include/saya/encoding/ustring.hpp"/>
+        </GROUP>
+        <GROUP id="{57406219-4B71-C9DD-0D76-CC3AD38C4CBC}" name="gumbo">
+          <FILE id="meU1LD" name="blade.hpp" compile="0" resource="0" file="Modules/saya/include/saya/gumbo/blade.hpp"/>
+          <FILE id="BJY59x" name="common.hpp" compile="0" resource="0" file="Modules/saya/include/saya/gumbo/common.hpp"/>
+          <FILE id="tWfEw4" name="error.hpp" compile="0" resource="0" file="Modules/saya/include/saya/gumbo/error.hpp"/>
+          <FILE id="GYJ5h0" name="helpers.hpp" compile="0" resource="0" file="Modules/saya/include/saya/gumbo/helpers.hpp"/>
+          <FILE id="RAMihY" name="make_range.hpp" compile="0" resource="0" file="Modules/saya/include/saya/gumbo/make_range.hpp"/>
+          <FILE id="xSyWXk" name="shaver.hpp" compile="0" resource="0" file="Modules/saya/include/saya/gumbo/shaver.hpp"/>
+          <FILE id="MSpQr3" name="string.hpp" compile="0" resource="0" file="Modules/saya/include/saya/gumbo/string.hpp"/>
+        </GROUP>
+        <GROUP id="{9B2A163B-9FAE-5076-1A19-9E9A95236D6D}" name="html">
+          <GROUP id="{8F8D9B38-5276-CED1-7732-E88C22DD3B1B}" name="detail">
+            <FILE id="etpWKx" name="escape_common.hpp" compile="0" resource="0"
+                  file="Modules/saya/include/saya/html/detail/escape_common.hpp"/>
+            <FILE id="E9EeVO" name="html_traits.hpp" compile="0" resource="0" file="Modules/saya/include/saya/html/detail/html_traits.hpp"/>
+            <FILE id="OZTctL" name="named_character_references_table.hpp" compile="0"
+                  resource="0" file="Modules/saya/include/saya/html/detail/named_character_references_table.hpp"/>
+            <FILE id="oPqXqg" name="unescape.hpp" compile="0" resource="0" file="Modules/saya/include/saya/html/detail/unescape.hpp"/>
+            <FILE id="mCF4kB" name="unescape_traits.hpp" compile="0" resource="0"
+                  file="Modules/saya/include/saya/html/detail/unescape_traits.hpp"/>
+          </GROUP>
+          <FILE id="XDsHOQ" name="escape.hpp" compile="0" resource="0" file="Modules/saya/include/saya/html/escape.hpp"/>
+          <FILE id="lGXlDd" name="html_string.hpp" compile="0" resource="0" file="Modules/saya/include/saya/html/html_string.hpp"/>
+        </GROUP>
+        <GROUP id="{1BF4A787-28AB-AF88-F2A8-15F0CDEC2517}" name="ika">
+          <GROUP id="{B6CDB3B2-9EF4-0BFA-15DD-AF5E1B6ACD4A}" name="ast">
+            <GROUP id="{55FA48F3-8EEE-89C6-26BA-74B15CAEA5E8}" name="detail">
+              <FILE id="a0fqgN" name="lookup_query.hpp" compile="0" resource="0"
+                    file="Modules/saya/include/saya/ika/ast/detail/lookup_query.hpp"/>
+            </GROUP>
+            <FILE id="BzxkeR" name="additional_class.hpp" compile="0" resource="0"
+                  file="Modules/saya/include/saya/ika/ast/additional_class.hpp"/>
+            <FILE id="HqjQp2" name="all.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/all.hpp"/>
+            <FILE id="DTbDX5" name="ast_entity.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/ast_entity.hpp"/>
+            <FILE id="tmf1hN" name="attribute.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/attribute.hpp"/>
+            <FILE id="AlG9XP" name="block.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/block.hpp"/>
+            <FILE id="masTNN" name="callable.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/callable.hpp"/>
+            <FILE id="QPnimO" name="debug.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/debug.hpp"/>
+            <FILE id="JLk5aC" name="declaration.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/declaration.hpp"/>
+            <FILE id="pJodwZ" name="definition.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/definition.hpp"/>
+            <FILE id="tiGY88" name="expr.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/expr.hpp"/>
+            <FILE id="v2qhzK" name="fusion_adapt.hpp" compile="0" resource="0"
+                  file="Modules/saya/include/saya/ika/ast/fusion_adapt.hpp"/>
+            <FILE id="mHPAvp" name="generator.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/generator.hpp"/>
+            <FILE id="Nhpudd" name="geo.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/geo.hpp"/>
+            <FILE id="QkRegR" name="group.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/group.hpp"/>
+            <FILE id="mSbgKP" name="id.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/id.hpp"/>
+            <FILE id="K909he" name="io_fwd.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/io_fwd.hpp"/>
+            <FILE id="ViNUbx" name="keyword.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/keyword.hpp"/>
+            <FILE id="GE42Kx" name="lit.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/lit.hpp"/>
+            <FILE id="t1AKuT" name="meta_lit.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/meta_lit.hpp"/>
+            <FILE id="ADE1NI" name="namespace.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/namespace.hpp"/>
+            <FILE id="EtE222" name="op.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/op.hpp"/>
+            <FILE id="OpDaHQ" name="root.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/root.hpp"/>
+            <FILE id="u7nKs4" name="statement.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/statement.hpp"/>
+            <FILE id="vL2L70" name="syntax.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/syntax.hpp"/>
+            <FILE id="cKMHLE" name="var.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast/var.hpp"/>
+          </GROUP>
+          <GROUP id="{7F020B67-9CA9-2A13-335B-6919BD61A1BC}" name="compiler">
+            <FILE id="FLlYEi" name="bridge.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/compiler/bridge.hpp"/>
+            <FILE id="rONhaL" name="source.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/compiler/source.hpp"/>
+            <FILE id="uruHnX" name="source_data.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/compiler/source_data.hpp"/>
+          </GROUP>
+          <GROUP id="{5D12BA9F-BF8E-5B74-9638-194F7D1475F3}" name="detail">
+            <FILE id="AFU4os" name="ika_id.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/detail/ika_id.hpp"/>
+          </GROUP>
+          <GROUP id="{13F7EDA9-1A37-06F1-1C46-FB84CEFC8125}" name="grammar">
+            <GROUP id="{DAFBB5F8-863B-824B-A1AB-403232B45888}" name="detail">
+              <FILE id="wU9SZu" name="spirit_attribute_support.hpp" compile="0" resource="0"
+                    file="Modules/saya/include/saya/ika/grammar/detail/spirit_attribute_support.hpp"/>
+            </GROUP>
+            <FILE id="jVcNSS" name="to_ast.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/grammar/to_ast.hpp"/>
+            <FILE id="oBJytV" name="to_html.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/grammar/to_html.hpp"/>
+          </GROUP>
+          <GROUP id="{6CEF7B83-4538-C596-DE91-DD62056A6B94}" name="vm">
+            <FILE id="vrEWpH" name="internal_def.hpp" compile="0" resource="0"
+                  file="Modules/saya/include/saya/ika/vm/internal_def.hpp"/>
+            <FILE id="VOqzCf" name="internal_undef.hpp" compile="0" resource="0"
+                  file="Modules/saya/include/saya/ika/vm/internal_undef.hpp"/>
+            <FILE id="yQnutf" name="type.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/vm/type.hpp"/>
+            <FILE id="ugi05P" name="value.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/vm/value.hpp"/>
+          </GROUP>
+          <FILE id="sBPUuE" name="ast_fwd.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/ast_fwd.hpp"/>
+          <FILE id="FPLFb1" name="compiler.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/compiler.hpp"/>
+          <FILE id="hxW71K" name="compiler_traits.hpp" compile="0" resource="0"
+                file="Modules/saya/include/saya/ika/compiler_traits.hpp"/>
+          <FILE id="PfHidt" name="error.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/error.hpp"/>
+          <FILE id="hyzo8c" name="evaluator.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/evaluator.hpp"/>
+          <FILE id="jJ2DFS" name="generator.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/generator.hpp"/>
+          <FILE id="V9FUy1" name="grammar.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/grammar.hpp"/>
+          <FILE id="Ela1BP" name="grammar_fwd.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/grammar_fwd.hpp"/>
+          <FILE id="UIhRhc" name="linter.hpp" compile="0" resource="0" file="Modules/saya/include/saya/ika/linter.hpp"/>
+        </GROUP>
+        <GROUP id="{F4C97CEA-5D02-E92D-C1E2-8C364BAF7249}" name="logger">
+          <FILE id="iRB940" name="level.hpp" compile="0" resource="0" file="Modules/saya/include/saya/logger/level.hpp"/>
+          <FILE id="C1d3LK" name="level_traits.hpp" compile="0" resource="0"
+                file="Modules/saya/include/saya/logger/level_traits.hpp"/>
+          <FILE id="RBOZLn" name="logger.hpp" compile="0" resource="0" file="Modules/saya/include/saya/logger/logger.hpp"/>
+          <FILE id="Lfj2Jv" name="logger_env.hpp" compile="0" resource="0" file="Modules/saya/include/saya/logger/logger_env.hpp"/>
+          <FILE id="YBiuTw" name="stream.hpp" compile="0" resource="0" file="Modules/saya/include/saya/logger/stream.hpp"/>
+          <FILE id="SCgxPR" name="traits.hpp" compile="0" resource="0" file="Modules/saya/include/saya/logger/traits.hpp"/>
+        </GROUP>
+        <GROUP id="{C9FD2C5F-D7C3-52BE-A3FA-9F634A912A0E}" name="program_options">
+          <FILE id="q5NdSe" name="comma_separated_string.hpp" compile="0" resource="0"
+                file="Modules/saya/include/saya/program_options/comma_separated_string.hpp"/>
+          <FILE id="HQtGCg" name="filesystem_path.hpp" compile="0" resource="0"
+                file="Modules/saya/include/saya/program_options/filesystem_path.hpp"/>
+          <FILE id="jHZsSt" name="utility.hpp" compile="0" resource="0" file="Modules/saya/include/saya/program_options/utility.hpp"/>
+        </GROUP>
+        <GROUP id="{8B03461A-FE8B-4B20-C107-51DA3BDF22B3}" name="test">
+          <FILE id="UXTeTY" name="filesystem.hpp" compile="0" resource="0" file="Modules/saya/include/saya/test/filesystem.hpp"/>
+        </GROUP>
+        <GROUP id="{77C5C135-6959-DF8E-79F5-0C3BA801DDB4}" name="unicode">
+          <FILE id="HIveDW" name="normalize.hpp" compile="0" resource="0" file="Modules/saya/include/saya/unicode/normalize.hpp"/>
+          <FILE id="pSvOK3" name="normalized_string.hpp" compile="0" resource="0"
+                file="Modules/saya/include/saya/unicode/normalized_string.hpp"/>
+          <FILE id="PW7z6s" name="string.hpp" compile="0" resource="0" file="Modules/saya/include/saya/unicode/string.hpp"/>
+        </GROUP>
+        <GROUP id="{CAB3860C-109D-89A0-02B2-B77642F65F45}" name="zed">
+          <FILE id="bwJTEx" name="blackhole.hpp" compile="0" resource="0" file="Modules/saya/include/saya/zed/blackhole.hpp"/>
+          <FILE id="fFyksg" name="core.hpp" compile="0" resource="0" file="Modules/saya/include/saya/zed/core.hpp"/>
+          <FILE id="oWxJrH" name="debugger.hpp" compile="0" resource="0" file="Modules/saya/include/saya/zed/debugger.hpp"/>
+          <FILE id="kF7Cb5" name="destructor_handler.hpp" compile="0" resource="0"
+                file="Modules/saya/include/saya/zed/destructor_handler.hpp"/>
+          <FILE id="vRMD5t" name="fold.hpp" compile="0" resource="0" file="Modules/saya/include/saya/zed/fold.hpp"/>
+          <FILE id="jwR4du" name="memory.hpp" compile="0" resource="0" file="Modules/saya/include/saya/zed/memory.hpp"/>
+          <FILE id="okGYUr" name="meta.hpp" compile="0" resource="0" file="Modules/saya/include/saya/zed/meta.hpp"/>
+          <FILE id="o5EsGI" name="pct.hpp" compile="0" resource="0" file="Modules/saya/include/saya/zed/pct.hpp"/>
+          <FILE id="hVA338" name="seq.hpp" compile="0" resource="0" file="Modules/saya/include/saya/zed/seq.hpp"/>
+          <FILE id="eePUJ2" name="terminal.hpp" compile="0" resource="0" file="Modules/saya/include/saya/zed/terminal.hpp"/>
+        </GROUP>
+        <FILE id="ROsPrS" name="bridge.hpp" compile="0" resource="0" file="Modules/saya/include/saya/bridge.hpp"/>
+        <FILE id="MnNx7s" name="console.hpp" compile="0" resource="0" file="Modules/saya/include/saya/console.hpp"/>
+        <FILE id="Cir5cN" name="console_fwd.hpp" compile="0" resource="0" file="Modules/saya/include/saya/console_fwd.hpp"/>
+        <FILE id="IPez1c" name="error.hpp" compile="0" resource="0" file="Modules/saya/include/saya/error.hpp"/>
+        <FILE id="oofha4" name="filesystem.hpp" compile="0" resource="0" file="Modules/saya/include/saya/filesystem.hpp"/>
+        <FILE id="Pkn2GO" name="flyweight.hpp" compile="0" resource="0" file="Modules/saya/include/saya/flyweight.hpp"/>
+        <FILE id="kPHsIe" name="gumbo.hpp" compile="0" resource="0" file="Modules/saya/include/saya/gumbo.hpp"/>
+        <FILE id="evpEy0" name="logger.hpp" compile="0" resource="0" file="Modules/saya/include/saya/logger.hpp"/>
+        <FILE id="qPCz6v" name="logger_fwd.hpp" compile="0" resource="0" file="Modules/saya/include/saya/logger_fwd.hpp"/>
+        <FILE id="mDsnJL" name="memory.hpp" compile="0" resource="0" file="Modules/saya/include/saya/memory.hpp"/>
+        <FILE id="hL44oC" name="normalizer.hpp" compile="0" resource="0" file="Modules/saya/include/saya/normalizer.hpp"/>
+        <FILE id="hUbP27" name="preprocessor.hpp" compile="0" resource="0"
+              file="Modules/saya/include/saya/preprocessor.hpp"/>
+        <FILE id="SWygFN" name="program_options.hpp" compile="0" resource="0"
+              file="Modules/saya/include/saya/program_options.hpp"/>
+        <FILE id="Nm26F2" name="regex.hpp" compile="0" resource="0" file="Modules/saya/include/saya/regex.hpp"/>
+        <FILE id="l5ghcj" name="stream_lock.hpp" compile="0" resource="0" file="Modules/saya/include/saya/stream_lock.hpp"/>
+        <FILE id="O5Gaz8" name="stream_object.hpp" compile="0" resource="0"
+              file="Modules/saya/include/saya/stream_object.hpp"/>
+        <FILE id="XrAndq" name="string.hpp" compile="0" resource="0" file="Modules/saya/include/saya/string.hpp"/>
+        <FILE id="pNsRpu" name="string_config.hpp" compile="0" resource="0"
+              file="Modules/saya/include/saya/string_config.hpp"/>
+        <FILE id="YgSbZS" name="string_set.hpp" compile="0" resource="0" file="Modules/saya/include/saya/string_set.hpp"/>
+        <FILE id="cgYPeM" name="syncstream.hpp" compile="0" resource="0" file="Modules/saya/include/saya/syncstream.hpp"/>
+        <FILE id="tz2Ouh" name="syncstream_fwd.hpp" compile="0" resource="0"
+              file="Modules/saya/include/saya/syncstream_fwd.hpp"/>
+        <FILE id="kOUSY0" name="system.hpp" compile="0" resource="0" file="Modules/saya/include/saya/system.hpp"/>
+        <FILE id="uPHnuN" name="test.hpp" compile="0" resource="0" file="Modules/saya/include/saya/test.hpp"/>
+        <FILE id="FTsgUj" name="type_traits.hpp" compile="0" resource="0" file="Modules/saya/include/saya/type_traits.hpp"/>
+        <FILE id="vwPBJs" name="voidstream.hpp" compile="0" resource="0" file="Modules/saya/include/saya/voidstream.hpp"/>
+        <FILE id="omZAbk" name="voidstream_fwd.hpp" compile="0" resource="0"
+              file="Modules/saya/include/saya/voidstream_fwd.hpp"/>
+      </GROUP>
+    </GROUP>
+    <GROUP id="{92133FF5-68FE-78D6-F24F-13659F41520B}" name="Headers">
+      <GROUP id="{18C7E43D-EE63-EF1C-77FF-025B55BB79C9}" name="ompu">
+        <GROUP id="{12414077-10D1-8EDB-AA14-FDD375A43AD7}" name="game">
+          <FILE id="CdjI5N" name="database.hpp" compile="0" resource="0" file="include/ompu/game/database.hpp"/>
+          <FILE id="zfDzeO" name="error.hpp" compile="0" resource="0" file="include/ompu/game/error.hpp"/>
+          <FILE id="hPApsb" name="event.hpp" compile="0" resource="0" file="include/ompu/game/event.hpp"/>
+          <FILE id="JtGLuG" name="event_handler.hpp" compile="0" resource="0"
+                file="include/ompu/game/event_handler.hpp"/>
+          <FILE id="mDu4kx" name="game.hpp" compile="0" resource="0" file="include/ompu/game/game.hpp"/>
+          <FILE id="gr4sxn" name="game_data.hpp" compile="0" resource="0" file="include/ompu/game/game_data.hpp"/>
+          <FILE id="VtimOF" name="game_data_snapshot.hpp" compile="0" resource="0"
+                file="include/ompu/game/game_data_snapshot.hpp"/>
+          <FILE id="HOYJtu" name="game_fwd.hpp" compile="0" resource="0" file="include/ompu/game/game_fwd.hpp"/>
+          <FILE id="Dotihz" name="gc.hpp" compile="0" resource="0" file="include/ompu/game/gc.hpp"/>
+          <FILE id="uJImNp" name="scene.hpp" compile="0" resource="0" file="include/ompu/game/scene.hpp"/>
+          <FILE id="gDFCMl" name="scheduler.hpp" compile="0" resource="0" file="include/ompu/game/scheduler.hpp"/>
+          <FILE id="DcYjZp" name="session.hpp" compile="0" resource="0" file="include/ompu/game/session.hpp"/>
+          <FILE id="WMS7wE" name="visitor.hpp" compile="0" resource="0" file="include/ompu/game/visitor.hpp"/>
+        </GROUP>
+        <GROUP id="{AC7487A3-CDAE-2783-6809-F781CF39282B}" name="geo">
+          <FILE id="r0PxlS" name="geo.hpp" compile="0" resource="0" file="include/ompu/geo/geo.hpp"/>
+          <FILE id="UPgUzE" name="idents.hpp" compile="0" resource="0" file="include/ompu/geo/idents.hpp"/>
+          <FILE id="nUDa5s" name="models.hpp" compile="0" resource="0" file="include/ompu/geo/models.hpp"/>
+          <FILE id="N0pRS1" name="ratio.hpp" compile="0" resource="0" file="include/ompu/geo/ratio.hpp"/>
+          <FILE id="onIAvc" name="strats.hpp" compile="0" resource="0" file="include/ompu/geo/strats.hpp"/>
+        </GROUP>
+        <GROUP id="{3EFE2AD7-3BCF-A7E8-36ED-2460660FA8F1}" name="io">
+          <GROUP id="{D370B8F5-99BD-42D4-6813-F220D22385EB}" name="in">
+            <FILE id="uzQDrX" name="chord_pro.hpp" compile="0" resource="0" file="include/ompu/io/in/chord_pro.hpp"/>
+          </GROUP>
+          <GROUP id="{1E20B0FD-8119-DA25-59CD-FD36AAD6B8BD}" name="out">
+            <FILE id="tCkSDd" name="chord_pro.hpp" compile="0" resource="0" file="include/ompu/io/out/chord_pro.hpp"/>
+          </GROUP>
+          <FILE id="UzSugt" name="chord_score.hpp" compile="0" resource="0" file="include/ompu/io/chord_score.hpp"/>
+          <FILE id="HsDcMl" name="io.hpp" compile="0" resource="0" file="include/ompu/io/io.hpp"/>
+          <FILE id="zI4cso" name="io_fwd.hpp" compile="0" resource="0" file="include/ompu/io/io_fwd.hpp"/>
+          <FILE id="M5f0La" name="reader.hpp" compile="0" resource="0" file="include/ompu/io/reader.hpp"/>
+          <FILE id="tL8iOs" name="writer.hpp" compile="0" resource="0" file="include/ompu/io/writer.hpp"/>
+        </GROUP>
+        <GROUP id="{7E522280-0061-2DA0-AB50-9DA5F50E8AED}" name="juicy">
+          <FILE id="mJaV2O" name="juce_warnings.hpp" compile="0" resource="0"
+                file="include/ompu/juicy/juce_warnings.hpp"/>
+          <FILE id="GavY12" name="karma_warnings.hpp" compile="0" resource="0"
+                file="include/ompu/juicy/karma_warnings.hpp"/>
+          <FILE id="zGEQlJ" name="qi_warnings.hpp" compile="0" resource="0" file="include/ompu/juicy/qi_warnings.hpp"/>
+        </GROUP>
+        <GROUP id="{C6BDE027-3357-303A-F526-7A70ABD11CCA}" name="midi">
+          <FILE id="ViYMwP" name="filter.hpp" compile="0" resource="0" file="include/ompu/midi/filter.hpp"/>
+          <FILE id="jEnxVz" name="io.hpp" compile="0" resource="0" file="include/ompu/midi/io.hpp"/>
+          <FILE id="ZOIOkO" name="message.hpp" compile="0" resource="0" file="include/ompu/midi/message.hpp"/>
+          <FILE id="Il0qu8" name="midi_fwd.hpp" compile="0" resource="0" file="include/ompu/midi/midi_fwd.hpp"/>
+          <FILE id="OkzPHT" name="spec.hpp" compile="0" resource="0" file="include/ompu/midi/spec.hpp"/>
+          <FILE id="MoQU8b" name="sysex.hpp" compile="0" resource="0" file="include/ompu/midi/sysex.hpp"/>
+          <FILE id="KsHhWa" name="track.hpp" compile="0" resource="0" file="include/ompu/midi/track.hpp"/>
+        </GROUP>
+        <GROUP id="{F1A1996E-7912-C145-6EB7-CD127BFAA166}" name="music">
+          <GROUP id="{A26290A0-8218-D0DA-BC2B-C14C6230B0D8}" name="concrete">
+            <FILE id="TuEDI7" name="chord.hpp" compile="0" resource="0" file="include/ompu/music/concrete/chord.hpp"/>
+            <FILE id="EVUJno" name="chord_detector.hpp" compile="0" resource="0"
+                  file="include/ompu/music/concrete/chord_detector.hpp"/>
+            <FILE id="KyOVeW" name="chord_identity.hpp" compile="0" resource="0"
+                  file="include/ompu/music/concrete/chord_identity.hpp"/>
+            <FILE id="ixA743" name="context.hpp" compile="0" resource="0" file="include/ompu/music/concrete/context.hpp"/>
+            <FILE id="dbkGZ1" name="error.hpp" compile="0" resource="0" file="include/ompu/music/concrete/error.hpp"/>
+            <FILE id="S3MhYf" name="interval.hpp" compile="0" resource="0" file="include/ompu/music/concrete/interval.hpp"/>
+            <FILE id="GEIoQl" name="key.hpp" compile="0" resource="0" file="include/ompu/music/concrete/key.hpp"/>
+            <FILE id="bP9jjf" name="note.hpp" compile="0" resource="0" file="include/ompu/music/concrete/note.hpp"/>
+            <FILE id="xepC1q" name="types.hpp" compile="0" resource="0" file="include/ompu/music/concrete/types.hpp"/>
+          </GROUP>
+          <GROUP id="{BFEF8AEC-B961-61E9-EF97-D37AE953B35F}" name="detail">
+            <FILE id="vrUL8a" name="symbol_names.hpp" compile="0" resource="0"
+                  file="include/ompu/music/detail/symbol_names.hpp"/>
+          </GROUP>
+          <FILE id="qnctUQ" name="bar.hpp" compile="0" resource="0" file="include/ompu/music/bar.hpp"/>
+          <FILE id="e4mDLq" name="chord.hpp" compile="0" resource="0" file="include/ompu/music/chord.hpp"/>
+          <FILE id="XAsxrU" name="chord_note.hpp" compile="0" resource="0" file="include/ompu/music/chord_note.hpp"/>
+          <FILE id="VPOyTk" name="chord_note_set.hpp" compile="0" resource="0"
+                file="include/ompu/music/chord_note_set.hpp"/>
+          <FILE id="XEKrLx" name="chord_traits.hpp" compile="0" resource="0"
+                file="include/ompu/music/chord_traits.hpp"/>
+          <FILE id="qvHFp0" name="concrete.hpp" compile="0" resource="0" file="include/ompu/music/concrete.hpp"/>
+          <FILE id="V7rRCS" name="debug.hpp" compile="0" resource="0" file="include/ompu/music/debug.hpp"/>
+          <FILE id="bCrer4" name="degree.hpp" compile="0" resource="0" file="include/ompu/music/degree.hpp"/>
+          <FILE id="okxNZ7" name="degreed_chord.hpp" compile="0" resource="0"
+                file="include/ompu/music/degreed_chord.hpp"/>
+          <FILE id="BbTEYa" name="diatonic.hpp" compile="0" resource="0" file="include/ompu/music/diatonic.hpp"/>
+          <FILE id="cGbOUd" name="ident.hpp" compile="0" resource="0" file="include/ompu/music/ident.hpp"/>
+          <FILE id="GdaCJV" name="interval.hpp" compile="0" resource="0" file="include/ompu/music/interval.hpp"/>
+          <FILE id="UagmjB" name="key.hpp" compile="0" resource="0" file="include/ompu/music/key.hpp"/>
+          <FILE id="ygUI5a" name="key_feel.hpp" compile="0" resource="0" file="include/ompu/music/key_feel.hpp"/>
+          <FILE id="fdk3bx" name="key_ident.hpp" compile="0" resource="0" file="include/ompu/music/key_ident.hpp"/>
+          <FILE id="X8nHlA" name="key_sign.hpp" compile="0" resource="0" file="include/ompu/music/key_sign.hpp"/>
+          <FILE id="JrxyHg" name="key_traits.hpp" compile="0" resource="0" file="include/ompu/music/key_traits.hpp"/>
+          <FILE id="e0ksND" name="mod.hpp" compile="0" resource="0" file="include/ompu/music/mod.hpp"/>
+          <FILE id="tf8aFk" name="music_fwd.hpp" compile="0" resource="0" file="include/ompu/music/music_fwd.hpp"/>
+          <FILE id="h8BWtR" name="music_traits.hpp" compile="0" resource="0"
+                file="include/ompu/music/music_traits.hpp"/>
+          <FILE id="apdr1R" name="part.hpp" compile="0" resource="0" file="include/ompu/music/part.hpp"/>
+          <FILE id="RnIOuY" name="relation.hpp" compile="0" resource="0" file="include/ompu/music/relation.hpp"/>
+          <FILE id="ZDoA2G" name="scale.hpp" compile="0" resource="0" file="include/ompu/music/scale.hpp"/>
+          <FILE id="oqarpB" name="scale_def.hpp" compile="0" resource="0" file="include/ompu/music/scale_def.hpp"/>
+          <FILE id="mNigcM" name="scale_traits.hpp" compile="0" resource="0"
+                file="include/ompu/music/scale_traits.hpp"/>
+          <FILE id="W2nID7" name="symbol.hpp" compile="0" resource="0" file="include/ompu/music/symbol.hpp"/>
+          <FILE id="b5aHo8" name="tone.hpp" compile="0" resource="0" file="include/ompu/music/tone.hpp"/>
+          <FILE id="L8Q8oV" name="tone_types.hpp" compile="0" resource="0" file="include/ompu/music/tone_types.hpp"/>
+          <FILE id="GuxEf6" name="track.hpp" compile="0" resource="0" file="include/ompu/music/track.hpp"/>
+          <FILE id="sSyYN2" name="type_traits.hpp" compile="0" resource="0" file="include/ompu/music/type_traits.hpp"/>
+        </GROUP>
+        <GROUP id="{8FFA8EFA-0E3A-50FA-F877-7BE429BD228F}" name="plug">
+          <GROUP id="{E8EEA521-7F08-C271-F5C9-62794B0C0739}" name="base">
+            <FILE id="j8qtQj" name="app_component.hpp" compile="0" resource="0"
+                  file="include/ompu/plug/base/app_component.hpp"/>
+          </GROUP>
+          <GROUP id="{9F01E5E6-520C-838C-05AC-72D1F393452B}" name="game">
+            <FILE id="biGpuj" name="drawer.hpp" compile="0" resource="0" file="include/ompu/plug/game/drawer.hpp"/>
+            <FILE id="jt90Jz" name="event_handler.hpp" compile="0" resource="0"
+                  file="include/ompu/plug/game/event_handler.hpp"/>
+            <FILE id="py4Hr8" name="game_fwd.hpp" compile="0" resource="0" file="include/ompu/plug/game/game_fwd.hpp"/>
+            <FILE id="PRvNx4" name="ui_set.hpp" compile="0" resource="0" file="include/ompu/plug/game/ui_set.hpp"/>
+            <FILE id="wWW6mH" name="updater.hpp" compile="0" resource="0" file="include/ompu/plug/game/updater.hpp"/>
+          </GROUP>
+          <GROUP id="{61F04115-99DB-2857-5AB3-5DEF6AEA04B1}" name="gui">
+            <FILE id="WSqmFT" name="gui_fwd.hpp" compile="0" resource="0" file="include/ompu/plug/gui/gui_fwd.hpp"/>
+          </GROUP>
+          <GROUP id="{34B54017-8DDD-DF2C-6AD9-0BD2ECC4B812}" name="host">
+            <FILE id="oo6lvC" name="filter_graph.hpp" compile="0" resource="0"
+                  file="include/ompu/plug/host/filter_graph.hpp"/>
+            <FILE id="o3ON49" name="filter_io_config.hpp" compile="0" resource="0"
+                  file="include/ompu/plug/host/filter_io_config.hpp"/>
+            <FILE id="HXTKTB" name="graph_editor_panel.hpp" compile="0" resource="0"
+                  file="include/ompu/plug/host/graph_editor_panel.hpp"/>
+            <FILE id="nSpbHK" name="host_app.hpp" compile="0" resource="0" file="include/ompu/plug/host/host_app.hpp"/>
+            <FILE id="PyShG6" name="host_window.hpp" compile="0" resource="0" file="include/ompu/plug/host/host_window.hpp"/>
+            <FILE id="ieYCxM" name="internal_filter.hpp" compile="0" resource="0"
+                  file="include/ompu/plug/host/internal_filter.hpp"/>
+          </GROUP>
+          <FILE id="lOlFgj" name="app.hpp" compile="0" resource="0" file="include/ompu/plug/app.hpp"/>
+          <FILE id="C4xRth" name="app_fwd.hpp" compile="0" resource="0" file="include/ompu/plug/app_fwd.hpp"/>
+          <FILE id="LMTy7n" name="audio_callback.hpp" compile="0" resource="0"
+                file="include/ompu/plug/audio_callback.hpp"/>
+          <FILE id="R8iVqT" name="device_manager.hpp" compile="0" resource="0"
+                file="include/ompu/plug/device_manager.hpp"/>
+          <FILE id="fyUWrG" name="error.hpp" compile="0" resource="0" file="include/ompu/plug/error.hpp"/>
+          <FILE id="kfBYIM" name="host_fwd.hpp" compile="0" resource="0" file="include/ompu/plug/host_fwd.hpp"/>
+          <FILE id="HEdTGq" name="io.hpp" compile="0" resource="0" file="include/ompu/plug/io.hpp"/>
+          <FILE id="vMtaiW" name="logger.hpp" compile="0" resource="0" file="include/ompu/plug/logger.hpp"/>
+          <FILE id="crjsz6" name="util.hpp" compile="0" resource="0" file="include/ompu/plug/util.hpp"/>
+        </GROUP>
+        <GROUP id="{827D60BC-86B9-7527-B04C-F3A112AA8796}" name="ui">
+          <GROUP id="{D3850111-09D7-54AF-1C7D-2333D46D994D}" name="synth">
+            <FILE id="CnrQxg" name="wheel.hpp" compile="0" resource="0" file="include/ompu/ui/synth/wheel.hpp"/>
+          </GROUP>
+          <FILE id="p6vdmd" name="all.hpp" compile="0" resource="0" file="include/ompu/ui/all.hpp"/>
+          <FILE id="VWyYm4" name="bass.hpp" compile="0" resource="0" file="include/ompu/ui/bass.hpp"/>
+          <FILE id="vUzdh3" name="component.hpp" compile="0" resource="0" file="include/ompu/ui/component.hpp"/>
+          <FILE id="XpWzc3" name="fletboard.hpp" compile="0" resource="0" file="include/ompu/ui/fletboard.hpp"/>
+          <FILE id="zcO8gU" name="guitar.hpp" compile="0" resource="0" file="include/ompu/ui/guitar.hpp"/>
+          <FILE id="YHEatg" name="key_status.hpp" compile="0" resource="0" file="include/ompu/ui/key_status.hpp"/>
+          <FILE id="nrWmga" name="keyboard.hpp" compile="0" resource="0" file="include/ompu/ui/keyboard.hpp"/>
+          <FILE id="Tel2QC" name="synth.hpp" compile="0" resource="0" file="include/ompu/ui/synth.hpp"/>
+        </GROUP>
+        <GROUP id="{747E0A74-76F7-3C12-2A90-FB64D6C2909A}" name="version">
+          <FILE id="HjNjTO" name="version.hpp" compile="0" resource="0" file="include/ompu/version/version.hpp"/>
+          <FILE id="opUZzX" name="version_set.hpp" compile="0" resource="0" file="include/ompu/version/version_set.hpp"/>
+        </GROUP>
+        <FILE id="tycLuz" name="component_id.hpp" compile="0" resource="0"
+              file="include/ompu/component_id.hpp"/>
+        <FILE id="bvAA77" name="config.hpp" compile="0" resource="0" file="include/ompu/config.hpp"/>
+        <FILE id="f8BXxQ" name="def_helper.hpp" compile="0" resource="0" file="include/ompu/def_helper.hpp"/>
+        <FILE id="NEHfb6" name="def_helper_undef.hpp" compile="0" resource="0"
+              file="include/ompu/def_helper_undef.hpp"/>
+        <FILE id="h07xP5" name="geo.hpp" compile="0" resource="0" file="include/ompu/geo.hpp"/>
+        <FILE id="tJINZC" name="io.hpp" compile="0" resource="0" file="include/ompu/io.hpp"/>
+        <FILE id="MQYgeA" name="midi.hpp" compile="0" resource="0" file="include/ompu/midi.hpp"/>
+        <FILE id="p6WYlA" name="music.hpp" compile="0" resource="0" file="include/ompu/music.hpp"/>
+        <FILE id="VjZvIX" name="ompu_fwd.hpp" compile="0" resource="0" file="include/ompu/ompu_fwd.hpp"/>
+        <FILE id="gOnfHw" name="ompu_lib.hpp" compile="0" resource="0" file="include/ompu/ompu_lib.hpp"/>
+        <FILE id="HqUfbS" name="ui_fwd.hpp" compile="0" resource="0" file="include/ompu/ui_fwd.hpp"/>
+        <FILE id="vnwNO6" name="util.hpp" compile="0" resource="0" file="include/ompu/util.hpp"/>
+        <FILE id="gt6xzg" name="version.hpp" compile="0" resource="0" file="include/ompu/version.hpp"/>
+      </GROUP>
+    </GROUP>
+    <GROUP id="{EBBB75E8-2894-3964-2E76-003914D6B66A}" name="Sources">
+      <GROUP id="{2B4E4CCF-A3BE-3444-3E8C-E0D9A6D2D0BD}" name="game">
+        <FILE id="lObBMf" name="database.cpp" compile="1" resource="0" file="src/game/database.cpp"/>
+        <FILE id="x29kYY" name="error.cpp" compile="1" resource="0" file="src/game/error.cpp"/>
+        <FILE id="YR6KtZ" name="event.cpp" compile="1" resource="0" file="src/game/event.cpp"/>
+        <FILE id="iytyEw" name="event_handler.cpp" compile="1" resource="0"
+              file="src/game/event_handler.cpp"/>
+        <FILE id="cHxAzY" name="game_data.cpp" compile="1" resource="0" file="src/game/game_data.cpp"/>
+        <FILE id="CqmIAn" name="game_data_snapshot.cpp" compile="1" resource="0"
+              file="src/game/game_data_snapshot.cpp"/>
+        <FILE id="BTPSwh" name="gc.cpp" compile="1" resource="0" file="src/game/gc.cpp"/>
+        <FILE id="IjMMZt" name="scheduler.cpp" compile="1" resource="0" file="src/game/scheduler.cpp"/>
+        <FILE id="XX24dC" name="session.cpp" compile="1" resource="0" file="src/game/session.cpp"/>
+      </GROUP>
+      <GROUP id="{709C7CE4-FE6A-F9DC-6E1F-DDB04B48BC6F}" name="geo">
+        <FILE id="NMhQe0" name="geo.cpp" compile="1" resource="0" file="src/geo/geo.cpp"/>
+        <FILE id="Z3lHbw" name="idents.cpp" compile="1" resource="0" file="src/geo/idents.cpp"/>
+        <FILE id="ZETvFj" name="models.cpp" compile="1" resource="0" file="src/geo/models.cpp"/>
+        <FILE id="w4VGTK" name="strats.cpp" compile="1" resource="0" file="src/geo/strats.cpp"/>
+      </GROUP>
+      <GROUP id="{085D4620-15FF-01E3-D5BD-97EBF614C042}" name="io">
+        <GROUP id="{E2B2705C-1644-6F2F-9DF8-71184FD7EE5D}" name="in">
+          <FILE id="ghLUmH" name="chord_pro.cpp" compile="1" resource="0" file="src/io/in/chord_pro.cpp"/>
+        </GROUP>
+        <GROUP id="{0E8379F6-BC92-E7AF-7EDF-B5F08BA8032D}" name="out">
+          <FILE id="kjISJ6" name="chord_pro.cpp" compile="1" resource="0" file="src/io/out/chord_pro.cpp"/>
+        </GROUP>
+        <FILE id="OcvzE7" name="reader.cpp" compile="1" resource="0" file="src/io/reader.cpp"/>
+        <FILE id="QMX5wY" name="writer.cpp" compile="1" resource="0" file="src/io/writer.cpp"/>
+      </GROUP>
+      <GROUP id="{61D116B8-BEBC-0132-206B-3BC22247AD72}" name="midi">
+        <FILE id="qcd2VV" name="filter.cpp" compile="1" resource="0" file="src/midi/filter.cpp"/>
+        <FILE id="PSD0UM" name="message.cpp" compile="1" resource="0" file="src/midi/message.cpp"/>
+        <FILE id="XjiRlr" name="midi_io.cpp" compile="1" resource="0" file="src/midi/midi_io.cpp"/>
+        <FILE id="qDzQKW" name="sysex.cpp" compile="1" resource="0" file="src/midi/sysex.cpp"/>
+        <FILE id="a7EKbv" name="track.cpp" compile="1" resource="0" file="src/midi/track.cpp"/>
+      </GROUP>
+      <GROUP id="{3D1E1D04-4C10-D8B4-596C-B48D839C3C5B}" name="music">
+        <GROUP id="{F7AD171A-E331-F2FA-E549-5915BF875645}" name="concrete">
+          <FILE id="tdPiqE" name="chord.cpp" compile="1" resource="0" file="src/music/concrete/chord.cpp"/>
+          <FILE id="yHEeon" name="chord_detector.cpp" compile="1" resource="0"
+                file="src/music/concrete/chord_detector.cpp"/>
+          <FILE id="t1Z5KL" name="chord_identity.cpp" compile="1" resource="0"
+                file="src/music/concrete/chord_identity.cpp"/>
+          <FILE id="p9UJK1" name="chord_score.cpp" compile="1" resource="0" file="src/music/concrete/chord_score.cpp"/>
+          <FILE id="MstMgM" name="context.cpp" compile="1" resource="0" file="src/music/concrete/context.cpp"/>
+          <FILE id="FJmdX5" name="error.cpp" compile="1" resource="0" file="src/music/concrete/error.cpp"/>
+          <FILE id="yy5jKA" name="interval.cpp" compile="1" resource="0" file="src/music/concrete/interval.cpp"/>
+          <FILE id="ISxAkB" name="key.cpp" compile="1" resource="0" file="src/music/concrete/key.cpp"/>
+          <FILE id="rO5cVX" name="note.cpp" compile="1" resource="0" file="src/music/concrete/note.cpp"/>
+          <FILE id="dr4KWw" name="types.cpp" compile="1" resource="0" file="src/music/concrete/types.cpp"/>
+        </GROUP>
+      </GROUP>
+      <GROUP id="{D979C1C2-E7F8-06C1-B099-797C1A64D769}" name="plug">
+        <GROUP id="{A50BA881-1962-E907-EF00-29AFF45B5826}" name="game">
+          <GROUP id="{FBA6D95E-DAD5-A192-141D-F5A365C2DA4B}" name="drawer">
+            <FILE id="g3Fhbd" name="drawer_keyboard.cpp" compile="1" resource="0"
+                  file="src/plug/game/drawer/drawer_keyboard.cpp"/>
+            <FILE id="fliZUZ" name="drawer_synth.cpp" compile="1" resource="0"
+                  file="src/plug/game/drawer/drawer_synth.cpp"/>
+          </GROUP>
+          <GROUP id="{11FA6F38-B827-DE51-D2A9-DA2EAC41B01A}" name="updater">
+            <FILE id="R6LZTk" name="updater_keyboard.cpp" compile="1" resource="0"
+                  file="src/plug/game/updater/updater_keyboard.cpp"/>
+            <FILE id="AGn9m0" name="updater_synth.cpp" compile="1" resource="0"
+                  file="src/plug/game/updater/updater_synth.cpp"/>
+          </GROUP>
+          <FILE id="KM4kk3" name="drawer.cpp" compile="1" resource="0" file="src/plug/game/drawer.cpp"/>
+          <FILE id="ei82ZZ" name="plug_event_handler.cpp" compile="1" resource="0"
+                file="src/plug/game/plug_event_handler.cpp"/>
+          <FILE id="hCPzjM" name="ui_set.cpp" compile="1" resource="0" file="src/plug/game/ui_set.cpp"/>
+          <FILE id="vgjnoa" name="updater.cpp" compile="1" resource="0" file="src/plug/game/updater.cpp"/>
+        </GROUP>
+        <GROUP id="{E91B12AA-4D58-E260-9CE7-487F8966B8F9}" name="gui">
+          <FILE id="zUY7AU" name="apocalypse_indicator.cpp" compile="1" resource="0"
+                file="src/plug/gui/apocalypse_indicator.cpp"/>
+          <FILE id="Ahs8YJ" name="apocalypse_indicator.h" compile="0" resource="0"
+                file="src/plug/gui/apocalypse_indicator.h"/>
+          <FILE id="PUXRj1" name="audio_input.h" compile="0" resource="0" file="src/plug/gui/audio_input.h"/>
+          <FILE id="F444VY" name="config_window.cpp" compile="1" resource="0"
+                file="src/plug/gui/config_window.cpp"/>
+          <FILE id="YVsK8d" name="config_window.h" compile="0" resource="0" file="src/plug/gui/config_window.h"/>
+          <FILE id="QETUIM" name="config_window_app.cpp" compile="1" resource="0"
+                file="src/plug/gui/config_window_app.cpp"/>
+          <FILE id="v1vYmL" name="config_window_app.h" compile="0" resource="0"
+                file="src/plug/gui/config_window_app.h"/>
+          <FILE id="Q2WgUi" name="config_window_audio.cpp" compile="1" resource="0"
+                file="src/plug/gui/config_window_audio.cpp"/>
+          <FILE id="okAEeM" name="config_window_audio.h" compile="0" resource="0"
+                file="src/plug/gui/config_window_audio.h"/>
+          <FILE id="LBXdCg" name="config_window_home.cpp" compile="1" resource="0"
+                file="src/plug/gui/config_window_home.cpp"/>
+          <FILE id="tLF7Vo" name="config_window_home.h" compile="0" resource="0"
+                file="src/plug/gui/config_window_home.h"/>
+          <FILE id="aHnJcG" name="config_window_midi.cpp" compile="1" resource="0"
+                file="src/plug/gui/config_window_midi.cpp"/>
+          <FILE id="q1KIWa" name="config_window_midi.h" compile="0" resource="0"
+                file="src/plug/gui/config_window_midi.h"/>
+          <FILE id="DZOH3E" name="game_window.cpp" compile="1" resource="0" file="src/plug/gui/game_window.cpp"/>
+          <FILE id="fo3EWt" name="game_window.h" compile="0" resource="0" file="src/plug/gui/game_window.h"/>
+          <FILE id="H7NXfU" name="logo.cpp" compile="1" resource="0" file="src/plug/gui/logo.cpp"/>
+          <FILE id="gdpnPe" name="logo.h" compile="0" resource="0" file="src/plug/gui/logo.h"/>
+          <FILE id="Fe23hD" name="midi_channel_list.cpp" compile="1" resource="0"
+                file="src/plug/gui/midi_channel_list.cpp"/>
+          <FILE id="rPCzBi" name="midi_channel_list.h" compile="0" resource="0"
+                file="src/plug/gui/midi_channel_list.h"/>
+          <FILE id="P50piu" name="midi_config.cpp" compile="1" resource="0" file="src/plug/gui/midi_config.cpp"/>
+          <FILE id="NXlZcg" name="midi_config.h" compile="0" resource="0" file="src/plug/gui/midi_config.h"/>
+          <FILE id="Nj5Mv2" name="midi_input.h" compile="0" resource="0" file="src/plug/gui/midi_input.h"/>
+          <FILE id="Gsz9RV" name="mixer.cpp" compile="1" resource="0" file="src/plug/gui/mixer.cpp"/>
+          <FILE id="IBKuZL" name="mixer.h" compile="0" resource="0" file="src/plug/gui/mixer.h"/>
+          <FILE id="qNI8ZZ" name="mixer_channel.cpp" compile="1" resource="0"
+                file="src/plug/gui/mixer_channel.cpp"/>
+          <FILE id="alyw8V" name="mixer_channel.h" compile="0" resource="0" file="src/plug/gui/mixer_channel.h"/>
+          <FILE id="fLLHhi" name="mixer_plugin.cpp" compile="1" resource="0"
+                file="src/plug/gui/mixer_plugin.cpp"/>
+          <FILE id="nJK5wU" name="mixer_plugin.h" compile="0" resource="0" file="src/plug/gui/mixer_plugin.h"/>
+          <FILE id="g1QHZr" name="navbar.h" compile="0" resource="0" file="src/plug/gui/navbar.h"/>
+          <FILE id="VcuRm6" name="title.h" compile="0" resource="0" file="src/plug/gui/title.h"/>
+          <FILE id="iS1Ul0" name="world_input.h" compile="0" resource="0" file="src/plug/gui/world_input.h"/>
+        </GROUP>
+        <GROUP id="{05308BF7-E41D-8A02-CBAA-B209FEEC6DE9}" name="host">
+          <FILE id="SjIArC" name="filter_graph.cpp" compile="1" resource="0"
+                file="src/plug/host/filter_graph.cpp"/>
+          <FILE id="pkqh7t" name="filter_io_config.cpp" compile="1" resource="0"
+                file="src/plug/host/filter_io_config.cpp"/>
+          <FILE id="SIWqT5" name="graph_editor_panel.cpp" compile="1" resource="0"
+                file="src/plug/host/graph_editor_panel.cpp"/>
+          <FILE id="LNHI4V" name="host_app.cpp" compile="1" resource="0" file="src/plug/host/host_app.cpp"/>
+          <FILE id="CThwJ6" name="host_window.cpp" compile="1" resource="0" file="src/plug/host/host_window.cpp"/>
+          <FILE id="SHEf6Z" name="internal_filter.cpp" compile="1" resource="0"
+                file="src/plug/host/internal_filter.cpp"/>
+        </GROUP>
+        <FILE id="iNpLIq" name="app.cpp" compile="1" resource="0" file="src/plug/app.cpp"/>
+        <FILE id="wjqUCO" name="audio_callback.cpp" compile="1" resource="0"
+              file="src/plug/audio_callback.cpp"/>
+        <FILE id="BSfB8z" name="plug_io.cpp" compile="1" resource="0" file="src/plug/plug_io.cpp"/>
+      </GROUP>
+      <GROUP id="{C7282119-88EE-C3FB-A756-656CBD2F51ED}" name="ui">
+        <GROUP id="{777E5C5C-6BED-381B-2488-435F87B304B9}" name="synth">
+          <FILE id="tZ5R2r" name="wheel.cpp" compile="1" resource="0" file="src/ui/synth/wheel.cpp"/>
+        </GROUP>
+        <FILE id="OQ4hsc" name="bass.cpp" compile="1" resource="0" file="src/ui/bass.cpp"/>
+        <FILE id="BK1vJ1" name="component.cpp" compile="1" resource="0" file="src/ui/component.cpp"/>
+        <FILE id="miLyvH" name="fletboard.cpp" compile="1" resource="0" file="src/ui/fletboard.cpp"/>
+        <FILE id="XuWbSD" name="guitar.cpp" compile="1" resource="0" file="src/ui/guitar.cpp"/>
+        <FILE id="i80HQh" name="key_status.cpp" compile="1" resource="0" file="src/ui/key_status.cpp"/>
+        <FILE id="py4ETP" name="keyboard.cpp" compile="1" resource="0" file="src/ui/keyboard.cpp"/>
+      </GROUP>
+      <GROUP id="{43FA19CE-2083-63B1-C2A5-9197A301BF8F}" name="version">
+        <FILE id="noxXhl" name="version.cpp" compile="1" resource="0" file="src/version/version.cpp"/>
+        <FILE id="MMIt2i" name="version_set.cpp" compile="1" resource="0" file="src/version/version_set.cpp"/>
+      </GROUP>
+      <FILE id="EL566a" name="CMakeLists.txt" compile="0" resource="1" file="src/CMakeLists.txt"/>
+      <FILE id="VpkWft" name="component_id.cpp" compile="1" resource="0"
+            file="src/component_id.cpp"/>
+      <FILE id="VmCrjr" name="ompu_io.cpp" compile="1" resource="0" file="src/ompu_io.cpp"/>
+      <FILE id="RzQumS" name="ompu_lib.cpp" compile="1" resource="0" file="src/ompu_lib.cpp"/>
+      <FILE id="SsOnFU" name="ompu_util.cpp" compile="1" resource="0" file="src/ompu_util.cpp"/>
+    </GROUP>
+  </MAINGROUP>
+  <EXPORTFORMATS>
+    <VS2017 targetFolder="Builds/VisualStudio2017" vst3Folder="$(VST3_SDK)"
+            smallIcon="YI82xr" bigIcon="YI82xr" extraDefs="NOMINMAX&#10;_HAS_AUTO_PTR_ETC 1&#10;BOOST_SCOPE_EXIT_CONFIG_USE_LAMBDAS=1">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       isDebug="0" optimisation="3" targetName="ompu" binaryPath="bin"
+                       headerPath="$(ASIOSDK_COMMON)&#10;$(BOOST_ROOT)\include&#10;.\modules\sprout&#10;.\saya\include&#10;.\src&#10;.\include"
+                       libraryPath="$(BOOST_ROOT)\lib" warningsAreErrors="1" useRuntimeLibDLL="0"
+                       characterSet="Unicode"/>
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       isDebug="1" optimisation="1" targetName="ompu" headerPath="$(ASIOSDK_COMMON)&#10;$(BOOST_ROOT)\include&#10;.\modules\sprout&#10;.\saya\include&#10;.\src&#10;.\include"
+                       libraryPath="$(BOOST_ROOT)\lib" warningsAreErrors="1" useRuntimeLibDLL="0"
+                       characterSet="Unicode" binaryPath="bin" defines="JUCE_ASIO_DEBUGGING=1"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../../../../../../devtools/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../../../../devtools/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../../../../devtools/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../../../devtools/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../../../devtools/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../../../devtools/JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../../../../../devtools/JUCE/modules"/>
+        <MODULEPATH id="juce_video" path="../../../../../../devtools/JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../../../../../../devtools/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../../../../devtools/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../../../devtools/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../../../devtools/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../../../devtools/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../../../devtools/JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2017>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_video" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_ASIO="enabled" JUCE_PLUGINHOST_VST="enabled"
+               JUCE_PLUGINHOST_VST3="enabled"/>
+  <LIVE_SETTINGS>
+    <WINDOWS/>
+  </LIVE_SETTINGS>
+</JUCERPROJECT>
